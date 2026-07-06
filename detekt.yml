@@ -1,0 +1,24 @@
+build:
+  maxIssues: 0
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 60
+  LongParameterList:
+    active: true
+    functionThreshold: 6
+    constructorThreshold: 7
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 15
+
+naming:
+  FunctionNaming:
+    active: true
+    excludes: ['**/test/**', '**/*Test.kt', '**/*Preview*']
+    ignoreAnnotated: ['Composable']
+
+formatting:
+  Filename:
+    active: false # main.kt is the conventional Kotlin/JVM & Kotlin/JS entry-point name
