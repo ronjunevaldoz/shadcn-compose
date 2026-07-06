@@ -32,10 +32,15 @@ sealed interface ChipVariant {
     }
 
     data object Selected : ChipVariant {
+        // Same 1.dp border as every other variant (color matches the fill so it's
+        // invisible) -- otherwise switching Outline <-> Selected changes the
+        // measured size, exactly the bug fixed in ButtonStyles.kt/TextFieldStyles.kt.
         override val style =
             Style {
                 background(colors.primary)
                 contentColor(colors.onPrimary)
+                borderWidth(1.dp)
+                borderColor(colors.primary)
                 shape(RoundedCornerShape(shapes.full))
                 contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                 fontSize(13.sp)

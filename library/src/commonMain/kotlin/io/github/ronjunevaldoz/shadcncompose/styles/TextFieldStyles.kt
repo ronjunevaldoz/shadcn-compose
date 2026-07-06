@@ -18,13 +18,13 @@ sealed interface TextFieldVariant {
     val style: Style
 
     data object Default : TextFieldVariant {
-        // Border width stays 2.dp in every state -- only the color changes on
-        // focus -- so focusing the field never reflows surrounding layout.
+        // Border width stays 1.dp (shadcn's actual weight) in every state -- only
+        // the color changes on focus -- so focusing the field never reflows layout.
         override val style =
             Style {
                 background(colors.background)
                 contentColor(colors.onSurface)
-                borderWidth(2.dp)
+                borderWidth(1.dp)
                 borderColor(colors.border)
                 shape(RoundedCornerShape(shapes.md))
                 contentPadding(horizontal = spacing.md, vertical = spacing.sm)
@@ -39,7 +39,7 @@ sealed interface TextFieldVariant {
             Style {
                 background(colors.surfaceVariant)
                 contentColor(colors.onSurface)
-                borderWidth(2.dp)
+                borderWidth(1.dp)
                 borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
                 contentPadding(horizontal = spacing.md, vertical = spacing.sm)

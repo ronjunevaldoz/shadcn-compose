@@ -2,6 +2,7 @@ package io.github.ronjunevaldoz.shadcncompose.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.github.ronjunevaldoz.shadcncompose.catalog.CatalogSidebar
+import io.github.ronjunevaldoz.shadcncompose.catalog.CatalogTopBar
 import io.github.ronjunevaldoz.shadcncompose.catalog.ComponentDetailScreen
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -26,38 +28,46 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * rather than a phone-app push/pop list.
  */
 @Composable
-fun CatalogNavHost(navController: NavHostController = rememberNavController()) {
+fun CatalogNavHost(
+    isDarkMode: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit,
+    navController: NavHostController = rememberNavController(),
+) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val selectedId =
         currentBackStackEntry
             ?.let { runCatching { it.toRoute<ComponentDetailRoute>() }.getOrNull() }
             ?.componentId
 
-    Row(modifier = Modifier.fillMaxSize()) {
-        CatalogSidebar(
-            selectedId = selectedId ?: "introduction",
-            onEntryClick = { componentId ->
-                navController.navigate(ComponentDetailRoute(componentId)) {
-                    popUpTo<ComponentDetailRoute> { inclusive = true }
-                    launchSingleTop = true
-                }
-            },
-        )
-        Box(
-            modifier =
-                Modifier
-                    .width(1.dp)
-                    .fillMaxHeight()
-                    .background(shadcnTheme.colors.border),
-        )
-        Box(modifier = Modifier.weight(1f)) {
-            NavHost(
-                navController = navController,
-                startDestination = ComponentDetailRoute("introduction"),
-            ) {
-                composable<ComponentDetailRoute> { backStackEntry ->
-                    val route: ComponentDetailRoute = backStackEntry.toRoute()
-                    ComponentDetailScreen(componentId = route.componentId)
+    Column(modifier = Modifier.fillMaxSize()) {
+        CatalogTopBar(isDarkMode = isDarkMode, onToggleDarkMode = onToggleDarkMode)
+
+        Row(modifier = Modifier.weight(1f)) {
+            CatalogSidebar(
+                selectedId = selectedId ?: "introduction",
+                onEntryClick = { componentId ->
+                    navController.navigate(ComponentDetailRoute(componentId)) {
+                        popUpTo<ComponentDetailRoute> { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            )
+            Box(
+                modifier =
+                    Modifier
+                        .width(1.dp)
+                        .fillMaxHeight()
+                        .background(shadcnTheme.colors.border),
+            )
+            Box(modifier = Modifier.weight(1f)) {
+                NavHost(
+                    navController = navController,
+                    startDestination = ComponentDetailRoute("introduction"),
+                ) {
+                    composable<ComponentDetailRoute> { backStackEntry ->
+                        val route: ComponentDetailRoute = backStackEntry.toRoute()
+                        ComponentDetailScreen(componentId = route.componentId)
+                    }
                 }
             }
         }
