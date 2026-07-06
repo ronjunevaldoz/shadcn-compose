@@ -1,0 +1,161 @@
+[versions]
+# Build tools
+agp                      = "9.0.1"
+kotlin                   = "2.4.0"
+ksp                      = "2.3.9"
+
+# Android SDK
+android-compileSdk       = "36"
+android-minSdk           = "24"
+android-targetSdk        = "36"
+
+# AndroidX
+androidx-activity        = "1.13.0"
+androidx-appcompat       = "1.7.1"
+androidx-core            = "1.19.0"
+androidx-lifecycle       = "2.11.0-beta01"
+androidx-espresso        = "3.7.0"
+androidx-testExt         = "1.3.0"
+
+# Compose
+compose-multiplatform    = "1.11.1"
+compose-material3        = "1.11.0-alpha07"
+navigation-compose       = "2.9.0"    # JetBrains KMP fork
+
+# Kotlin libraries
+coroutines               = "1.10.2"
+serialization            = "1.11.0"
+datetime                 = "0.8.0"
+
+# Networking
+ktor                     = "3.1.3"
+
+# Database
+sqldelight               = "2.0.2"
+
+# DI
+koin                     = "4.2.1"
+koin-annotations         = "2.3.1"
+
+# Build config (KMP equivalent of Android BuildConfig)
+buildkonfig              = "0.21.2"
+
+# Desktop & Web
+kotlin-wrappers          = "2026.6.1"   # JS browser APIs
+
+# Testing
+junit                    = "4.13.2"
+turbine                  = "1.2.1"
+
+[libraries]
+# ── Kotlin stdlib & test ──────────────────────────────────────────────────────
+kotlin-test              = { module = "org.jetbrains.kotlin:kotlin-test",       version.ref = "kotlin" }
+kotlin-testJunit         = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+turbine                  = { module = "app.cash.turbine:turbine",               version.ref = "turbine" }
+
+# ── Kotlinx ──────────────────────────────────────────────────────────────────
+kotlinx-coroutines-core   = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core",    version.ref = "coroutines" }
+kotlinx-coroutines-swing  = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing",  version.ref = "coroutines" }
+kotlinx-coroutines-test   = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test",   version.ref = "coroutines" }
+
+# ── Desktop & Web ─────────────────────────────────────────────────────────────
+wrappers-browser          = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser",    version.ref = "kotlin-wrappers" }
+kotlinx-serialization    = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
+kotlinx-datetime         = { module = "org.jetbrains.kotlinx:kotlinx-datetime",           version.ref = "datetime" }
+
+# ── AndroidX ─────────────────────────────────────────────────────────────────
+androidx-core-ktx             = { module = "androidx.core:core-ktx",                           version.ref = "androidx-core" }
+androidx-appcompat            = { module = "androidx.appcompat:appcompat",                      version.ref = "androidx-appcompat" }
+androidx-activity-compose     = { module = "androidx.activity:activity-compose",               version.ref = "androidx-activity" }
+androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtimeCompose   = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose",   version.ref = "androidx-lifecycle" }
+androidx-testExt-junit        = { module = "androidx.test.ext:junit",                          version.ref = "androidx-testExt" }
+androidx-espresso-core        = { module = "androidx.test.espresso:espresso-core",             version.ref = "androidx-espresso" }
+navigation-compose            = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+
+# ── Compose Multiplatform ─────────────────────────────────────────────────────
+compose-runtime              = { module = "org.jetbrains.compose.runtime:runtime",                        version.ref = "compose-multiplatform" }
+compose-foundation           = { module = "org.jetbrains.compose.foundation:foundation",                  version.ref = "compose-multiplatform" }
+compose-ui                   = { module = "org.jetbrains.compose.ui:ui",                                   version.ref = "compose-multiplatform" }
+compose-material3            = { module = "org.jetbrains.compose.material3:material3",                     version.ref = "compose-material3" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources",        version.ref = "compose-multiplatform" }
+compose-uiTooling            = { module = "org.jetbrains.compose.ui:ui-tooling",                          version.ref = "compose-multiplatform" }
+compose-uiToolingPreview     = { module = "org.jetbrains.compose.ui:ui-tooling-preview",                  version.ref = "compose-multiplatform" }
+
+# ── Ktor ──────────────────────────────────────────────────────────────────────
+ktor-client-core             = { module = "io.ktor:ktor-client-core",             version.ref = "ktor" }
+ktor-client-android          = { module = "io.ktor:ktor-client-android",          version.ref = "ktor" }
+ktor-client-darwin           = { module = "io.ktor:ktor-client-darwin",           version.ref = "ktor" }
+ktor-client-mock             = { module = "io.ktor:ktor-client-mock",             version.ref = "ktor" }
+ktor-client-cio              = { module = "io.ktor:ktor-client-cio",              version.ref = "ktor" }
+ktor-client-js               = { module = "io.ktor:ktor-client-js",               version.ref = "ktor" }
+ktor-client-logging          = { module = "io.ktor:ktor-client-logging",          version.ref = "ktor" }
+ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-json      = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+# ── SQLDelight ────────────────────────────────────────────────────────────────
+sqldelight-runtime           = { module = "app.cash.sqldelight:runtime",               version.ref = "sqldelight" }
+sqldelight-coroutines        = { module = "app.cash.sqldelight:coroutines-extensions",  version.ref = "sqldelight" }
+sqldelight-android-driver    = { module = "app.cash.sqldelight:android-driver",         version.ref = "sqldelight" }
+sqldelight-native-driver     = { module = "app.cash.sqldelight:native-driver",          version.ref = "sqldelight" }
+sqldelight-sqlite-driver     = { module = "app.cash.sqldelight:sqlite-driver",          version.ref = "sqldelight" }
+sqldelight-web-worker-driver = { module = "app.cash.sqldelight:web-worker-driver",      version.ref = "sqldelight" }
+sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters",   version.ref = "sqldelight" }
+
+# ── Koin ──────────────────────────────────────────────────────────────────────
+koin-core                    = { module = "io.insert-koin:koin-core",                     version.ref = "koin" }
+koin-android                 = { module = "io.insert-koin:koin-android",                  version.ref = "koin" }
+koin-compose                 = { module = "io.insert-koin:koin-compose",                  version.ref = "koin" }
+koin-composeViewModel        = { module = "io.insert-koin:koin-compose-viewmodel",         version.ref = "koin" }
+koin-androidx-compose        = { module = "io.insert-koin:koin-androidx-compose",          version.ref = "koin" }
+koin-annotations             = { module = "io.insert-koin:koin-annotations",              version.ref = "koin-annotations" }
+koin-ksp-compiler            = { module = "io.insert-koin:koin-ksp-compiler",             version.ref = "koin-annotations" }
+
+# ── build-logic classpath (compileOnly in convention module) ──────────────────
+android-gradlePlugin         = { module = "com.android.tools.build:gradle",                 version.ref = "agp" }
+kotlin-gradlePlugin          = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin",      version.ref = "kotlin" }
+compose-gradlePlugin         = { module = "org.jetbrains.compose:compose-gradle-plugin",    version.ref = "compose-multiplatform" }
+ksp-gradlePlugin             = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+sqldelight-gradlePlugin      = { module = "app.cash.sqldelight:gradle-plugin",              version.ref = "sqldelight" }
+buildkonfig-gradlePlugin     = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
+
+[bundles]
+# Common Ktor setup for :feature:*:data
+ktor-common  = [
+    "ktor-client-core",
+    "ktor-client-logging",
+    "ktor-client-contentNegotiation",
+    "ktor-serialization-json"
+]
+
+# SQLDelight common for :feature:*:data
+sqldelight-common = [
+    "sqldelight-runtime",
+    "sqldelight-coroutines"
+]
+
+# Koin for Android app entry point
+koin-app = [
+    "koin-android",
+    "koin-androidx-compose"
+]
+
+# Standard KMP common kotlinx dependencies
+kotlinx-common = [
+    "kotlinx-coroutines-core",
+    "kotlinx-serialization",
+    "kotlinx-datetime"
+]
+
+[plugins]
+androidApplication     = { id = "com.android.application",                          version.ref = "agp" }
+androidKmpLibrary      = { id = "com.android.kotlin.multiplatform.library",          version.ref = "agp" }
+kotlinMultiplatform    = { id = "org.jetbrains.kotlin.multiplatform",                version.ref = "kotlin" }
+kotlinAndroid          = { id = "org.jetbrains.kotlin.android",                      version.ref = "kotlin" }
+kotlinSerialization    = { id = "org.jetbrains.kotlin.plugin.serialization",         version.ref = "kotlin" }
+composeMultiplatform   = { id = "org.jetbrains.compose",                             version.ref = "compose-multiplatform" }
+composeCompiler        = { id = "org.jetbrains.kotlin.plugin.compose",               version.ref = "kotlin" }
+ksp                    = { id = "com.google.devtools.ksp",                           version.ref = "ksp" }
+koin                   = { id = "org.jetbrains.kotlin.plugin.koin",                  version.ref = "koin" }
+sqldelight             = { id = "app.cash.sqldelight",                               version.ref = "sqldelight" }
+buildkonfig            = { id = "com.codingfeline.buildkonfig",                      version.ref = "buildkonfig" }

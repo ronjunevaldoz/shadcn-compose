@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew *)",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(python3 .claude/skills/kotlin-multiplatform-audit/scripts/*)",
+      "Bash(find . -name *.kt*)",
+      "Bash(grep *)"
+    ]
+  }
+}
