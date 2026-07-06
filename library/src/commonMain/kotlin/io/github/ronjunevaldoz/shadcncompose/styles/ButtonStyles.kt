@@ -8,97 +8,99 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
-import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.then
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.ronjunevaldoz.shadcncompose.theme.colors
 import io.github.ronjunevaldoz.shadcncompose.theme.shapes
 import io.github.ronjunevaldoz.shadcncompose.theme.spacing
 
-// The focus ring must never change the button's measured size, so every variant
-// below reserves the same 2.dp border width up front (transparent when there's no
-// visible border) and this style only swaps the border *color* on focus.
-private const val FOCUS_RING_WIDTH_DP = 2
-
-internal val buttonInteractionStyle: Style =
-    Style {
-        hovered { alpha(0.90f) }
-        pressed { alpha(0.80f) }
-        disabled { alpha(0.38f) }
-        focused { borderColor(colors.borderFocus) }
-    }
+// Matches shadcn/ui's real button.tsx (github.com/shadcn-ui/ui) as closely as our
+// Style API allows: most variants have zero border (only Outline has one), hover
+// is an alpha-blended background rather than a whole-node dim, and focus uses
+// focusRingStyle's dropShadow ring instead of thickening a border -- so none of
+// this ever changes a button's measured size.
 
 sealed interface ButtonVariant {
     val style: Style
 
     data object Default : ButtonVariant {
+        // bg-primary text-primary-foreground hover:bg-primary/90
         override val style =
             Style {
                 background(colors.primary)
                 contentColor(colors.onPrimary)
-                borderWidth(FOCUS_RING_WIDTH_DP.dp)
-                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
-            } then buttonInteractionStyle
+                hovered { background(colors.primary.copy(alpha = 0.9f)) }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 
     data object Outline : ButtonVariant {
+        // border bg-background hover:bg-accent hover:text-accent-foreground
         override val style =
             Style {
                 background(colors.background)
                 contentColor(colors.onSurface)
-                borderWidth(FOCUS_RING_WIDTH_DP.dp)
+                borderWidth(1.dp)
                 borderColor(colors.border)
                 shape(RoundedCornerShape(shapes.md))
-                hovered { background(colors.secondary) }
-                pressed { background(colors.secondary) }
-            } then buttonInteractionStyle
+                hovered {
+                    background(colors.secondary)
+                    contentColor(colors.onSecondary)
+                }
+                focused { borderColor(colors.borderFocus) }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 
     data object Secondary : ButtonVariant {
+        // bg-secondary text-secondary-foreground hover:bg-secondary/80
         override val style =
             Style {
                 background(colors.secondary)
                 contentColor(colors.onSecondary)
-                borderWidth(FOCUS_RING_WIDTH_DP.dp)
-                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
-                hovered { background(colors.secondaryHover) }
-            } then buttonInteractionStyle
+                hovered { background(colors.secondary.copy(alpha = 0.8f)) }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 
     data object Ghost : ButtonVariant {
+        // hover:bg-accent hover:text-accent-foreground
         override val style =
             Style {
                 contentColor(colors.onSurface)
-                borderWidth(FOCUS_RING_WIDTH_DP.dp)
-                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
-                hovered { background(colors.secondary) }
-                pressed { background(colors.secondary) }
-            } then buttonInteractionStyle
+                hovered {
+                    background(colors.secondary)
+                    contentColor(colors.onSecondary)
+                }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 
     data object Destructive : ButtonVariant {
+        // bg-destructive text-white hover:bg-destructive/90
         override val style =
             Style {
                 background(colors.destructive)
                 contentColor(colors.onDestructive)
-                borderWidth(FOCUS_RING_WIDTH_DP.dp)
-                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
-                hovered { background(colors.destructiveHover) }
-            } then buttonInteractionStyle
+                hovered { background(colors.destructive.copy(alpha = 0.9f)) }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 
     data object Link : ButtonVariant {
+        // text-primary underline-offset-4 hover:underline
         override val style =
             Style {
                 contentColor(colors.primary)
-                hovered { alpha(0.70f) }
-            }
+                hovered { textDecoration(TextDecoration.Underline) }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 }
 

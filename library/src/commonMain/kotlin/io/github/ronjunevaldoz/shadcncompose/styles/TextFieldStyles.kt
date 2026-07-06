@@ -7,6 +7,7 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.focused
+import androidx.compose.foundation.style.then
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -14,12 +15,14 @@ import io.github.ronjunevaldoz.shadcncompose.theme.colors
 import io.github.ronjunevaldoz.shadcncompose.theme.shapes
 import io.github.ronjunevaldoz.shadcncompose.theme.spacing
 
+// Matches shadcn/ui's real input.tsx: border border-input (1.dp, always visible),
+// focus-visible:border-ring (color swap only) + the ring-[3px] ring-ring/50 focus
+// ring from focusRingStyle -- border width never changes, so focusing never
+// reflows layout.
 sealed interface TextFieldVariant {
     val style: Style
 
     data object Default : TextFieldVariant {
-        // Border width stays 1.dp (shadcn's actual weight) in every state -- only
-        // the color changes on focus -- so focusing the field never reflows layout.
         override val style =
             Style {
                 background(colors.background)
@@ -30,8 +33,8 @@ sealed interface TextFieldVariant {
                 contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                 fontSize(14.sp)
                 focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.38f) }
-            }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 
     data object Filled : TextFieldVariant {
@@ -45,7 +48,8 @@ sealed interface TextFieldVariant {
                 contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                 fontSize(14.sp)
                 focused { borderColor(colors.borderFocus) }
-            }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 
     data object Ghost : TextFieldVariant {
@@ -57,6 +61,7 @@ sealed interface TextFieldVariant {
                 contentPadding(horizontal = spacing.xs, vertical = spacing.xs)
                 fontSize(14.sp)
                 focused { borderColor(colors.borderFocus) }
-            }
+                disabled { alpha(0.5f) }
+            } then focusRingStyle
     }
 }

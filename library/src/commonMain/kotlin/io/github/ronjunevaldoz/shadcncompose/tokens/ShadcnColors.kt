@@ -51,7 +51,9 @@ val ShadcnLightColors =
         onSurface = Color(0xFF09090B),
         onSurfaceVariant = Color(0xFF71717A),
         border = Color(0xFFE4E4E7),
-        borderFocus = Color(0xFF09090B),
+        // shadcn's "ring" token is a distinct mid-gray (oklch(0.708 0 0), ~zinc-400),
+        // not primary -- it's a focus indicator color, not a brand color.
+        borderFocus = Color(0xFFA1A1AA),
         muted = Color(0xFFF4F4F5),
         onMuted = Color(0xFF71717A),
         success = Color(0xFF16A34A),
@@ -80,7 +82,8 @@ val ShadcnDarkColors =
         onSurface = Color(0xFFFAFAFA),
         onSurfaceVariant = Color(0xFFA1A1AA),
         border = Color(0xFF27272A),
-        borderFocus = Color(0xFFFAFAFA),
+        // shadcn's "ring" token in dark mode (oklch(0.556 0 0), ~zinc-500).
+        borderFocus = Color(0xFF71717A),
         muted = Color(0xFF27272A),
         onMuted = Color(0xFFA1A1AA),
         success = Color(0xFF15803D),
