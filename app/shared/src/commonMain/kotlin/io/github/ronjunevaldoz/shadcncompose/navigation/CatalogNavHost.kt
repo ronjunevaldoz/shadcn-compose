@@ -17,7 +17,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.github.ronjunevaldoz.shadcncompose.catalog.CatalogSidebar
-import io.github.ronjunevaldoz.shadcncompose.catalog.CatalogWelcomeScreen
 import io.github.ronjunevaldoz.shadcncompose.catalog.ComponentDetailScreen
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -36,10 +35,10 @@ fun CatalogNavHost(navController: NavHostController = rememberNavController()) {
 
     Row(modifier = Modifier.fillMaxSize()) {
         CatalogSidebar(
-            selectedId = selectedId,
+            selectedId = selectedId ?: "introduction",
             onEntryClick = { componentId ->
                 navController.navigate(ComponentDetailRoute(componentId)) {
-                    popUpTo<CatalogHomeRoute>()
+                    popUpTo<ComponentDetailRoute> { inclusive = true }
                     launchSingleTop = true
                 }
             },
@@ -54,11 +53,8 @@ fun CatalogNavHost(navController: NavHostController = rememberNavController()) {
         Box(modifier = Modifier.weight(1f)) {
             NavHost(
                 navController = navController,
-                startDestination = CatalogHomeRoute,
+                startDestination = ComponentDetailRoute("introduction"),
             ) {
-                composable<CatalogHomeRoute> {
-                    CatalogWelcomeScreen()
-                }
                 composable<ComponentDetailRoute> { backStackEntry ->
                     val route: ComponentDetailRoute = backStackEntry.toRoute()
                     ComponentDetailScreen(componentId = route.componentId)

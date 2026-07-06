@@ -10,21 +10,24 @@ import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.foundation.style.then
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.ronjunevaldoz.shadcncompose.theme.colors
 import io.github.ronjunevaldoz.shadcncompose.theme.shapes
 import io.github.ronjunevaldoz.shadcncompose.theme.spacing
 
+// The focus ring must never change the button's measured size, so every variant
+// below reserves the same 2.dp border width up front (transparent when there's no
+// visible border) and this style only swaps the border *color* on focus.
+private const val FOCUS_RING_WIDTH_DP = 2
+
 internal val buttonInteractionStyle: Style =
     Style {
         hovered { alpha(0.90f) }
         pressed { alpha(0.80f) }
         disabled { alpha(0.38f) }
-        focused {
-            borderWidth(2.dp)
-            borderColor(colors.borderFocus)
-        }
+        focused { borderColor(colors.borderFocus) }
     }
 
 sealed interface ButtonVariant {
@@ -35,6 +38,8 @@ sealed interface ButtonVariant {
             Style {
                 background(colors.primary)
                 contentColor(colors.onPrimary)
+                borderWidth(FOCUS_RING_WIDTH_DP.dp)
+                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
             } then buttonInteractionStyle
     }
@@ -44,7 +49,7 @@ sealed interface ButtonVariant {
             Style {
                 background(colors.background)
                 contentColor(colors.onSurface)
-                borderWidth(1.dp)
+                borderWidth(FOCUS_RING_WIDTH_DP.dp)
                 borderColor(colors.border)
                 shape(RoundedCornerShape(shapes.md))
                 hovered { background(colors.secondary) }
@@ -57,6 +62,8 @@ sealed interface ButtonVariant {
             Style {
                 background(colors.secondary)
                 contentColor(colors.onSecondary)
+                borderWidth(FOCUS_RING_WIDTH_DP.dp)
+                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
                 hovered { background(colors.secondaryHover) }
             } then buttonInteractionStyle
@@ -66,6 +73,8 @@ sealed interface ButtonVariant {
         override val style =
             Style {
                 contentColor(colors.onSurface)
+                borderWidth(FOCUS_RING_WIDTH_DP.dp)
+                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
                 hovered { background(colors.secondary) }
                 pressed { background(colors.secondary) }
@@ -77,6 +86,8 @@ sealed interface ButtonVariant {
             Style {
                 background(colors.destructive)
                 contentColor(colors.onDestructive)
+                borderWidth(FOCUS_RING_WIDTH_DP.dp)
+                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
                 hovered { background(colors.destructiveHover) }
             } then buttonInteractionStyle

@@ -1,13 +1,14 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog
 
 /**
- * Static registry of every component the catalog app can show. Add an entry here
- * whenever a new component ships in `:library` -- this is what drives the home
- * screen's grouping and the detail route dispatch, so new categories (Forms & Inputs,
- * Overlays & Navigation, Data Display & Feedback, ...) slot in without touching
- * navigation plumbing.
+ * Static registry of every entry the catalog sidebar can show -- both docs pages
+ * (Getting Started) and component demos. Add an entry here whenever a new page or
+ * component ships -- this is what drives the sidebar's grouping and the detail
+ * route dispatch, so new categories (Forms & Inputs, Overlays & Navigation, Data
+ * Display & Feedback, ...) slot in without touching navigation plumbing.
  */
 enum class CatalogCategory(val title: String) {
+    GETTING_STARTED("Getting Started"),
     CORE_PRIMITIVES("Core Primitives"),
 }
 
@@ -19,6 +20,13 @@ data class CatalogEntry(
 
 val catalogEntries: List<CatalogEntry> =
     listOf(
+        // Getting Started -- listed first so groupBy keeps this section on top.
+        CatalogEntry(id = "introduction", title = "Introduction", category = CatalogCategory.GETTING_STARTED),
+        CatalogEntry(id = "installation", title = "Installation", category = CatalogCategory.GETTING_STARTED),
+        CatalogEntry(id = "theming", title = "Theming", category = CatalogCategory.GETTING_STARTED),
+        CatalogEntry(id = "dark-mode", title = "Dark Mode", category = CatalogCategory.GETTING_STARTED),
+        CatalogEntry(id = "typography", title = "Typography", category = CatalogCategory.GETTING_STARTED),
+        // Core Primitives
         CatalogEntry(id = "button", title = "Button", category = CatalogCategory.CORE_PRIMITIVES),
         CatalogEntry(id = "card", title = "Card", category = CatalogCategory.CORE_PRIMITIVES),
         CatalogEntry(id = "badge", title = "Badge", category = CatalogCategory.CORE_PRIMITIVES),

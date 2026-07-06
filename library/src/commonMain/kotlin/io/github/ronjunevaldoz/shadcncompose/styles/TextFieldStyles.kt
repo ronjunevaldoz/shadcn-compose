@@ -7,6 +7,7 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.focused
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.ronjunevaldoz.shadcncompose.theme.colors
@@ -17,19 +18,18 @@ sealed interface TextFieldVariant {
     val style: Style
 
     data object Default : TextFieldVariant {
+        // Border width stays 2.dp in every state -- only the color changes on
+        // focus -- so focusing the field never reflows surrounding layout.
         override val style =
             Style {
                 background(colors.background)
                 contentColor(colors.onSurface)
-                borderWidth(1.dp)
+                borderWidth(2.dp)
                 borderColor(colors.border)
                 shape(RoundedCornerShape(shapes.md))
                 contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                 fontSize(14.sp)
-                focused {
-                    borderWidth(2.dp)
-                    borderColor(colors.borderFocus)
-                }
+                focused { borderColor(colors.borderFocus) }
                 disabled { alpha(0.38f) }
             }
     }
@@ -39,13 +39,12 @@ sealed interface TextFieldVariant {
             Style {
                 background(colors.surfaceVariant)
                 contentColor(colors.onSurface)
+                borderWidth(2.dp)
+                borderColor(Color.Transparent)
                 shape(RoundedCornerShape(shapes.md))
                 contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                 fontSize(14.sp)
-                focused {
-                    borderWidth(2.dp)
-                    borderColor(colors.borderFocus)
-                }
+                focused { borderColor(colors.borderFocus) }
             }
     }
 
@@ -53,12 +52,11 @@ sealed interface TextFieldVariant {
         override val style =
             Style {
                 contentColor(colors.onSurface)
+                borderWidth(1.dp)
+                borderColor(Color.Transparent)
                 contentPadding(horizontal = spacing.xs, vertical = spacing.xs)
                 fontSize(14.sp)
-                focused {
-                    borderWidth(1.dp)
-                    borderColor(colors.borderFocus)
-                }
+                focused { borderColor(colors.borderFocus) }
             }
     }
 }
