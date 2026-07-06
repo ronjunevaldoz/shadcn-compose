@@ -13,4 +13,9 @@ val componentDocsById: Map<String, ComponentDoc> =
         radioGroupDoc,
         switchDoc,
         toggleDoc,
+        sliderDoc,
+        toggleGroupDoc,
+        inputGroupDoc,
+        buttonGroupDoc,
+        textareaDoc,
     ).associateBy { it.id }

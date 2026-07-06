@@ -40,6 +40,11 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "radio-group", title = "Radio Group", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "switch", title = "Switch", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "toggle", title = "Toggle", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "slider", title = "Slider", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "toggle-group", title = "Toggle Group", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "input-group", title = "Input Group", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "button-group", title = "Button Group", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "textarea", title = "Textarea", category = CatalogCategory.FORMS_AND_INPUTS),
     )
 
 val catalogEntriesByCategory: Map<CatalogCategory, List<CatalogEntry>> =
