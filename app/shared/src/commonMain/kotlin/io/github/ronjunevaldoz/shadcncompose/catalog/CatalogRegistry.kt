@@ -10,6 +10,7 @@ package io.github.ronjunevaldoz.shadcncompose.catalog
 enum class CatalogCategory(val title: String) {
     GETTING_STARTED("Getting Started"),
     CORE_PRIMITIVES("Core Primitives"),
+    FORMS_AND_INPUTS("Forms & Inputs"),
 }
 
 data class CatalogEntry(
@@ -33,6 +34,12 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "chip", title = "Chip", category = CatalogCategory.CORE_PRIMITIVES),
         CatalogEntry(id = "text-field", title = "Text Field", category = CatalogCategory.CORE_PRIMITIVES),
         CatalogEntry(id = "text", title = "Text", category = CatalogCategory.CORE_PRIMITIVES),
+        // Forms & Inputs
+        CatalogEntry(id = "label", title = "Label", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "checkbox", title = "Checkbox", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "radio-group", title = "Radio Group", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "switch", title = "Switch", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "toggle", title = "Toggle", category = CatalogCategory.FORMS_AND_INPUTS),
     )
 
 val catalogEntriesByCategory: Map<CatalogCategory, List<CatalogEntry>> =

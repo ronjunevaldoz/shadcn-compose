@@ -8,4 +8,9 @@ val componentDocsById: Map<String, ComponentDoc> =
         chipDoc,
         textFieldDoc,
         textDoc,
+        labelDoc,
+        checkboxDoc,
+        radioGroupDoc,
+        switchDoc,
+        toggleDoc,
     ).associateBy { it.id }
