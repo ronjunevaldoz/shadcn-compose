@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasRequestFocusAction
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.requestFocus
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
@@ -52,7 +53,7 @@ abstract class ShadcnScreenshotTest {
         // animations (Skeleton's pulse, Spinner's rotation) from idle-detection, so this
         // never blocks on those.
         composeRule.waitForIdle()
-        composeRule.onRoot().captureRoboImage("$snapshotDir/$name${themeSuffix(darkTheme)}.png")
+        captureCompositeRoot().captureRoboImage("$snapshotDir/$name${themeSuffix(darkTheme)}.png")
     }
 
     /**
@@ -79,7 +80,7 @@ abstract class ShadcnScreenshotTest {
         val focusable = hasRequestFocusAction() and (hasTestTag(focusTag) or hasAnyAncestor(hasTestTag(focusTag)))
         composeRule.onNode(focusable, useUnmergedTree = true).requestFocus()
         composeRule.waitForIdle()
-        composeRule.onRoot().captureRoboImage("$snapshotDir/$name${themeSuffix(darkTheme)}.png")
+        captureCompositeRoot().captureRoboImage("$snapshotDir/$name${themeSuffix(darkTheme)}.png")
     }
 
     /** Captures the *already-composed* current tree -- for tests that drive multiple sequential captures off one `setContent` call. */
@@ -87,7 +88,23 @@ abstract class ShadcnScreenshotTest {
         name: String,
         darkTheme: Boolean,
     ) {
-        composeRule.onRoot().captureRoboImage("$snapshotDir/$name${themeSuffix(darkTheme)}.png")
+        captureCompositeRoot().captureRoboImage("$snapshotDir/$name${themeSuffix(darkTheme)}.png")
+    }
+
+    /**
+     * A `Popup` (used by every overlay component -- see the `overlay` package) opens
+     * its own semantics root on top of the base content's root, so `onRoot()` throws
+     * ("expected exactly 1 root, found 2+") once one is showing. Verified empirically
+     * (see the deleted `PopupCaptureSpikeTest` spike): the *last* root reported by
+     * `onAllNodes(isRoot())` is always the one representing the fully composited
+     * window -- base content plus every open overlay layered on top, exactly what a
+     * real screenshot should show -- so always capturing the last root is correct
+     * whether zero, one, or several Popups are open.
+     */
+    private fun captureCompositeRoot(): SemanticsNodeInteraction {
+        val roots = composeRule.onAllNodes(isRoot())
+        val lastIndex = roots.fetchSemanticsNodes().size - 1
+        return roots[lastIndex]
     }
 
     private fun themeSuffix(darkTheme: Boolean) = if (darkTheme) "_dark" else "_light"
