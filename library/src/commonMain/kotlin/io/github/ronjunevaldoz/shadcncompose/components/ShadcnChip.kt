@@ -17,9 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.ChipVariant
-import io.github.ronjunevaldoz.shadcncompose.styles.contentColor
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
-import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
  * Selectable chip / filter tag.
@@ -41,37 +41,39 @@ fun ShadcnChip(
     variant: ChipVariant = if (selected) ChipVariant.Selected else ChipVariant.Default,
     style: Style = Style,
 ) {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-    val styleState =
-        rememberUpdatedStyleState(interactionSource) {
-            it.isEnabled = enabled
-        }
 
-    val clickableModifier =
-        if (onClick != null) {
-            Modifier.clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                enabled = enabled,
-                onClick = onClick,
-            )
-        } else {
-            Modifier
-        }
+    // Resolve the clean, dynamic base variant style for dark/light parity
+    val baseVariantStyle = variant.rememberStyle()
+
+    val styleState = rememberUpdatedStyleState(interactionSource) {
+        it.isEnabled = enabled
+    }
+
+    val clickableModifier = if (onClick != null) {
+        Modifier.clickable(
+            interactionSource = interactionSource,
+            indication = null,
+            enabled = enabled,
+            onClick = onClick,
+        )
+    } else {
+        Modifier
+    }
 
     Row(
-        modifier =
-            modifier
-                .shadcnFocusRing(
-                    isFocused = isFocused,
-                    shape = RoundedCornerShape(shadcnTheme.shapes.full),
-                )
-                .then(clickableModifier)
-                .styleable(styleState, variant.style, style),
+        modifier = modifier
+            .shadcnFocusRing(
+                isFocused = isFocused,
+                shape = RoundedCornerShape(theme.shapes.full),
+            )
+            .then(clickableModifier)
+            .styleable(styleState, baseVariantStyle, style),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        ShadcnText(text = label, color = variant.contentColor)
+        ShadcnText(text = label)
     }
 }

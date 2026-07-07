@@ -20,6 +20,9 @@ import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
  * A two-state button, e.g. for toolbar toggles (bold/italic). Distinct from
  * [ShadcnSwitch] (on/off preference) and [ShadcnChip] (pill-shaped filter tag).
  *
+ * Automatically resolves its focus ring silhouette from [LocalGroupCorners] when placed
+ * inside a [ShadcnToggleGroup] or other grouped container.
+ *
  * Usage:
  * ```
  * var bold by remember { mutableStateOf(false) }

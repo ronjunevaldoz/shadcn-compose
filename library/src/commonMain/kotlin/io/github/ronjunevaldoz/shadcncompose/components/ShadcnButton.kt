@@ -25,6 +25,9 @@ import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 /**
  * shadcn-inspired button.
  *
+ * Automatically resolves its focus ring silhouette from [LocalGroupCorners] when placed
+ * inside a [ShadcnButtonGroup] or other grouped container.
+ *
  * Usage:
  * ```
  * ShadcnButton(onClick = {}) { ShadcnText("Click me") }
