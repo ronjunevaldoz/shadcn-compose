@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
  */
 @Immutable
 data class ShadcnRing(
-    val width: Dp = 0.dp,
+    val width: Dp = 3.dp,
     val opacity: Float = 0.5f,
     val offset: Dp = 0.dp,
 ) {

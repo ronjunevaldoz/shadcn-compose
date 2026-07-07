@@ -21,7 +21,7 @@ data class ShadcnTheme(
     val typography: ShadcnTypography,
     val shapes: ShadcnShapes,
     val spacing: ShadcnSpacing,
-    val ring: ShadcnRing, // TODO please have a second option, is this necessary here?
+    val ring: ShadcnRing,
 ) {
     companion object {
         val LocalShadcnTheme: ProvidableCompositionLocal<ShadcnTheme> =

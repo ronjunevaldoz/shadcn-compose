@@ -1,5 +1,6 @@
 package io.github.ronjunevaldoz.shadcncompose.styles
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
@@ -10,6 +11,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
  * shadcn's real focus indicator (`focus-visible:ring-[3px] focus-visible:ring-ring/50`) is a
@@ -31,7 +33,26 @@ import androidx.compose.ui.unit.dp
  * still correct and simpler than branching.
  */
 
-@Deprecated("use Style instead")
+/**
+ * Convenience overload that reads width/opacity/offset from the current [ShadcnTheme].
+ */
+@Composable
+fun Modifier.shadcnFocusRing(
+    focused: Boolean,
+    cornerRadius: Dp,
+    color: Color = ShadcnTheme.LocalShadcnTheme.current.colors.borderFocus
+        .copy(alpha = ShadcnTheme.LocalShadcnTheme.current.ring.opacity),
+): Modifier {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    return shadcnFocusRing(
+        focused = focused,
+        color = color,
+        cornerRadius = cornerRadius,
+        width = theme.ring.width,
+        offset = theme.ring.offset
+    )
+}
+
 fun Modifier.shadcnFocusRing(
     focused: Boolean,
     color: Color,
@@ -55,15 +76,7 @@ fun Modifier.shadcnFocusRing(
  * whose real shape only rounds the outer edges of the group, not all four corners uniformly.
  * Passing the group item's own asymmetric corners here keeps the ring flush with its actual
  * silhouette instead of tracing a uniformly-rounded box that doesn't match.
- * TODO should we eliminate this? do a research even Vega, Nova, etc is not using this.
- * TODO: this is redundant, it was a box shadow right? (also we're using STYLE api now)  Modifier.shadow(
- *     elevation = 2.dp,
- *     shape = RoundedCornerShape(8.dp),
- *     ambientColor = RingColor,
- *     spotColor = RingColor
- *
  */
-@Deprecated("use Style instead")
 fun Modifier.shadcnFocusRing(
     focused: Boolean,
     color: Color,
