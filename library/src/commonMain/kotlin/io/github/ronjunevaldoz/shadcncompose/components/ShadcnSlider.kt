@@ -104,9 +104,6 @@ fun ShadcnSlider(
                     .focusable(enabled = enabled, interactionSource = interactionSource)
                     .shadcnFocusRing(
                         focused = isThumbFocused || isThumbHovered,
-                        color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
-                        width = shadcnTheme.ring.width,
-                        offset = shadcnTheme.ring.offset,
                         cornerRadius = shadcnTheme.shapes.full,
                     )
                     .pointerInput(enabled, rangeSpan) {

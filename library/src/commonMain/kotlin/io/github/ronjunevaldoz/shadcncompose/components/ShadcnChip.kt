@@ -64,9 +64,6 @@ fun ShadcnChip(
             modifier
                 .shadcnFocusRing(
                     focused = isFocused,
-                    color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
-                    width = shadcnTheme.ring.width,
-                    offset = shadcnTheme.ring.offset,
                     cornerRadius = shadcnTheme.shapes.full,
                 )
                 .then(clickableModifier)

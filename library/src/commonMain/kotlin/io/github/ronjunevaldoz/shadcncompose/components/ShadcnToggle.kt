@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import io.github.ronjunevaldoz.shadcncompose.styles.ToggleVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -21,11 +20,6 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 /**
  * A two-state button, e.g. for toolbar toggles (bold/italic). Distinct from
  * [ShadcnSwitch] (on/off preference) and [ShadcnChip] (pill-shaped filter tag).
- *
- * The `ring*Corner` params default to `shapes.lg` on all four corners (a standalone
- * toggle's real shape) but let [ShadcnToggleGroup] pass each item's actual asymmetric
- * corners (only the outer edge of the group is rounded) so the focus ring traces the
- * item's real silhouette instead of a uniformly-rounded box that doesn't match it.
  *
  * Usage:
  * ```
@@ -42,10 +36,6 @@ fun ShadcnToggle(
     enabled: Boolean = true,
     variant: ToggleVariant = ToggleVariant.Default,
     style: Style = Style,
-    ringTopStartCorner: Dp? = null,
-    ringTopEndCorner: Dp? = null,
-    ringBottomEndCorner: Dp? = null,
-    ringBottomStartCorner: Dp? = null,
     content: @Composable () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -56,19 +46,17 @@ fun ShadcnToggle(
             it.isEnabled = enabled
         }
     val defaultRingCorner = shadcnTheme.shapes.lg
+    val groupCorners = LocalGroupCorners.current
 
     Box(
         modifier =
             modifier
                 .shadcnFocusRing(
                     focused = isFocused,
-                    color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
-                    width = shadcnTheme.ring.width,
-                    offset = shadcnTheme.ring.offset,
-                    topStart = ringTopStartCorner ?: defaultRingCorner,
-                    topEnd = ringTopEndCorner ?: defaultRingCorner,
-                    bottomEnd = ringBottomEndCorner ?: defaultRingCorner,
-                    bottomStart = ringBottomStartCorner ?: defaultRingCorner,
+                    topStart = groupCorners?.topStart ?: defaultRingCorner,
+                    topEnd = groupCorners?.topEnd ?: defaultRingCorner,
+                    bottomEnd = groupCorners?.bottomEnd ?: defaultRingCorner,
+                    bottomStart = groupCorners?.bottomStart ?: defaultRingCorner,
                 )
                 .toggleable(
                     value = pressed,

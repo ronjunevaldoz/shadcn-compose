@@ -5,14 +5,17 @@ package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ButtonGroupItem
+import io.github.ronjunevaldoz.shadcncompose.components.LocalGroupCorners
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButtonGroup
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButtonGroupSeparator
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButtonGroupText
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnGroupCorners
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -86,15 +89,17 @@ val buttonGroupDoc =
                         ShadcnButtonGroup {
                             ShadcnButtonGroupText("https://", topStart = rounded, bottomStart = rounded)
                             ShadcnButtonGroupSeparator()
-                            ShadcnButton(
-                                onClick = {}, 
-                                variant = ButtonVariant.Ghost,
-                                ringTopStartCorner = 0.dp,
-                                ringBottomStartCorner = 0.dp,
-                                style = Style {
-                                    shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
-                                }
-                            ) { ShadcnText("example.com") }
+                            CompositionLocalProvider(
+                                LocalGroupCorners provides ShadcnGroupCorners(topEnd = rounded, bottomEnd = rounded)
+                            ) {
+                                ShadcnButton(
+                                    onClick = {},
+                                    variant = ButtonVariant.Ghost,
+                                    style = Style {
+                                        shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
+                                    }
+                                ) { ShadcnText("example.com") }
+                            }
                         }
                         """.trimIndent(),
                     preview = {
@@ -102,15 +107,17 @@ val buttonGroupDoc =
                         ShadcnButtonGroup {
                             ShadcnButtonGroupText("https://", topStart = rounded, bottomStart = rounded)
                             ShadcnButtonGroupSeparator()
-                            ShadcnButton(
-                                onClick = {},
-                                variant = ButtonVariant.Ghost,
-                                ringTopStartCorner = 0.dp,
-                                ringBottomStartCorner = 0.dp,
-                                style = Style {
-                                    shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
-                                }
-                            ) { ShadcnText("example.com") }
+                            CompositionLocalProvider(
+                                LocalGroupCorners provides ShadcnGroupCorners(topEnd = rounded, bottomEnd = rounded)
+                            ) {
+                                ShadcnButton(
+                                    onClick = {},
+                                    variant = ButtonVariant.Ghost,
+                                    style = Style {
+                                        shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
+                                    }
+                                ) { ShadcnText("example.com") }
+                            }
                         }
                     },
                 ),

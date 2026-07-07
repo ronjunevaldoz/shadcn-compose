@@ -82,9 +82,6 @@ fun ShadcnInputGroup(
                 .onFocusEvent { hasFocusWithin = it.hasFocus }
                 .shadcnFocusRing(
                     focused = hasFocusWithin,
-                    color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
-                    width = shadcnTheme.ring.width,
-                    offset = shadcnTheme.ring.offset,
                     cornerRadius = shadcnTheme.shapes.lg,
                 )
                 .styleable(styleState, containerStyle),

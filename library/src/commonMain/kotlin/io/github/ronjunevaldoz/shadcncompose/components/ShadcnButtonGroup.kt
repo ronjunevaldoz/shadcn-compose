@@ -73,29 +73,29 @@ fun ShadcnButtonGroup(
     val rounded = shadcnTheme.shapes.lg
     val none = 0.dp
 
-    fun cornersFor(index: Int): ButtonGroupCorners =
+    fun cornersFor(index: Int): ShadcnGroupCorners =
         when {
-            items.size <= 1 -> ButtonGroupCorners(rounded, rounded, rounded, rounded)
+            items.size <= 1 -> ShadcnGroupCorners(rounded, rounded, rounded, rounded)
             orientation == ButtonGroupOrientation.Horizontal ->
                 when (index) {
-                    0 -> ButtonGroupCorners(topStart = rounded, topEnd = none, bottomEnd = none, bottomStart = rounded)
+                    0 -> ShadcnGroupCorners(topStart = rounded, topEnd = none, bottomEnd = none, bottomStart = rounded)
                     items.lastIndex ->
-                        ButtonGroupCorners(topStart = none, topEnd = rounded, bottomEnd = rounded, bottomStart = none)
-                    else -> ButtonGroupCorners(none, none, none, none)
+                        ShadcnGroupCorners(topStart = none, topEnd = rounded, bottomEnd = rounded, bottomStart = none)
+                    else -> ShadcnGroupCorners(none, none, none, none)
                 }
             else ->
                 when (index) {
-                    0 -> ButtonGroupCorners(topStart = rounded, topEnd = rounded, bottomEnd = none, bottomStart = none)
+                    0 -> ShadcnGroupCorners(topStart = rounded, topEnd = rounded, bottomEnd = none, bottomStart = none)
                     items.lastIndex ->
-                        ButtonGroupCorners(topStart = none, topEnd = none, bottomEnd = rounded, bottomStart = rounded)
-                    else -> ButtonGroupCorners(none, none, none, none)
+                        ShadcnGroupCorners(topStart = none, topEnd = none, bottomEnd = rounded, bottomStart = rounded)
+                    else -> ShadcnGroupCorners(none, none, none, none)
                 }
         }
 
     val content: @Composable () -> Unit = {
         items.forEachIndexed { index, item ->
-            val (topStart, topEnd, bottomEnd, bottomStart) = cornersFor(index)
-            val itemShape = RoundedCornerShape(topStart, topEnd, bottomEnd, bottomStart)
+            val corners = cornersFor(index)
+            val itemShape = RoundedCornerShape(corners.topStart, corners.topEnd, corners.bottomEnd, corners.bottomStart)
 
             // Prevent double borders for Outline variants by overlapping them by 1dp
             val overlapModifier = if (index > 0 && item.variant == ButtonVariant.Outline) {
@@ -108,18 +108,16 @@ fun ShadcnButtonGroup(
                 Modifier
             }
 
-            ShadcnButton(
-                onClick = item.onClick,
-                enabled = item.enabled,
-                variant = item.variant,
-                ringTopStartCorner = topStart,
-                ringTopEndCorner = topEnd,
-                ringBottomEndCorner = bottomEnd,
-                ringBottomStartCorner = bottomStart,
-                style = Style { shape(itemShape) },
-                modifier = overlapModifier,
-            ) {
-                ShadcnText(item.label)
+            CompositionLocalProvider(LocalGroupCorners provides corners) {
+                ShadcnButton(
+                    onClick = item.onClick,
+                    enabled = item.enabled,
+                    variant = item.variant,
+                    style = Style { shape(itemShape) },
+                    modifier = overlapModifier,
+                ) {
+                    ShadcnText(item.label)
+                }
             }
         }
     }
@@ -201,13 +199,6 @@ fun ShadcnButtonGroupText(
     }
 }
 
-private data class ButtonGroupCorners(
-    val topStart: Dp,
-    val topEnd: Dp,
-    val bottomEnd: Dp,
-    val bottomStart: Dp,
-)
-
 @OptIn(ExperimentalFoundationStyleApi::class)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
@@ -216,14 +207,16 @@ fun ButtonGroupDocPreview() {
     ShadcnButtonGroup {
         ShadcnButtonGroupText("https://", topStart = rounded, bottomStart = rounded)
         ShadcnButtonGroupSeparator()
-        ShadcnButton(
-            onClick = {},
-            variant = ButtonVariant.Ghost,
-            ringTopStartCorner = 0.dp,
-            ringBottomStartCorner = 0.dp,
-            style = Style {
-                shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
-            }
-        ) { ShadcnText("example.com") }
+        CompositionLocalProvider(
+            LocalGroupCorners provides ShadcnGroupCorners(topStart = 0.dp, bottomStart = 0.dp, topEnd = rounded, bottomEnd = rounded)
+        ) {
+            ShadcnButton(
+                onClick = {},
+                variant = ButtonVariant.Ghost,
+                style = Style {
+                    shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
+                }
+            ) { ShadcnText("example.com") }
+        }
     }
 }

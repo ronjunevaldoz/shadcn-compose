@@ -101,9 +101,6 @@ fun ShadcnTextField(
                     .fillMaxWidth()
                     .shadcnFocusRing(
                         focused = isFocused && !insideGroup,
-                        color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
-                        width = shadcnTheme.ring.width,
-                        offset = shadcnTheme.ring.offset,
                         cornerRadius = shadcnTheme.shapes.lg,
                     )
                     .styleable(styleState, variant.style then errorStyle then insideGroupStyle, style),

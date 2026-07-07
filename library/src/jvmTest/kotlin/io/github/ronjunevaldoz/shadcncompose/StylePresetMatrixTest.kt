@@ -95,10 +95,8 @@ private fun PresetRingSwatch(preset: ShadcnStylePreset) {
                     .size(64.dp, 36.dp)
                     .shadcnFocusRing(
                         focused = true,
-                        color = shadcnTheme.colors.borderFocus.copy(alpha = preset.ring.opacity),
                         cornerRadius = preset.shapes.lg,
-                        width = preset.ring.width,
-                        offset = preset.ring.offset,
+                        color = shadcnTheme.colors.borderFocus.copy(alpha = preset.ring.opacity),
                     ).background(shadcnTheme.colors.primary, RoundedCornerShape(preset.shapes.lg)),
         )
     }
