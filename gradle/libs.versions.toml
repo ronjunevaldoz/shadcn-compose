@@ -19,6 +19,8 @@ navigation-compose = "2.9.2"
 ktlint = "12.1.1"
 detekt = "1.23.7"
 vanniktech-publish = "0.37.0"
+tailwind-compose = "0.1.0"
+roborazzi = "1.64.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -42,6 +44,8 @@ wrappers-browser = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser", ve
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+tailwind-compose = { module = "io.github.ronjunevaldoz:tailwind-compose", version.ref = "tailwind-compose" }
+roborazzi-compose-desktop = { module = "io.github.takahirom.roborazzi:roborazzi-compose-desktop", version.ref = "roborazzi" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -54,3 +58,4 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 vanniktechPublish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-publish" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

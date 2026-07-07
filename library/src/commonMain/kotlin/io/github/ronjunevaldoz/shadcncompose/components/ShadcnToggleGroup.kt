@@ -10,6 +10,7 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.ToggleVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -42,7 +43,7 @@ fun ShadcnToggleGroup(
     modifier: Modifier = Modifier,
     variant: ToggleVariant = ToggleVariant.Default,
 ) {
-    val groupShape = RoundedCornerShape(shadcnTheme.shapes.md)
+    val groupShape = RoundedCornerShape(shadcnTheme.shapes.lg)
     val outerModifier =
         if (variant == ToggleVariant.Outline) {
             modifier
@@ -54,25 +55,26 @@ fun ShadcnToggleGroup(
 
     Row(modifier = outerModifier) {
         items.forEachIndexed { index, item ->
-            val itemShape =
+            // Only the group's outer edge is rounded -- matches real shadcn's
+            // `:not(:first-child)`/`:not(:last-child)` corner-dropping via CSS.
+            val rounded = shadcnTheme.shapes.lg
+            val none = 0.dp
+            val (topStart, topEnd, bottomEnd, bottomStart) =
                 when {
-                    items.size == 1 -> groupShape
-                    index == 0 ->
-                        RoundedCornerShape(
-                            topStart = shadcnTheme.shapes.md,
-                            bottomStart = shadcnTheme.shapes.md,
-                        )
-                    index == items.lastIndex ->
-                        RoundedCornerShape(
-                            topEnd = shadcnTheme.shapes.md,
-                            bottomEnd = shadcnTheme.shapes.md,
-                        )
-                    else -> RoundedCornerShape(0.dp)
+                    items.size == 1 -> ToggleCorners(rounded, rounded, rounded, rounded)
+                    index == 0 -> ToggleCorners(rounded, none, none, rounded)
+                    index == items.lastIndex -> ToggleCorners(none, rounded, rounded, none)
+                    else -> ToggleCorners(none, none, none, none)
                 }
+            val itemShape = RoundedCornerShape(topStart, topEnd, bottomEnd, bottomStart)
             ShadcnToggle(
                 pressed = item.value in selected,
                 onPressedChange = { onSelectedChange(item.value) },
                 variant = variant,
+                ringTopStartCorner = topStart,
+                ringTopEndCorner = topEnd,
+                ringBottomEndCorner = bottomEnd,
+                ringBottomStartCorner = bottomStart,
                 style =
                     Style {
                         shape(itemShape)
@@ -84,3 +86,10 @@ fun ShadcnToggleGroup(
         }
     }
 }
+
+private data class ToggleCorners(
+    val topStart: Dp,
+    val topEnd: Dp,
+    val bottomEnd: Dp,
+    val bottomStart: Dp,
+)

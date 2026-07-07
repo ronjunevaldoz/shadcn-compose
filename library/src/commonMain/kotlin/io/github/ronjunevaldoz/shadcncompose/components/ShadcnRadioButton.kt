@@ -2,6 +2,7 @@ package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
@@ -12,6 +13,7 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +21,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.radioButtonStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -46,6 +49,7 @@ fun ShadcnRadioButton(
     style: Style = Style,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
     val styleState =
         rememberUpdatedStyleState(interactionSource) {
             it.isSelected = selected
@@ -55,7 +59,14 @@ fun ShadcnRadioButton(
     Box(
         modifier =
             modifier
-                .size(20.dp)
+                .size(16.dp)
+                .shadcnFocusRing(
+                    focused = isFocused,
+                    color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
+                    width = shadcnTheme.ring.width,
+                    offset = shadcnTheme.ring.offset,
+                    cornerRadius = shadcnTheme.shapes.full,
+                )
                 .selectable(
                     selected = selected,
                     onClick = { onClick?.invoke() },

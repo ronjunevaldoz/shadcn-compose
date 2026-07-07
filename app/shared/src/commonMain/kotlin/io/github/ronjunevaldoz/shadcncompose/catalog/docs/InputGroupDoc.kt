@@ -9,7 +9,6 @@ import androidx.compose.runtime.setValue
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnInputGroup
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnInputGroupText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextField
-import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
 
 val inputGroupDoc =
     ComponentDoc(
@@ -23,7 +22,7 @@ val inputGroupDoc =
 
             var amount by remember { mutableStateOf("") }
             ShadcnInputGroup(leading = { ShadcnInputGroupText("${'$'}") }) {
-                ShadcnTextField(value = amount, onValueChange = { amount = it }, variant = TextFieldVariant.Ghost)
+                ShadcnTextField(value = amount, onValueChange = { amount = it })
             }
             """.trimIndent(),
         examples =
@@ -34,17 +33,13 @@ val inputGroupDoc =
                         """
                         var amount by remember { mutableStateOf("") }
                         ShadcnInputGroup(leading = { ShadcnInputGroupText("${'$'}") }) {
-                            ShadcnTextField(value = amount, onValueChange = { amount = it }, variant = TextFieldVariant.Ghost)
+                            ShadcnTextField(value = amount, onValueChange = { amount = it })
                         }
                         """.trimIndent(),
                     preview = {
                         var amount by remember { mutableStateOf("") }
                         ShadcnInputGroup(leading = { ShadcnInputGroupText("$") }) {
-                            ShadcnTextField(
-                                value = amount,
-                                onValueChange = { amount = it },
-                                variant = TextFieldVariant.Ghost,
-                            )
+                            ShadcnTextField(value = amount, onValueChange = { amount = it })
                         }
                     },
                 ),
@@ -54,17 +49,13 @@ val inputGroupDoc =
                         """
                         var domain by remember { mutableStateOf("") }
                         ShadcnInputGroup(trailing = { ShadcnInputGroupText(".com") }) {
-                            ShadcnTextField(value = domain, onValueChange = { domain = it }, variant = TextFieldVariant.Ghost)
+                            ShadcnTextField(value = domain, onValueChange = { domain = it })
                         }
                         """.trimIndent(),
                     preview = {
                         var domain by remember { mutableStateOf("") }
                         ShadcnInputGroup(trailing = { ShadcnInputGroupText(".com") }) {
-                            ShadcnTextField(
-                                value = domain,
-                                onValueChange = { domain = it },
-                                variant = TextFieldVariant.Ghost,
-                            )
+                            ShadcnTextField(value = domain, onValueChange = { domain = it })
                         }
                     },
                 ),

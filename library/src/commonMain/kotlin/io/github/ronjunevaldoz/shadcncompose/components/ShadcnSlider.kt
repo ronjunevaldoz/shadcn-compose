@@ -1,8 +1,11 @@
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,15 +18,18 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.styles.sliderRangeStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.sliderThumbStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.sliderTrackStyle
+import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 private val THUMB_SIZE = 16.dp
 private val TRACK_HEIGHT = 6.dp
@@ -50,6 +56,8 @@ fun ShadcnSlider(
     val currentValue = rememberUpdatedState(value)
 
     val interactionSource = remember { MutableInteractionSource() }
+    val isThumbFocused by interactionSource.collectIsFocusedAsState()
+    val isThumbHovered by interactionSource.collectIsHoveredAsState()
     val thumbStyleState = rememberUpdatedStyleState(interactionSource) { it.isEnabled = enabled }
     val trackStyleState = remember { MutableStyleState(MutableInteractionSource()) }
 
@@ -88,6 +96,19 @@ fun ShadcnSlider(
                 Modifier
                     .offset(x = usableWidth * fraction)
                     .size(THUMB_SIZE)
+                    // Without this, `interactionSource` only ever receives Hover events --
+                    // the thumb was never reachable via keyboard Tab, so `isThumbFocused`
+                    // was dead code and the ring only ever appeared on hover. Arrow-key
+                    // value stepping (real shadcn's Radix slider supports it) isn't wired
+                    // up yet -- this only makes the thumb reachable and shows the ring.
+                    .focusable(enabled = enabled, interactionSource = interactionSource)
+                    .shadcnFocusRing(
+                        focused = isThumbFocused || isThumbHovered,
+                        color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
+                        width = shadcnTheme.ring.width,
+                        offset = shadcnTheme.ring.offset,
+                        cornerRadius = shadcnTheme.shapes.full,
+                    )
                     .pointerInput(enabled, rangeSpan) {
                         if (!enabled) return@pointerInput
                         detectDragGestures { change, dragAmount ->

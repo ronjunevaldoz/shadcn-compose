@@ -11,18 +11,53 @@ import androidx.compose.ui.tooling.preview.Preview
 import io.github.ronjunevaldoz.shadcncompose.navigation.CatalogNavHost
 import io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnDarkTheme
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnAccent
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnBaseColor
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 
 @Composable
 @Preview
 fun App() {
     var darkModeOverride by remember { mutableStateOf<Boolean?>(null) }
+    var stylePreset by remember { mutableStateOf(ShadcnStylePreset.Vega) }
+    var baseColor by remember { mutableStateOf(ShadcnBaseColor.Zinc) }
+    var accent by remember { mutableStateOf(ShadcnAccent.Base) }
     val isDarkMode = darkModeOverride ?: isSystemInDarkTheme()
 
+    val resolvedColors =
+        accent.applyTo(base = if (isDarkMode) baseColor.dark else baseColor.light, dark = isDarkMode)
+
     CompositionLocalProvider(LocalShadcnDarkTheme provides darkModeOverride) {
-        ShadcnTheme {
+        ShadcnTheme(
+            darkTheme = isDarkMode,
+            theme =
+                if (isDarkMode) {
+                    ShadcnTheme.dark(
+                        colors = resolvedColors,
+                        shapes = stylePreset.shapes,
+                        spacing = stylePreset.spacing,
+                        typography = stylePreset.typography,
+                        ring = stylePreset.ring,
+                    )
+                } else {
+                    ShadcnTheme.light(
+                        colors = resolvedColors,
+                        shapes = stylePreset.shapes,
+                        spacing = stylePreset.spacing,
+                        typography = stylePreset.typography,
+                        ring = stylePreset.ring,
+                    )
+                },
+        ) {
             CatalogNavHost(
                 isDarkMode = isDarkMode,
                 onToggleDarkMode = { darkModeOverride = it },
+                stylePreset = stylePreset,
+                onStylePresetChange = { stylePreset = it },
+                baseColor = baseColor,
+                onBaseColorChange = { baseColor = it },
+                accent = accent,
+                onAccentChange = { accent = it },
             )
         }
     }

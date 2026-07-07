@@ -1,6 +1,7 @@
 package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.style.then
@@ -17,11 +19,15 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.VisualTransformation
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -52,12 +58,28 @@ fun ShadcnTextField(
     singleLine: Boolean = true,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
     val styleState =
         rememberUpdatedStyleState(interactionSource) {
             it.isEnabled = enabled
         }
 
     val errorStyle = if (isError) Style { borderColor(shadcnTheme.colors.error) } else Style
+
+    // Inside a ShadcnInputGroup the container owns the border and focus ring (real
+    // shadcn's InputGroupInput is `border-0 focus-visible:ring-0`); drawing our own
+    // here would double the border and put the ring on the field instead of the group.
+    val insideGroup = LocalInsideInputGroup.current
+    val insideGroupStyle =
+        if (insideGroup) {
+            Style {
+                background(Color.Transparent)
+                borderColor(Color.Transparent)
+                focused { borderColor(Color.Transparent) }
+            }
+        } else {
+            Style
+        }
 
     Column(modifier = modifier) {
         if (label != null) {
@@ -68,10 +90,23 @@ fun ShadcnTextField(
             value = value,
             onValueChange = onValueChange,
             enabled = enabled,
+            // Explicit color: BasicTextField paints its value text (and cursor) from
+            // textStyle/cursorBrush, not from the ambient Style contentColor -- without
+            // this the value text stays near-black in dark mode (same lesson as
+            // ChipVariant.contentColor: text color must be passed explicitly).
+            textStyle = shadcnTheme.typography.bodyMedium.copy(color = shadcnTheme.colors.onSurface),
+            cursorBrush = SolidColor(shadcnTheme.colors.onSurface),
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .styleable(styleState, variant.style then errorStyle, style),
+                    .shadcnFocusRing(
+                        focused = isFocused && !insideGroup,
+                        color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
+                        width = shadcnTheme.ring.width,
+                        offset = shadcnTheme.ring.offset,
+                        cornerRadius = shadcnTheme.shapes.lg,
+                    )
+                    .styleable(styleState, variant.style then errorStyle then insideGroupStyle, style),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             visualTransformation = visualTransformation,

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "catalog-web",
+      "runtimeExecutable": "./gradlew",
+      "runtimeArgs": [":app:webApp:jsBrowserDevelopmentRun", "--continuous"],
+      "port": 8080
+    }
+  ]
+}

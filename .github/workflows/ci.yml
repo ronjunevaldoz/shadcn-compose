@@ -140,6 +140,17 @@ jobs:
           path: '**/build/reports/tests/'
           retention-days: 14
 
+      # :library:jvmTest includes the Roborazzi screenshot suite (component state
+      # matrix + style preset matrix, src/jvmTest/snapshots/) -- on a golden mismatch
+      # Roborazzi writes a `*_compare.png` beside the golden showing expected/actual/diff.
+      - name: Upload screenshot diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-diffs
+          path: '**/src/jvmTest/snapshots/**/*_compare.png'
+          retention-days: 14
+
   # ─── Web Tests (JS + WasmJs) ────────────────────────────────────────────────
   test-web:
     name: Web (JS + WasmJs) Tests

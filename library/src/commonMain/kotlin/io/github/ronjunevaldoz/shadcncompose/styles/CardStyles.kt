@@ -16,7 +16,7 @@ sealed interface CardVariant {
     val style: Style
 
     data object Default : CardVariant {
-        override val style =
+        override val style get() =
             Style {
                 background(colors.surface)
                 contentColor(colors.onSurface)
@@ -28,7 +28,7 @@ sealed interface CardVariant {
     }
 
     data object Elevated : CardVariant {
-        override val style =
+        override val style get() =
             Style {
                 background(colors.surface)
                 contentColor(colors.onSurface)
@@ -38,7 +38,7 @@ sealed interface CardVariant {
     }
 
     data object Filled : CardVariant {
-        override val style =
+        override val style get() =
             Style {
                 background(colors.surfaceVariant)
                 contentColor(colors.onSurface)

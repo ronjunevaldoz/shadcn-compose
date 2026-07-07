@@ -2,6 +2,7 @@ package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.triStateToggleable
@@ -10,6 +11,7 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +21,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.checkboxStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -48,6 +51,7 @@ fun ShadcnCheckbox(
             else -> ToggleableState.Off
         }
     val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
     val styleState =
         rememberUpdatedStyleState(interactionSource) {
             it.triStateToggle = toggleState
@@ -57,7 +61,14 @@ fun ShadcnCheckbox(
     Box(
         modifier =
             modifier
-                .size(20.dp)
+                .size(16.dp)
+                .shadcnFocusRing(
+                    focused = isFocused,
+                    color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
+                    width = shadcnTheme.ring.width,
+                    offset = shadcnTheme.ring.offset,
+                    cornerRadius = shadcnTheme.shapes.sm,
+                )
                 .triStateToggleable(
                     state = toggleState,
                     onClick = { onCheckedChange?.invoke(toggleState != ToggleableState.On) },
@@ -70,7 +81,7 @@ fun ShadcnCheckbox(
     ) {
         val markColor = shadcnTheme.colors.onPrimary
         if (toggleState != ToggleableState.Off) {
-            Canvas(modifier = Modifier.size(12.dp)) {
+            Canvas(modifier = Modifier.size(14.dp)) {
                 val stroke = Stroke(width = size.width * 0.16f)
                 if (toggleState == ToggleableState.On) {
                     val path =

@@ -8,15 +8,15 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.selected
-import androidx.compose.foundation.style.then
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.theme.colors
 import io.github.ronjunevaldoz.shadcncompose.theme.shapes
 
 // Matches shadcn/ui's real radio-group.tsx: border border-input (1.dp, constant,
-// no hover state defined), focus-visible:border-ring + focusRingStyle's ring.
-internal val radioButtonStyle: Style =
+// no hover state defined), focus-visible:border-ring. The ring-[3px] ring-ring/50
+// focus ring is drawn by Modifier.shadcnFocusRing (see ShadcnRadioButton.kt).
+internal val radioButtonStyle: Style get() =
     Style {
         background(Color.Transparent)
         borderWidth(1.dp)
@@ -28,4 +28,4 @@ internal val radioButtonStyle: Style =
         }
         focused { borderColor(colors.borderFocus) }
         disabled { alpha(0.5f) }
-    } then focusRingStyle
+    }

@@ -16,7 +16,7 @@ sealed interface BadgeVariant {
     val style: Style
 
     data object Default : BadgeVariant {
-        override val style =
+        override val style get() =
             Style {
                 background(colors.primary)
                 contentColor(colors.onPrimary)
@@ -28,7 +28,7 @@ sealed interface BadgeVariant {
     }
 
     data object Secondary : BadgeVariant {
-        override val style =
+        override val style get() =
             Style {
                 background(colors.secondary)
                 contentColor(colors.onSecondary)
@@ -40,7 +40,7 @@ sealed interface BadgeVariant {
     }
 
     data object Destructive : BadgeVariant {
-        override val style =
+        override val style get() =
             Style {
                 background(colors.destructive)
                 contentColor(colors.onDestructive)
@@ -52,7 +52,7 @@ sealed interface BadgeVariant {
     }
 
     data object Outline : BadgeVariant {
-        override val style =
+        override val style get() =
             Style {
                 contentColor(colors.onSurface)
                 borderWidth(1.dp)
@@ -65,7 +65,7 @@ sealed interface BadgeVariant {
     }
 
     data object Ghost : BadgeVariant {
-        override val style =
+        override val style get() =
             Style {
                 background(colors.muted)
                 contentColor(colors.onMuted)

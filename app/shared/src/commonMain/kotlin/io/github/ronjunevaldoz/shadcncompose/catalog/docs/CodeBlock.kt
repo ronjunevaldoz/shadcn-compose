@@ -63,10 +63,14 @@ private val TOKEN_REGEX =
 private fun highlightKotlin(
     code: String,
     isLight: Boolean,
+    mutedColor: Color,
 ): AnnotatedString {
     val keywordColor = if (isLight) Color(0xFF7C3AED) else Color(0xFFC792EA)
     val stringColor = if (isLight) Color(0xFF15803D) else Color(0xFFA1D490)
-    val commentColor = if (isLight) Color(0xFF71717A) else Color(0xFF6B7280)
+    // Comments derive from the theme's own muted-text token (rather than a fixed hex)
+    // so contrast against `surfaceVariant` holds across every ShadcnBaseColor, not just
+    // the base color this palette happened to be tuned against.
+    val commentColor = mutedColor
     val annotationColor = if (isLight) Color(0xFFD97706) else Color(0xFFE5C07B)
     val numberColor = if (isLight) Color(0xFF2563EB) else Color(0xFF79B8FF)
 
@@ -106,7 +110,8 @@ fun CodeBlock(
     modifier: Modifier = Modifier,
 ) {
     val clipboardManager = LocalClipboardManager.current
-    val highlighted = highlightKotlin(code, shadcnTheme.colors.isLight)
+    val highlighted =
+        highlightKotlin(code, shadcnTheme.colors.isLight, mutedColor = shadcnTheme.colors.onSurfaceVariant)
 
     Column(
         modifier =

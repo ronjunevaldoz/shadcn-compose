@@ -10,6 +10,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnDarkColors
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnLightColors
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnRing
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnShapes
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnSpacing
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnTypography
@@ -20,6 +21,7 @@ data class ShadcnTheme(
     val typography: ShadcnTypography,
     val shapes: ShadcnShapes,
     val spacing: ShadcnSpacing,
+    val ring: ShadcnRing, // TODO please have a second option, is this necessary here?
 ) {
     companion object {
         val LocalShadcnTheme: ProvidableCompositionLocal<ShadcnTheme> =
@@ -30,14 +32,16 @@ data class ShadcnTheme(
             typography: ShadcnTypography = ShadcnTypography(),
             shapes: ShadcnShapes = ShadcnShapes(),
             spacing: ShadcnSpacing = ShadcnSpacing(),
-        ) = ShadcnTheme(colors, typography, shapes, spacing)
+            ring: ShadcnRing = ShadcnRing(),
+        ) = ShadcnTheme(colors, typography, shapes, spacing, ring)
 
         fun dark(
             colors: ShadcnColors = ShadcnDarkColors,
             typography: ShadcnTypography = ShadcnTypography(),
             shapes: ShadcnShapes = ShadcnShapes(),
             spacing: ShadcnSpacing = ShadcnSpacing(),
-        ) = ShadcnTheme(colors, typography, shapes, spacing)
+            ring: ShadcnRing = ShadcnRing(),
+        ) = ShadcnTheme(colors, typography, shapes, spacing, ring)
     }
 }
 

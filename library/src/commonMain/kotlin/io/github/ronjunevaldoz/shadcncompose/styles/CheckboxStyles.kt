@@ -7,7 +7,6 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.focused
-import androidx.compose.foundation.style.then
 import androidx.compose.foundation.style.triStateToggleIndeterminate
 import androidx.compose.foundation.style.triStateToggleOn
 import androidx.compose.ui.graphics.Color
@@ -17,13 +16,14 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shapes
 
 // Matches shadcn/ui's real checkbox.tsx: border border-input (1.dp, constant),
 // data-[state=checked]:border-primary data-[state=checked]:bg-primary,
-// focus-visible:border-ring + the focusRingStyle drop-shadow ring.
-internal val checkboxStyle: Style =
+// focus-visible:border-ring. The ring-[3px] ring-ring/50 focus ring is drawn by
+// Modifier.shadcnFocusRing (see ShadcnCheckbox.kt), not here.
+internal val checkboxStyle: Style get() =
     Style {
         background(Color.Transparent)
         borderWidth(1.dp)
         borderColor(colors.border)
-        shape(RoundedCornerShape(shapes.xs))
+        shape(RoundedCornerShape(shapes.sm))
         triStateToggleOn {
             background(colors.primary)
             borderColor(colors.primary)
@@ -34,4 +34,4 @@ internal val checkboxStyle: Style =
         }
         focused { borderColor(colors.borderFocus) }
         disabled { alpha(0.5f) }
-    } then focusRingStyle
+    }

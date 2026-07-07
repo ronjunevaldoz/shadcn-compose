@@ -7,6 +7,11 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.vanniktechPublish)
+    alias(libs.plugins.roborazzi)
+}
+
+roborazzi {
+    outputDir = project.file("src/jvmTest/snapshots")
 }
 
 group = project.property("GROUP") as String
@@ -62,9 +67,23 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
+            // 0.1.0-SNAPSHOT, resolved from mavenLocal -- see settings.gradle.kts and
+            // .claude/AGENTS.md "Planned dependencies". `implementation`, not `api`,
+            // since we're not yet exposing any tailwind-compose type in our own public
+            // API surface.
+            implementation(libs.tailwind.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        jvmTest.dependencies {
+            // Robolectric-less JVM/Desktop screenshot testing: `roborazzi` and
+            // `roborazzi-junit-rule` only publish as Android .aar (Robolectric-based),
+            // which doesn't resolve for this module's plain jvm() target -- only
+            // `roborazzi-compose-desktop` publishes a real desktop/jvm artifact.
+            implementation(compose.desktop.currentOs)
+            implementation(compose.desktop.uiTestJUnit4)
+            implementation(libs.roborazzi.compose.desktop)
         }
     }
 }

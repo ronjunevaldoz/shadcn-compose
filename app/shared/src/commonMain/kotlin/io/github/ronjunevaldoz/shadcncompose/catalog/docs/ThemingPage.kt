@@ -78,5 +78,33 @@ private fun ThemingContent() {
                 "Swap ShadcnLightColors / ShadcnDarkColors for your own brand palette by constructing " +
                 "ShadcnTheme.light(colors = yourColors) or ShadcnTheme.dark(colors = yourColors).",
         )
+        GuideHeading("Three independent theming axes")
+        GuideParagraph(
+            "Mirrors shadcn/ui's real project creator (ui.shadcn.com/create), which has three " +
+                "separate pickers rather than one combined \"theme\": ShadcnStylePreset (Vega, Nova, " +
+                "Maia, Lyra, Mira, Luma, Sera, Rhea -- shape/spacing/typography), ShadcnBaseColor " +
+                "(Neutral, Stone, Zinc, Mauve, Olive, Mist, Taupe -- the whole neutral palette), and " +
+                "ShadcnAccent (Blue, Rose, Violet, and 14 more -- primary/onPrimary only). Background, " +
+                "border, muted, and the focus ring color come from Base color alone and never change " +
+                "with the accent, matching real shadcn. Try the rows in the top bar -- every component " +
+                "on every page re-themes instantly, in both light and dark mode.",
+        )
+        CodeBlock(
+            code =
+                """
+                var style by remember { mutableStateOf(ShadcnStylePreset.Vega) }
+                var base by remember { mutableStateOf(ShadcnBaseColor.Zinc) }
+                var accent by remember { mutableStateOf(ShadcnAccent.Violet) }
+
+                val colors = accent.applyTo(if (isDark) base.dark else base.light, isDark)
+                val theme = if (isDark) {
+                    ShadcnTheme.dark(colors = colors, shapes = style.shapes, spacing = style.spacing, typography = style.typography)
+                } else {
+                    ShadcnTheme.light(colors = colors, shapes = style.shapes, spacing = style.spacing, typography = style.typography)
+                }
+                ShadcnTheme(theme = theme) { /* ... */ }
+                """.trimIndent(),
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }

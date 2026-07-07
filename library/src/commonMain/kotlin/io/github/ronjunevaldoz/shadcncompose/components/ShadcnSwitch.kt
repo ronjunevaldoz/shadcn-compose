@@ -3,6 +3,7 @@ package io.github.ronjunevaldoz.shadcncompose.components
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -18,13 +19,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.styles.switchTrackStyle
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
-private val TRACK_WIDTH = 40.dp
-private val TRACK_HEIGHT = 24.dp
-private val THUMB_SIZE = 18.dp
-private val THUMB_INSET = 3.dp
+// Matches real shadcn's default-size switch.tsx: track h-[1.15rem] (~18dp) w-8 (32dp),
+// thumb size-4 (16dp), checked translate = calc(100% - 2px).
+private val TRACK_WIDTH = 32.dp
+private val TRACK_HEIGHT = 18.dp
+private val THUMB_SIZE = 16.dp
+private val THUMB_INSET = 2.dp
 
 /**
  * Usage:
@@ -43,6 +47,7 @@ fun ShadcnSwitch(
     style: Style = Style,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
     val styleState =
         rememberUpdatedStyleState(interactionSource) {
             it.isChecked = checked
@@ -55,6 +60,13 @@ fun ShadcnSwitch(
         modifier =
             modifier
                 .size(width = TRACK_WIDTH, height = TRACK_HEIGHT)
+                .shadcnFocusRing(
+                    focused = isFocused,
+                    color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
+                    width = shadcnTheme.ring.width,
+                    offset = shadcnTheme.ring.offset,
+                    cornerRadius = shadcnTheme.shapes.full,
+                )
                 .toggleable(
                     value = checked,
                     onValueChange = { onCheckedChange?.invoke(it) },
