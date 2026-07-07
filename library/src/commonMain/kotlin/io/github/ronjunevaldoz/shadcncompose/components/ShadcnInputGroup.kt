@@ -81,8 +81,8 @@ fun ShadcnInputGroup(
                 .fillMaxWidth()
                 .onFocusEvent { hasFocusWithin = it.hasFocus }
                 .shadcnFocusRing(
-                    focused = hasFocusWithin,
-                    cornerRadius = shadcnTheme.shapes.lg,
+                    isFocused = hasFocusWithin,
+                    shape = RoundedCornerShape(shadcnTheme.shapes.lg),
                 )
                 .styleable(styleState, containerStyle),
         verticalAlignment = Alignment.CenterVertically,

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
@@ -103,8 +104,8 @@ fun ShadcnSlider(
                     // up yet -- this only makes the thumb reachable and shows the ring.
                     .focusable(enabled = enabled, interactionSource = interactionSource)
                     .shadcnFocusRing(
-                        focused = isThumbFocused || isThumbHovered,
-                        cornerRadius = shadcnTheme.shapes.full,
+                        isFocused = isThumbFocused || isThumbHovered,
+                        shape = RoundedCornerShape(shadcnTheme.shapes.full),
                     )
                     .pointerInput(enabled, rangeSpan) {
                         if (!enabled) return@pointerInput

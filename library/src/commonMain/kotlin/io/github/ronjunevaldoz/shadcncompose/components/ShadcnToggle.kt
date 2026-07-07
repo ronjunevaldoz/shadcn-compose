@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.ronjunevaldoz.shadcncompose.styles.ToggleVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
-import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
  * A two-state button, e.g. for toolbar toggles (bold/italic). Distinct from
@@ -45,19 +44,11 @@ fun ShadcnToggle(
             it.isChecked = pressed
             it.isEnabled = enabled
         }
-    val defaultRingCorner = shadcnTheme.shapes.lg
-    val groupCorners = LocalGroupCorners.current
 
     Box(
         modifier =
             modifier
-                .shadcnFocusRing(
-                    focused = isFocused,
-                    topStart = groupCorners?.topStart ?: defaultRingCorner,
-                    topEnd = groupCorners?.topEnd ?: defaultRingCorner,
-                    bottomEnd = groupCorners?.bottomEnd ?: defaultRingCorner,
-                    bottomStart = groupCorners?.bottomStart ?: defaultRingCorner,
-                )
+                .shadcnFocusRing(isFocused = isFocused)
                 .toggleable(
                     value = pressed,
                     onValueChange = { onPressedChange?.invoke(it) },

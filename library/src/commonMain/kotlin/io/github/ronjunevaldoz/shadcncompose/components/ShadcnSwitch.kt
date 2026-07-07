@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
@@ -61,8 +62,8 @@ fun ShadcnSwitch(
             modifier
                 .size(width = TRACK_WIDTH, height = TRACK_HEIGHT)
                 .shadcnFocusRing(
-                    focused = isFocused,
-                    cornerRadius = shadcnTheme.shapes.full,
+                    isFocused = isFocused,
+                    shape = RoundedCornerShape(shadcnTheme.shapes.full),
                 )
                 .toggleable(
                     value = checked,

@@ -1,7 +1,9 @@
 package io.github.ronjunevaldoz.shadcncompose.styles
 
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.RoundRect
@@ -9,9 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import io.github.ronjunevaldoz.shadcncompose.components.LocalGroupCorners
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
@@ -34,112 +36,62 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
  * still correct and simpler than branching.
  */
 
-/**
- * Convenience overload that reads width/opacity/offset from the current [ShadcnTheme].
- */
-@Composable
 fun Modifier.shadcnFocusRing(
-    focused: Boolean,
-    cornerRadius: Dp,
-    color: Color = ShadcnTheme.LocalShadcnTheme.current.colors.borderFocus
-        .copy(alpha = ShadcnTheme.LocalShadcnTheme.current.ring.opacity),
-): Modifier {
+    isFocused: Boolean,
+    // Change the default to null so the modifier resolves it automatically!
+    shape: CornerBasedShape? = null,
+    color: Color? = null,
+): Modifier = composed {
+    if (!isFocused) return@composed this
+
     val theme = ShadcnTheme.LocalShadcnTheme.current
-    return this
-        .zIndex(if (focused) 1f else 0f)
-        .shadcnFocusRing(
-            focused = focused,
-            color = color,
-            cornerRadius = cornerRadius,
-            width = theme.ring.width,
-            offset = theme.ring.offset
+    val resolvedColor = color ?: theme.colors.borderFocus.copy(alpha = theme.ring.opacity)
+    val width = theme.ring.width
+    val offset = theme.ring.offset
+
+    // 1. Resolve your group and theme corners completely automatically!
+    val resolvedShape = shape ?: run {
+        val defaultRingCorner = theme.shapes.lg
+        val groupCorners = LocalGroupCorners.current
+
+        RoundedCornerShape(
+            topStart = groupCorners?.topStart ?: defaultRingCorner,
+            topEnd = groupCorners?.topEnd ?: defaultRingCorner,
+            bottomEnd = groupCorners?.bottomEnd ?: defaultRingCorner,
+            bottomStart = groupCorners?.bottomStart ?: defaultRingCorner
         )
-}
+    }
 
-fun Modifier.shadcnFocusRing(
-    focused: Boolean,
-    color: Color,
-    cornerRadius: Dp,
-    width: Dp = 3.dp,
-    offset: Dp = 0.dp,
-): Modifier =
-    shadcnFocusRing(
-        focused = focused,
-        color = color,
-        topStart = cornerRadius,
-        topEnd = cornerRadius,
-        bottomEnd = cornerRadius,
-        bottomStart = cornerRadius,
-        width = width,
-        offset = offset,
-    )
+    this
+        .zIndex(1f)
+        .drawWithContent {
+            drawContent()
 
-/**
- * Per-corner variant -- needed for grouped items (e.g. [io.github.ronjunevaldoz.shadcncompose.components.ShadcnToggleGroup])
- * whose real shape only rounds the outer edges of the group, not all four corners uniformly.
- * Passing the group item's own asymmetric corners here keeps the ring flush with its actual
- * silhouette instead of tracing a uniformly-rounded box that doesn't match.
- */
-@Composable
-fun Modifier.shadcnFocusRing(
-    focused: Boolean,
-    topStart: Dp,
-    topEnd: Dp,
-    bottomEnd: Dp,
-    bottomStart: Dp,
-    color: Color = ShadcnTheme.LocalShadcnTheme.current.colors.borderFocus
-        .copy(alpha = ShadcnTheme.LocalShadcnTheme.current.ring.opacity),
-): Modifier {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    return this
-        .zIndex(if (focused) 1f else 0f)
-        .shadcnFocusRing(
-            focused = focused,
-            color = color,
-            topStart = topStart,
-            topEnd = topEnd,
-            bottomEnd = bottomEnd,
-            bottomStart = bottomStart,
-            width = theme.ring.width,
-            offset = theme.ring.offset
-        )
-}
-
-fun Modifier.shadcnFocusRing(
-    focused: Boolean,
-    color: Color,
-    topStart: Dp,
-    topEnd: Dp,
-    bottomEnd: Dp,
-    bottomStart: Dp,
-    width: Dp = 3.dp,
-    offset: Dp = 0.dp,
-): Modifier =
-    if (!focused) {
-        this
-    } else {
-        this.drawWithContent {
             val strokePx = width.toPx()
             val offsetPx = offset.toPx()
             val growth = offsetPx + strokePx / 2f
+
             inset(-growth) {
                 val maxRadiusPx = minOf(size.width, size.height) / 2f
 
-                fun corner(dp: Dp) = CornerRadius((dp.toPx() + growth).coerceAtMost(maxRadiusPx))
-                val roundRect =
-                    RoundRect(
-                        left = 0f,
-                        top = 0f,
-                        right = size.width,
-                        bottom = size.height,
-                        topLeftCornerRadius = corner(topStart),
-                        topRightCornerRadius = corner(topEnd),
-                        bottomRightCornerRadius = corner(bottomEnd),
-                        bottomLeftCornerRadius = corner(bottomStart),
-                    )
+                // 2. Use the dynamically resolved shape corners
+                val ts = resolvedShape.topStart.toPx(size, this)
+                val te = resolvedShape.topEnd.toPx(size, this)
+                val be = resolvedShape.bottomEnd.toPx(size, this)
+                val bs = resolvedShape.bottomStart.toPx(size, this)
+
+                fun corner(px: Float) = CornerRadius((px + growth).coerceAtMost(maxRadiusPx))
+
+                val roundRect = RoundRect(
+                    left = 0f, top = 0f, right = size.width, bottom = size.height,
+                    topLeftCornerRadius = corner(ts),
+                    topRightCornerRadius = corner(te),
+                    bottomRightCornerRadius = corner(be),
+                    bottomLeftCornerRadius = corner(bs),
+                )
+
                 val path = Path().apply { addRoundRect(roundRect) }
-                drawPath(path, color = color, style = Stroke(width = strokePx))
+                drawPath(path, color = resolvedColor, style = Stroke(width = strokePx))
             }
-            drawContent()
         }
-    }
+}

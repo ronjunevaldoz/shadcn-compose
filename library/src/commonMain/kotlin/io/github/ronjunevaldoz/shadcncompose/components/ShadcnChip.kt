@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
@@ -63,8 +64,8 @@ fun ShadcnChip(
         modifier =
             modifier
                 .shadcnFocusRing(
-                    focused = isFocused,
-                    cornerRadius = shadcnTheme.shapes.full,
+                    isFocused = isFocused,
+                    shape = RoundedCornerShape(shadcnTheme.shapes.full),
                 )
                 .then(clickableModifier)
                 .styleable(styleState, variant.style, style),

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
@@ -61,8 +62,8 @@ fun ShadcnRadioButton(
             modifier
                 .size(16.dp)
                 .shadcnFocusRing(
-                    focused = isFocused,
-                    cornerRadius = shadcnTheme.shapes.full,
+                    isFocused = isFocused,
+                    shape = RoundedCornerShape(shadcnTheme.shapes.full),
                 )
                 .selectable(
                     selected = selected,

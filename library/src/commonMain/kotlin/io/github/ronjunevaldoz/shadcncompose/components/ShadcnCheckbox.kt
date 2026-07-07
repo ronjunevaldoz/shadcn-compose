@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.triStateToggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
@@ -63,8 +64,8 @@ fun ShadcnCheckbox(
             modifier
                 .size(16.dp)
                 .shadcnFocusRing(
-                    focused = isFocused,
-                    cornerRadius = shadcnTheme.shapes.sm,
+                    isFocused = isFocused,
+                    shape = RoundedCornerShape(shadcnTheme.shapes.sm),
                 )
                 .triStateToggleable(
                     state = toggleState,

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.focused
@@ -100,8 +101,8 @@ fun ShadcnTextField(
                 Modifier
                     .fillMaxWidth()
                     .shadcnFocusRing(
-                        focused = isFocused && !insideGroup,
-                        cornerRadius = shadcnTheme.shapes.lg,
+                        isFocused = isFocused && !insideGroup,
+                        shape = RoundedCornerShape(shadcnTheme.shapes.lg),
                     )
                     .styleable(styleState, variant.style then errorStyle then insideGroupStyle, style),
             keyboardOptions = keyboardOptions,

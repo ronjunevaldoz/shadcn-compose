@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
-import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
  * shadcn-inspired button.
@@ -50,19 +49,11 @@ fun ShadcnButton(
         rememberUpdatedStyleState(interactionSource) {
             it.isEnabled = enabled
         }
-    val defaultRingCorner = shadcnTheme.shapes.lg
-    val groupCorners = LocalGroupCorners.current
 
     Box(
         modifier =
             modifier
-                .shadcnFocusRing(
-                    focused = isFocused,
-                    topStart = groupCorners?.topStart ?: defaultRingCorner,
-                    topEnd = groupCorners?.topEnd ?: defaultRingCorner,
-                    bottomEnd = groupCorners?.bottomEnd ?: defaultRingCorner,
-                    bottomStart = groupCorners?.bottomStart ?: defaultRingCorner,
-                )
+                .shadcnFocusRing(isFocused = isFocused)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
