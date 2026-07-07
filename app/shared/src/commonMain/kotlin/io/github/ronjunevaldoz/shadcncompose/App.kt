@@ -34,18 +34,12 @@ fun App() {
                 if (isDarkMode) {
                     ShadcnTheme.dark(
                         colors = resolvedColors,
-                        shapes = stylePreset.shapes,
-                        spacing = stylePreset.spacing,
-                        typography = stylePreset.typography,
-                        ring = stylePreset.ring,
+                        preset = stylePreset,
                     )
                 } else {
                     ShadcnTheme.light(
                         colors = resolvedColors,
-                        shapes = stylePreset.shapes,
-                        spacing = stylePreset.spacing,
-                        typography = stylePreset.typography,
-                        ring = stylePreset.ring,
+                        preset = stylePreset,
                     )
                 },
         ) {

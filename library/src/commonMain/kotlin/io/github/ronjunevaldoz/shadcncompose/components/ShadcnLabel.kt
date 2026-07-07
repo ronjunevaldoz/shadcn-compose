@@ -3,7 +3,7 @@ package io.github.ronjunevaldoz.shadcncompose.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
  * A form-field label. Purely presentational -- Compose has no HTML `for` attribute
@@ -23,6 +23,7 @@ fun ShadcnLabel(
     required: Boolean = false,
     disabled: Boolean = false,
 ) {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
     Row(modifier = modifier) {
         ShadcnText(
             text = text,
@@ -33,7 +34,7 @@ fun ShadcnLabel(
             ShadcnText(
                 text = " *",
                 style = ShadcnTextStyle.LabelLarge,
-                color = shadcnTheme.colors.error,
+                color = theme.colors.error,
             )
         }
     }

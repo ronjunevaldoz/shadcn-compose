@@ -3,8 +3,8 @@
 package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.MutableStyleState
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,13 +24,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.SelectVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberSelectItemStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -54,9 +58,10 @@ fun <T> ShadcnSelect(
     onValueChange: (T) -> Unit,
     modifier: Modifier = Modifier,
     label: (T) -> String = { it.toString() },
+    variant: SelectVariant = SelectVariant.Default,
+    style: Style = Style,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val shape = RoundedCornerShape(shadcnTheme.shapes.md)
 
     Box(modifier = modifier) {
         ShadcnButton(
@@ -69,6 +74,9 @@ fun <T> ShadcnSelect(
         }
 
         if (expanded) {
+            val popupStyle = variant.rememberStyle()
+            val popupStyleState = remember { MutableStyleState(MutableInteractionSource()) }
+
             Popup(
                 alignment = Alignment.TopStart,
                 offset = IntOffset(0, 40),
@@ -79,26 +87,24 @@ fun <T> ShadcnSelect(
                     modifier =
                         Modifier
                             .widthIn(min = 140.dp)
-                            .clip(shape)
-                            .background(shadcnTheme.colors.surface, shape)
-                            .border(1.dp, shadcnTheme.colors.border, shape)
+                            .styleable(popupStyleState, popupStyle, style)
                             .padding(shadcnTheme.spacing.xxs)
                             .verticalScroll(rememberScrollState()),
                 ) {
                     options.forEach { option ->
                         val isSelected = option == value
+                        val itemStyle = rememberSelectItemStyle(isSelected)
+                        val itemStyleState = remember { MutableStyleState(MutableInteractionSource()) }
+
                         Row(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .clip(RoundedCornerShape(shadcnTheme.shapes.sm))
                                     .clickable {
                                         onValueChange(option)
                                         expanded = false
                                     }
-                                    .background(
-                                        if (isSelected) shadcnTheme.colors.secondary else shadcnTheme.colors.surface,
-                                    )
+                                    .styleable(itemStyleState, itemStyle)
                                     .padding(horizontal = shadcnTheme.spacing.sm, vertical = shadcnTheme.spacing.xs),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {

@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 enum class ShadcnTextStyle {
     DisplayLarge,
@@ -38,7 +38,7 @@ fun ShadcnText(
     overflow: TextOverflow = TextOverflow.Clip,
     color: Color = Color.Unspecified,
 ) {
-    val theme = shadcnTheme
+    val theme = ShadcnTheme.LocalShadcnTheme.current
     val resolvedStyle =
         when (style) {
             ShadcnTextStyle.DisplayLarge -> theme.typography.displayLarge

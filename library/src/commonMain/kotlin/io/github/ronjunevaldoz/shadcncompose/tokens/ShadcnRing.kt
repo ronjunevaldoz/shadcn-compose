@@ -21,8 +21,9 @@ import androidx.compose.ui.unit.dp
  */
 @Immutable
 data class ShadcnRing(
+    // Matches the modern unified shadcn/ui style default: ring-[3px], no offset, fully opaque
     val width: Dp = 3.dp,
-    val opacity: Float = 0.5f,
+    val opacity: Float = 1.0f,
     val offset: Dp = 0.dp,
 ) {
     companion object {
