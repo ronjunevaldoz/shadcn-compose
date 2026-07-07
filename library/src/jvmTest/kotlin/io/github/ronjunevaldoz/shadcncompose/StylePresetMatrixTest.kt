@@ -29,14 +29,14 @@ import kotlin.test.Test
 
 /**
  * Documented, repeatable proof that [ShadcnStylePreset] actually drives per-style
- * shape/ring differences end to end (`App.kt` -> `ShadcnTheme.light/dark(ring = ...)` ->
- * `ShadcnButton` -> `shadcnFocusRing`) -- this is the durable replacement for eyeballing
+ * shape/ring differences end to end -- this is the durable replacement for eyeballing
  * a live browser toggle, which can't be committed to git or diffed in a PR.
  *
  * Two kinds of capture per theme:
  * 1. `style_matrix_ring_swatch`: all 8 presets' ring token (width/offset/corner) drawn
- *    forced-on in one composite image, side by side -- no interaction simulation needed
- *    since `shadcnFocusRing`'s `focused` param is a plain Boolean.
+ *    forced-on in one composite image, side by side -- each swatch renders inside its
+ *    own `ShadcnTheme(preset = ..., isDark = ...)` subtree so `shadcnFocusRing`'s
+ *    internal theme lookup resolves that preset's own ring/shape, not a shared one.
  * 2. `style_matrix_button_focused_<preset>`: the *real* `ShadcnButton`, focused via real
  *    `requestFocus()`, one capture per preset -- proves the wiring through the actual
  *    component, not just the shared modifier.
@@ -57,7 +57,7 @@ class StylePresetMatrixTest : ShadcnScreenshotTest() {
     private fun ringSwatch(darkTheme: Boolean) {
         snapshot("style_matrix_ring_swatch", darkTheme = darkTheme) {
             Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-                ShadcnStylePreset.entries.forEach { preset -> PresetRingSwatch(preset) }
+                ShadcnStylePreset.entries.forEach { preset -> PresetRingSwatch(preset, darkTheme) }
             }
         }
     }
@@ -85,20 +85,22 @@ class StylePresetMatrixTest : ShadcnScreenshotTest() {
 }
 
 @Composable
-private fun PresetRingSwatch(preset: ShadcnStylePreset) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        ShadcnText(preset.label, style = ShadcnTextStyle.LabelSmall, muted = true)
-        Box(
-            modifier =
-                Modifier
-                    .padding(top = 8.dp)
-                    .size(64.dp, 36.dp)
-                    .shadcnFocusRing(
-                        focused = true,
-                        cornerRadius = preset.shapes.lg,
-                        color = shadcnTheme.colors.borderFocus.copy(alpha = preset.ring.opacity),
-                    ).background(shadcnTheme.colors.primary, RoundedCornerShape(preset.shapes.lg)),
-        )
+private fun PresetRingSwatch(
+    preset: ShadcnStylePreset,
+    darkTheme: Boolean,
+) {
+    ShadcnTheme(preset = preset, isDark = darkTheme) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            ShadcnText(preset.label, style = ShadcnTextStyle.LabelSmall, muted = true)
+            Box(
+                modifier =
+                    Modifier
+                        .padding(top = 8.dp)
+                        .size(64.dp, 36.dp)
+                        .shadcnFocusRing(isFocused = true, shape = RoundedCornerShape(shadcnTheme.shapes.lg))
+                        .background(shadcnTheme.colors.primary, RoundedCornerShape(shadcnTheme.shapes.lg)),
+            )
+        }
     }
 }
 
@@ -108,23 +110,7 @@ private fun ThemedPresetBox(
     darkTheme: Boolean,
     content: @Composable () -> Unit,
 ) {
-    val theme =
-        if (darkTheme) {
-            ShadcnTheme.dark(
-                shapes = preset.shapes,
-                spacing = preset.spacing,
-                typography = preset.typography,
-                ring = preset.ring,
-            )
-        } else {
-            ShadcnTheme.light(
-                shapes = preset.shapes,
-                spacing = preset.spacing,
-                typography = preset.typography,
-                ring = preset.ring,
-            )
-        }
-    ShadcnTheme(darkTheme = darkTheme, theme = theme) {
+    ShadcnTheme(preset = preset, isDark = darkTheme) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             ShadcnText(preset.label, style = ShadcnTextStyle.LabelSmall, muted = true)
             Box(modifier = Modifier.padding(top = 8.dp).width(90.dp)) { content() }

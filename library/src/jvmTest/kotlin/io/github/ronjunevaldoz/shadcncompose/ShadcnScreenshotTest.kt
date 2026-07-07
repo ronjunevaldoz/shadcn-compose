@@ -94,23 +94,7 @@ private fun ShadcnSnapshotSurface(
     stylePreset: ShadcnStylePreset,
     content: @Composable () -> Unit,
 ) {
-    val theme =
-        if (darkTheme) {
-            ShadcnTheme.dark(
-                shapes = stylePreset.shapes,
-                spacing = stylePreset.spacing,
-                typography = stylePreset.typography,
-                ring = stylePreset.ring,
-            )
-        } else {
-            ShadcnTheme.light(
-                shapes = stylePreset.shapes,
-                spacing = stylePreset.spacing,
-                typography = stylePreset.typography,
-                ring = stylePreset.ring,
-            )
-        }
-    ShadcnTheme(darkTheme = darkTheme, theme = theme) {
+    ShadcnTheme(preset = stylePreset, isDark = darkTheme) {
         Box(modifier = Modifier.background(shadcnTheme.colors.background).padding(24.dp)) {
             content()
         }

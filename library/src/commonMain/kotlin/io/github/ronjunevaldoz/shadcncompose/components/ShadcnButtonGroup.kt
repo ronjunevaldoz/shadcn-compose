@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -152,8 +153,16 @@ fun ShadcnButtonGroup(
 
     CompositionLocalProvider(LocalButtonGroupOrientation provides orientation) {
         when (orientation) {
-            ButtonGroupOrientation.Horizontal -> Row(modifier = groupModifier) { content() }
-            ButtonGroupOrientation.Vertical -> Column(modifier = groupModifier) { content() }
+            // IntrinsicSize.Min on the cross axis: ShadcnButtonGroupSeparator uses
+            // fillMaxHeight()/fillMaxWidth() to span its siblings, which needs the
+            // Row/Column's own size to be bounded by its *other* children first --
+            // without this, a Row in an unbounded-height container (e.g. a scrollable
+            // Column) has nothing for fillMaxHeight() to resolve against and the whole
+            // group stretches to fill all available space instead of wrapping content.
+            ButtonGroupOrientation.Horizontal ->
+                Row(modifier = groupModifier.height(IntrinsicSize.Min)) { content() }
+            ButtonGroupOrientation.Vertical ->
+                Column(modifier = groupModifier.width(IntrinsicSize.Min)) { content() }
         }
     }
 }
@@ -207,7 +216,8 @@ fun ButtonGroupDocPreview() {
         ShadcnButtonGroupText("https://", topStart = rounded, bottomStart = rounded)
         ShadcnButtonGroupSeparator()
         CompositionLocalProvider(
-            LocalGroupCorners provides ShadcnGroupCorners(topStart = 0.dp, bottomStart = 0.dp, topEnd = rounded, bottomEnd = rounded),
+            LocalGroupCorners provides
+                ShadcnGroupCorners(topStart = 0.dp, bottomStart = 0.dp, topEnd = rounded, bottomEnd = rounded),
         ) {
             ShadcnButton(
                 onClick = {},

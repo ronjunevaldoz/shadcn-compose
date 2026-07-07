@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.foundation.style.ExperimentalFoundationStyleApi::class)
+
 package io.github.ronjunevaldoz.shadcncompose.components
 
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest

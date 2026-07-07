@@ -2,8 +2,13 @@
 
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.Style
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import kotlin.test.Test
 
 class ButtonGroupScreenshotTest : ShadcnScreenshotTest() {
@@ -25,10 +30,20 @@ class ButtonGroupScreenshotTest : ShadcnScreenshotTest() {
 
     private fun withLabel(darkTheme: Boolean) {
         snapshot("button_group_with_label", darkTheme = darkTheme) {
+            // Mirrors app:shared's ButtonGroupDoc.kt "With label" example exactly.
+            val rounded = shadcnTheme.shapes.lg
             ShadcnButtonGroup {
-                ShadcnButtonGroupText("https://")
+                ShadcnButtonGroupText("https://", topStart = rounded, bottomStart = rounded)
                 ShadcnButtonGroupSeparator()
-                ShadcnButton(onClick = {}, variant = ButtonVariant.Ghost) { ShadcnText("example.com") }
+                CompositionLocalProvider(
+                    LocalGroupCorners provides ShadcnGroupCorners(topEnd = rounded, bottomEnd = rounded),
+                ) {
+                    ShadcnButton(
+                        onClick = {},
+                        variant = ButtonVariant.Ghost,
+                        style = Style { shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp)) },
+                    ) { ShadcnText("example.com") }
+                }
             }
         }
     }
