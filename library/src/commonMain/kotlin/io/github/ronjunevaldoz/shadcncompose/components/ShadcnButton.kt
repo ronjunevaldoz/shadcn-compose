@@ -68,9 +68,6 @@ fun ShadcnButton(
             modifier
                 .shadcnFocusRing(
                     focused = isFocused,
-                    color = shadcnTheme.colors.borderFocus.copy(alpha = shadcnTheme.ring.opacity),
-                    width = shadcnTheme.ring.width,
-                    offset = shadcnTheme.ring.offset,
                     topStart = ringTopStartCorner ?: defaultRingCorner,
                     topEnd = ringTopEndCorner ?: defaultRingCorner,
                     bottomEnd = ringBottomEndCorner ?: defaultRingCorner,

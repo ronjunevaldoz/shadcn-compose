@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
@@ -44,13 +45,15 @@ fun Modifier.shadcnFocusRing(
         .copy(alpha = ShadcnTheme.LocalShadcnTheme.current.ring.opacity),
 ): Modifier {
     val theme = ShadcnTheme.LocalShadcnTheme.current
-    return shadcnFocusRing(
-        focused = focused,
-        color = color,
-        cornerRadius = cornerRadius,
-        width = theme.ring.width,
-        offset = theme.ring.offset
-    )
+    return this
+        .zIndex(if (focused) 1f else 0f)
+        .shadcnFocusRing(
+            focused = focused,
+            color = color,
+            cornerRadius = cornerRadius,
+            width = theme.ring.width,
+            offset = theme.ring.offset
+        )
 }
 
 fun Modifier.shadcnFocusRing(
@@ -77,6 +80,31 @@ fun Modifier.shadcnFocusRing(
  * Passing the group item's own asymmetric corners here keeps the ring flush with its actual
  * silhouette instead of tracing a uniformly-rounded box that doesn't match.
  */
+@Composable
+fun Modifier.shadcnFocusRing(
+    focused: Boolean,
+    topStart: Dp,
+    topEnd: Dp,
+    bottomEnd: Dp,
+    bottomStart: Dp,
+    color: Color = ShadcnTheme.LocalShadcnTheme.current.colors.borderFocus
+        .copy(alpha = ShadcnTheme.LocalShadcnTheme.current.ring.opacity),
+): Modifier {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    return this
+        .zIndex(if (focused) 1f else 0f)
+        .shadcnFocusRing(
+            focused = focused,
+            color = color,
+            topStart = topStart,
+            topEnd = topEnd,
+            bottomEnd = bottomEnd,
+            bottomStart = bottomStart,
+            width = theme.ring.width,
+            offset = theme.ring.offset
+        )
+}
+
 fun Modifier.shadcnFocusRing(
     focused: Boolean,
     color: Color,

@@ -82,37 +82,36 @@ val buttonGroupDoc =
                     title = "With label",
                     code =
                         """
+                        val rounded = shadcnTheme.shapes.lg
                         ShadcnButtonGroup {
-                            ShadcnButtonGroupText("https://")
+                            ShadcnButtonGroupText("https://", topStart = rounded, bottomStart = rounded)
                             ShadcnButtonGroupSeparator()
-                            ShadcnButton(onClick = {}, variant = ButtonVariant.Ghost) { ShadcnText("example.com") }
+                            ShadcnButton(
+                                onClick = {}, 
+                                variant = ButtonVariant.Ghost,
+                                ringTopStartCorner = 0.dp,
+                                ringBottomStartCorner = 0.dp,
+                                style = Style {
+                                    shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
+                                }
+                            ) { ShadcnText("example.com") }
                         }
                         """.trimIndent(),
                     preview = {
-//                        ShadcnButtonGroup {
-//                            ShadcnButtonGroupText("https://")
-//                            ShadcnButtonGroupSeparator()
-//                            ShadcnButton(
-//                                onClick = {},
-//                                variant = ButtonVariant.Ghost,
-//                                style = Style {
-//                                    // TODO workaround so that last item has no separator
-//                                    val itemShape = RoundedCornerShape(0.dp, shadcnTheme.shapes.lg, shadcnTheme.shapes.lg, 0.dp)
-//                                    shape(itemShape)
-//                                }
-//                            ) { ShadcnText("example.com") }
-//                        }
-                        ShadcnButtonGroup(
-                            items = listOf(
-                                ButtonGroupItem("https://", onClick = {}),
-                                ButtonGroupItem("example.com", onClick = {}),
-                            )
-                        )
-//                        ShadcnButtonGroup {
-//                            ShadcnButtonGroupText("https://")
-//                            ShadcnButtonGroupSeparator()
-//                            ShadcnButton(onClick = {}, variant = ButtonVariant.Ghost) { ShadcnText("example.com") }
-//                        }
+                        val rounded = shadcnTheme.shapes.lg
+                        ShadcnButtonGroup {
+                            ShadcnButtonGroupText("https://", topStart = rounded, bottomStart = rounded)
+                            ShadcnButtonGroupSeparator()
+                            ShadcnButton(
+                                onClick = {},
+                                variant = ButtonVariant.Ghost,
+                                ringTopStartCorner = 0.dp,
+                                ringBottomStartCorner = 0.dp,
+                                style = Style {
+                                    shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
+                                }
+                            ) { ShadcnText("example.com") }
+                        }
                     },
                 ),
             ),
