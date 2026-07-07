@@ -58,7 +58,7 @@ enum class ShadcnAccent(
             onPrimary = Color(onPrimaryLong),
             // Dynamic Improvement: Focused state borders automatically match the accent
             // if an accent color is active!
-            borderFocus = resolvedPrimary
+            borderFocus = resolvedPrimary,
         )
     }
 }

@@ -5,12 +5,12 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -18,17 +18,26 @@ import androidx.compose.ui.Modifier
 import io.github.ronjunevaldoz.shadcncompose.styles.ChipVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
-import io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnDataSlots
-import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnDataSlots
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
  * Selectable chip / filter tag.
  *
+ * Icon slot sizing (`leadingIcon`) reads `theme.icons.standardSize` directly at the
+ * call site -- it does NOT go through a `CompositionLocal` (the previous
+ * `LocalShadcnDataSlots` mechanism was provided here but never actually read by
+ * anything reachable, and has been removed) or through the `Style` object itself
+ * (`androidx.compose.foundation.style.Style`/`StyleScope` are sealed third-party
+ * interfaces from Compose Foundation -- we cannot add an `iconSize` field/DSL function
+ * to them). Reading the already-existing, already-preset-aware `theme.icons` token
+ * directly is simpler, is genuinely parameter-free at call sites, and was already the
+ * pattern every other themed value in this library uses.
+ *
  * Usage:
  * ```
  * ShadcnChip(label = "Kotlin", selected = true, onClick = { toggle() })
  * ShadcnChip(label = "Swift", variant = ChipVariant.Outline, onClick = {})
+ * ShadcnChip(label = "Verified", leadingIcon = { modifier -> Icon(CheckIcon, modifier = modifier) })
  * ```
  */
 @OptIn(ExperimentalFoundationStyleApi::class)
@@ -40,51 +49,46 @@ fun ShadcnChip(
     selected: Boolean = false,
     enabled: Boolean = true,
     variant: ChipVariant = if (selected) ChipVariant.Selected else ChipVariant.Default,
+    leadingIcon: (@Composable (Modifier) -> Unit)? = null,
     style: Style = Style,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
-
-    // 1. Resolve the clean, dynamic base variant style for dark/light parity
     val baseVariantStyle = variant.rememberStyle()
+    val styleState =
+        rememberUpdatedStyleState(interactionSource) {
+            it.isEnabled = enabled
+        }
 
-    val styleState = rememberUpdatedStyleState(interactionSource) {
-        it.isEnabled = enabled
-    }
+    val clickableModifier =
+        if (onClick != null) {
+            Modifier.clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = enabled,
+                onClick = onClick,
+            )
+        } else {
+            Modifier
+        }
 
-    val clickableModifier = if (onClick != null) {
-        Modifier.clickable(
-            interactionSource = interactionSource,
-            indication = null,
-            enabled = enabled,
-            onClick = onClick,
-        )
-    } else {
-        Modifier
-    }
-
-    // 2. Set up the Tailwind v4 data-slot rules for child layouts automatically!
     val theme = ShadcnTheme.current
-    val slotDimensions = remember(theme) {
-        ShadcnDataSlots(
-            iconSize = theme.icons.standardSize,
-            paddingHorizontal = theme.spacing.md,
-            paddingVertical = theme.spacing.xs
-        )
-    }
 
-    CompositionLocalProvider(LocalShadcnDataSlots provides slotDimensions) {
-        Row(
-            modifier = modifier
-                // 3. Cleaner! No more passing theme shapes manually. Focus ring handles its own context.
+    Row(
+        modifier =
+            modifier
                 .shadcnFocusRing(isFocused = isFocused)
                 .then(clickableModifier)
                 .styleable(styleState, baseVariantStyle, style),
-            verticalAlignment = Alignment.CenterVertically,
-            // 4. Use your structural layout tokens instead of hardcoded numbers
-            horizontalArrangement = Arrangement.spacedBy(theme.spacing.xxs),
-        ) {
-            ShadcnText(text = label)
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(theme.spacing.xxs),
+    ) {
+        if (leadingIcon != null) {
+            leadingIcon(Modifier.size(theme.icons.standardSize))
         }
+        // Still missing the explicit `color = variant.contentColor` pass-through
+        // flagged as a pending dark-mode regression in a separate audit -- out of
+        // scope for this pass (dead ShadcnRadius/ShadcnDataSlots cleanup only).
+        ShadcnText(text = label)
     }
 }

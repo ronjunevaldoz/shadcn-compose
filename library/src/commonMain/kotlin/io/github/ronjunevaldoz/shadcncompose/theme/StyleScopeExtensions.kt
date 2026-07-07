@@ -13,7 +13,7 @@ import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnTypography
 // `currentValue` reads the CompositionLocal at consume time instead.
 
 @OptIn(ExperimentalFoundationStyleApi::class)
-val StyleScope.shadcnTheme: ShadcnTheme
+val StyleScope.shadcnTheme: ShadcnThemeData
     get() = ShadcnTheme.LocalShadcnTheme.currentValue
 
 @OptIn(ExperimentalFoundationStyleApi::class)

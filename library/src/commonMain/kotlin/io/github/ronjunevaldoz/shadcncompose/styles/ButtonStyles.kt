@@ -23,10 +23,15 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface ButtonVariant {
     data object Default : ButtonVariant
+
     data object Outline : ButtonVariant
+
     data object Secondary : ButtonVariant
+
     data object Ghost : ButtonVariant
+
     data object Destructive : ButtonVariant
+
     data object Link : ButtonVariant
 }
 
@@ -38,68 +43,78 @@ fun ButtonVariant.rememberStyle(): Style {
 
     return remember(this, colors, shapes) {
         when (this) {
-            ButtonVariant.Default -> Style {
-                background(colors.primary)
-                contentColor(colors.onPrimary)
-                shape(RoundedCornerShape(shapes.lg))
-                hovered { background(colors.primary.copy(alpha = 0.9f)) }
-                disabled { alpha(0.5f) }
-            }
+            ButtonVariant.Default ->
+                Style {
+                    background(colors.primary)
+                    contentColor(colors.onPrimary)
+                    shape(RoundedCornerShape(shapes.lg))
+                    hovered { background(colors.primary.copy(alpha = 0.9f)) }
+                    disabled { alpha(0.5f) }
+                }
 
-            ButtonVariant.Outline -> Style {
-                background(colors.background)
-                contentColor(colors.onSurface)
-                borderWidth(1.dp)
-                borderColor(colors.border)
-                shape(RoundedCornerShape(shapes.lg))
-                hovered {
+            ButtonVariant.Outline ->
+                Style {
+                    background(colors.background)
+                    contentColor(colors.onSurface)
+                    borderWidth(1.dp)
+                    borderColor(colors.border)
+                    shape(RoundedCornerShape(shapes.lg))
+                    hovered {
+                        background(colors.secondary)
+                        contentColor(colors.onSecondary)
+                    }
+                    focused { borderColor(colors.borderFocus) }
+                    disabled { alpha(0.5f) }
+                }
+
+            ButtonVariant.Secondary ->
+                Style {
                     background(colors.secondary)
                     contentColor(colors.onSecondary)
+                    shape(RoundedCornerShape(shapes.lg))
+                    hovered { background(colors.secondary.copy(alpha = 0.8f)) }
+                    disabled { alpha(0.5f) }
                 }
-                focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.5f) }
-            }
 
-            ButtonVariant.Secondary -> Style {
-                background(colors.secondary)
-                contentColor(colors.onSecondary)
-                shape(RoundedCornerShape(shapes.lg))
-                hovered { background(colors.secondary.copy(alpha = 0.8f)) }
-                disabled { alpha(0.5f) }
-            }
-
-            ButtonVariant.Ghost -> Style {
-                contentColor(colors.onSurface)
-                shape(RoundedCornerShape(shapes.lg))
-                hovered {
-                    background(colors.secondary)
-                    contentColor(colors.onSecondary)
+            ButtonVariant.Ghost ->
+                Style {
+                    contentColor(colors.onSurface)
+                    shape(RoundedCornerShape(shapes.lg))
+                    hovered {
+                        background(colors.secondary)
+                        contentColor(colors.onSecondary)
+                    }
+                    disabled { alpha(0.5f) }
                 }
-                disabled { alpha(0.5f) }
-            }
 
-            ButtonVariant.Destructive -> Style {
-                background(colors.destructive)
-                contentColor(colors.onDestructive)
-                shape(RoundedCornerShape(shapes.lg))
-                hovered { background(colors.destructive.copy(alpha = 0.9f)) }
-                disabled { alpha(0.5f) }
-            }
+            ButtonVariant.Destructive ->
+                Style {
+                    background(colors.destructive)
+                    contentColor(colors.onDestructive)
+                    shape(RoundedCornerShape(shapes.lg))
+                    hovered { background(colors.destructive.copy(alpha = 0.9f)) }
+                    disabled { alpha(0.5f) }
+                }
 
-            ButtonVariant.Link -> Style {
-                contentColor(colors.primary)
-                hovered { textDecoration(TextDecoration.Underline) }
-                disabled { alpha(0.5f) }
-            }
+            ButtonVariant.Link ->
+                Style {
+                    contentColor(colors.primary)
+                    hovered { textDecoration(TextDecoration.Underline) }
+                    disabled { alpha(0.5f) }
+                }
         }
     }
 }
 
 sealed interface ButtonSize {
     data object Xs : ButtonSize
+
     data object Sm : ButtonSize
+
     data object Md : ButtonSize
+
     data object Lg : ButtonSize
+
     data object Icon : ButtonSize
 }
 
@@ -110,35 +125,40 @@ fun ButtonSize.rememberStyle(): Style {
 
     return remember(this, spacing) {
         when (this) {
-            ButtonSize.Xs -> Style {
-                contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
-                fontSize(12.sp)
-                height(28.dp)
-            }
+            ButtonSize.Xs ->
+                Style {
+                    contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
+                    fontSize(12.sp)
+                    height(28.dp)
+                }
 
-            ButtonSize.Sm -> Style {
-                contentPadding(horizontal = spacing.md, vertical = spacing.xs)
-                fontSize(14.sp)
-                height(32.dp)
-            }
+            ButtonSize.Sm ->
+                Style {
+                    contentPadding(horizontal = spacing.md, vertical = spacing.xs)
+                    fontSize(14.sp)
+                    height(32.dp)
+                }
 
-            ButtonSize.Md -> Style {
-                contentPadding(horizontal = spacing.lg, vertical = spacing.sm)
-                fontSize(14.sp)
-                height(36.dp)
-            }
+            ButtonSize.Md ->
+                Style {
+                    contentPadding(horizontal = spacing.lg, vertical = spacing.sm)
+                    fontSize(14.sp)
+                    height(36.dp)
+                }
 
-            ButtonSize.Lg -> Style {
-                contentPadding(horizontal = spacing.xxl, vertical = spacing.md)
-                fontSize(16.sp)
-                height(40.dp)
-            }
+            ButtonSize.Lg ->
+                Style {
+                    contentPadding(horizontal = spacing.xxl, vertical = spacing.md)
+                    fontSize(16.sp)
+                    height(40.dp)
+                }
 
-            ButtonSize.Icon -> Style {
-                contentPadding(spacing.sm)
-                width(36.dp)
-                height(36.dp)
-            }
+            ButtonSize.Icon ->
+                Style {
+                    contentPadding(spacing.sm)
+                    width(36.dp)
+                    height(36.dp)
+                }
         }
     }
 }

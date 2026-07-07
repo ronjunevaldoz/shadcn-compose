@@ -8,7 +8,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
 
-
 /**
  * shadcn/ui's real "Style" picker (ui.shadcn.com/create) -- Vega, Nova, Maia, Lyra,
  * Mira, Luma, Sera, Rhea -- ships as ~500KB of per-component CSS overrides per style
@@ -27,103 +26,160 @@ enum class ShadcnStylePreset(
     val icons: ShadcnIconStyles,
 ) {
     /** Vega: "Clean, neutral, and familiar." Classic 16px icon boxes,
-     *  balanced standard animations, and distinct offset rings. */
+     *  balanced standard animations, and distinct offset rings. `baseRadius = 8.dp` is
+     *  chosen so the derived `.lg` (the step nearly every component actually renders
+     *  with) lands exactly on this preset's previous hand-tuned 8.dp default. */
     Vega(
-        shapes = ShadcnShapes(),
+        shapes = ShadcnShapes.fromBaseRadius(baseRadius = 8.dp),
         spacing = ShadcnSpacing(),
         typography = ShadcnTypography(),
         ring = ShadcnRing.Default,
-        animations = ShadcnAnimations(
-            defaultTransition = TweenSpec(durationMillis = 200),
-            visibilityTransition = TweenSpec(durationMillis = 150),
-        ),
+        animations =
+            ShadcnAnimations(
+                defaultTransition = TweenSpec(durationMillis = 200),
+                visibilityTransition = TweenSpec(durationMillis = 150),
+            ),
         icons = ShadcnIconStyles(standardSize = 16.dp, smallSize = 14.dp, strokeWidth = 2f),
     ),
 
     /** Nova: "Reduced padding and margins." Snappy animation frames,
      *  ultra-tight spacing layouts, flush layout rings, and compact 14px icon bounds. */
     Nova(
-        shapes = ShadcnShapes(),
-        spacing = ShadcnSpacing(
-            xxs = 1.dp, xs = 3.dp, sm = 6.dp, md = 9.dp,
-            lg = 12.dp, xl = 15.dp, xxl = 18.dp, xxxl = 24.dp,
-        ),
+        shapes = ShadcnShapes.fromBaseRadius(baseRadius = 8.dp),
+        spacing =
+            ShadcnSpacing(
+                xxs = 1.dp,
+                xs = 3.dp,
+                sm = 6.dp,
+                md = 9.dp,
+                lg = 12.dp,
+                xl = 15.dp,
+                xxl = 18.dp,
+                xxxl = 24.dp,
+            ),
         typography = ShadcnTypography(),
         ring = ShadcnRing.NewYork,
-        animations = ShadcnAnimations(
-            defaultTransition = TweenSpec(durationMillis = 100),
-            visibilityTransition = TweenSpec(durationMillis = 75),
-        ),
+        animations =
+            ShadcnAnimations(
+                defaultTransition = TweenSpec(durationMillis = 100),
+                visibilityTransition = TweenSpec(durationMillis = 75),
+            ),
         icons = ShadcnIconStyles(standardSize = 14.dp, smallSize = 12.dp, strokeWidth = 1.5f),
     ),
 
     /** Maia: "Rounded, with generous spacing." Fluid, bouncy transitions and
      *  larger icon touch targets. */
     Maia(
-        shapes = ShadcnShapes(
-            none = 0.dp, xs = 4.dp, sm = 8.dp, md = 12.dp,
-            lg = 16.dp, xl = 20.dp, xxl = 28.dp, full = 9999.dp,
-        ),
-        spacing = ShadcnSpacing(
-            xxs = 3.dp, xs = 6.dp, sm = 10.dp, md = 16.dp,
-            lg = 21.dp, xl = 26.dp, xxl = 32.dp, xxxl = 42.dp,
-        ),
+        shapes =
+            ShadcnShapes(
+                none = 0.dp,
+                xs = 4.dp,
+                sm = 8.dp,
+                md = 12.dp,
+                lg = 16.dp,
+                xl = 20.dp,
+                xxl = 28.dp,
+                full = 9999.dp,
+            ),
+        spacing =
+            ShadcnSpacing(
+                xxs = 3.dp,
+                xs = 6.dp,
+                sm = 10.dp,
+                md = 16.dp,
+                lg = 21.dp,
+                xl = 26.dp,
+                xxl = 32.dp,
+                xxxl = 42.dp,
+            ),
         typography = ShadcnTypography(),
-        animations = ShadcnAnimations(
-            defaultTransition = TweenSpec(durationMillis = 300),
-            visibilityTransition = TweenSpec(durationMillis = 200),
-        ),
+        animations =
+            ShadcnAnimations(
+                defaultTransition = TweenSpec(durationMillis = 300),
+                visibilityTransition = TweenSpec(durationMillis = 200),
+            ),
         icons = ShadcnIconStyles(standardSize = 18.dp, smallSize = 16.dp, strokeWidth = 2f),
     ),
 
     /** Lyra: "Boxy and sharp. For mono fonts." High-speed technical transitions,
      *  and thin-stroke icons for a blueprint aesthetic. */
     Lyra(
-        shapes = ShadcnShapes(
-            none = 0.dp, xs = 0.dp, sm = 0.dp, md = 0.dp,
-            lg = 0.dp, xl = 0.dp, xxl = 0.dp, full = 9999.dp,
-        ),
+        shapes =
+            ShadcnShapes(
+                none = 0.dp,
+                xs = 0.dp,
+                sm = 0.dp,
+                md = 0.dp,
+                lg = 0.dp,
+                xl = 0.dp,
+                xxl = 0.dp,
+                full = 9999.dp,
+            ),
         spacing = ShadcnSpacing(),
         typography = ShadcnTypography().withFontFamily(FontFamily.Monospace),
-        animations = ShadcnAnimations(
-            defaultTransition = TweenSpec(durationMillis = 150),
-            visibilityTransition = TweenSpec(durationMillis = 100),
-        ),
+        animations =
+            ShadcnAnimations(
+                defaultTransition = TweenSpec(durationMillis = 150),
+                visibilityTransition = TweenSpec(durationMillis = 100),
+            ),
         icons = ShadcnIconStyles(standardSize = 16.dp, smallSize = 14.dp, strokeWidth = 1f),
     ),
 
     /** Mira: "Made for compact interfaces." Tightest animation timings and
      *  minimal icon footprints. */
     Mira(
-        shapes = ShadcnShapes(
-            none = 0.dp, xs = 1.dp, sm = 2.dp, md = 4.dp,
-            lg = 6.dp, xl = 8.dp, xxl = 10.dp, full = 9999.dp,
-        ),
-        spacing = ShadcnSpacing(
-            xxs = 1.dp, xs = 2.dp, sm = 5.dp, md = 8.dp,
-            lg = 10.dp, xl = 13.dp, xxl = 16.dp, xxxl = 21.dp,
-        ),
+        shapes =
+            ShadcnShapes(
+                none = 0.dp,
+                xs = 1.dp,
+                sm = 2.dp,
+                md = 4.dp,
+                lg = 6.dp,
+                xl = 8.dp,
+                xxl = 10.dp,
+                full = 9999.dp,
+            ),
+        spacing =
+            ShadcnSpacing(
+                xxs = 1.dp,
+                xs = 2.dp,
+                sm = 5.dp,
+                md = 8.dp,
+                lg = 10.dp,
+                xl = 13.dp,
+                xxl = 16.dp,
+                xxxl = 21.dp,
+            ),
         typography = ShadcnTypography().scaled(0.9f),
-        animations = ShadcnAnimations(
-            defaultTransition = TweenSpec(durationMillis = 120),
-            visibilityTransition = TweenSpec(durationMillis = 80),
-        ),
+        animations =
+            ShadcnAnimations(
+                defaultTransition = TweenSpec(durationMillis = 120),
+                visibilityTransition = TweenSpec(durationMillis = 80),
+            ),
         icons = ShadcnIconStyles(standardSize = 14.dp, smallSize = 12.dp, strokeWidth = 1.5f),
     ),
 
     /** Luma: "Fluid, luminous, and soft." Slow, elegant fade transitions
      *  and standard icon weights. */
     Luma(
-        shapes = ShadcnShapes(
-            none = 0.dp, xs = 6.dp, sm = 10.dp, md = 14.dp,
-            lg = 18.dp, xl = 22.dp, xxl = 26.dp, full = 9999.dp,
-        ),
+        shapes =
+            ShadcnShapes(
+                none = 0.dp,
+                xs = 6.dp,
+                sm = 10.dp,
+                md = 14.dp,
+                lg = 18.dp,
+                xl = 22.dp,
+                xxl = 26.dp,
+                full = 9999.dp,
+            ),
         spacing = ShadcnSpacing(),
         typography = ShadcnTypography(),
-        animations = ShadcnAnimations(
-            defaultTransition = TweenSpec(durationMillis = 400),
-            visibilityTransition = TweenSpec(durationMillis = 250),
-        ),
+        animations =
+            ShadcnAnimations(
+                defaultTransition = TweenSpec(durationMillis = 400),
+                visibilityTransition = TweenSpec(durationMillis = 250),
+            ),
         icons = ShadcnIconStyles(standardSize = 16.dp, smallSize = 14.dp, strokeWidth = 1.5f),
     ),
 
@@ -133,29 +189,45 @@ enum class ShadcnStylePreset(
         shapes = ShadcnShapes(),
         spacing = ShadcnSpacing(),
         typography = ShadcnTypography().scaled(1.15f),
-        animations = ShadcnAnimations(
-            defaultTransition = TweenSpec(durationMillis = 200),
-            visibilityTransition = TweenSpec(durationMillis = 150),
-        ),
+        animations =
+            ShadcnAnimations(
+                defaultTransition = TweenSpec(durationMillis = 200),
+                visibilityTransition = TweenSpec(durationMillis = 150),
+            ),
         icons = ShadcnIconStyles(standardSize = 18.dp, smallSize = 16.dp, strokeWidth = 2f),
     ),
 
     /** Rhea: "Like Luma but compact." Fluid Luma transitions but Nova-level
      *  compact spacing and icons. */
     Rhea(
-        shapes = ShadcnShapes(
-            none = 0.dp, xs = 6.dp, sm = 10.dp, md = 14.dp,
-            lg = 18.dp, xl = 22.dp, xxl = 26.dp, full = 9999.dp,
-        ),
-        spacing = ShadcnSpacing(
-            xxs = 1.dp, xs = 2.dp, sm = 5.dp, md = 8.dp,
-            lg = 10.dp, xl = 13.dp, xxl = 16.dp, xxxl = 21.dp,
-        ),
+        shapes =
+            ShadcnShapes(
+                none = 0.dp,
+                xs = 6.dp,
+                sm = 10.dp,
+                md = 14.dp,
+                lg = 18.dp,
+                xl = 22.dp,
+                xxl = 26.dp,
+                full = 9999.dp,
+            ),
+        spacing =
+            ShadcnSpacing(
+                xxs = 1.dp,
+                xs = 2.dp,
+                sm = 5.dp,
+                md = 8.dp,
+                lg = 10.dp,
+                xl = 13.dp,
+                xxl = 16.dp,
+                xxxl = 21.dp,
+            ),
         typography = ShadcnTypography(),
-        animations = ShadcnAnimations(
-            defaultTransition = TweenSpec(durationMillis = 350),
-            visibilityTransition = TweenSpec(durationMillis = 200),
-        ),
+        animations =
+            ShadcnAnimations(
+                defaultTransition = TweenSpec(durationMillis = 350),
+                visibilityTransition = TweenSpec(durationMillis = 200),
+            ),
         icons = ShadcnIconStyles(standardSize = 14.dp, smallSize = 12.dp, strokeWidth = 1.5f),
     ),
     ;

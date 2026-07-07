@@ -20,7 +20,9 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 // border width never changes, so focusing never reflows layout.
 sealed interface TextFieldVariant {
     data object Default : TextFieldVariant
+
     data object Filled : TextFieldVariant
+
     data object Ghost : TextFieldVariant
 }
 
@@ -33,39 +35,42 @@ fun TextFieldVariant.rememberStyle(): Style {
 
     return remember(this, colors, shapes, spacing) {
         when (this) {
-            TextFieldVariant.Default -> Style {
-                background(colors.background)
-                contentColor(colors.onSurface)
-                borderWidth(1.dp)
-                borderColor(colors.border)
-                shape(RoundedCornerShape(shapes.lg))
-                contentPadding(horizontal = spacing.md, vertical = spacing.sm)
-                fontSize(14.sp)
-                focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.5f) }
-            }
+            TextFieldVariant.Default ->
+                Style {
+                    background(colors.background)
+                    contentColor(colors.onSurface)
+                    borderWidth(1.dp)
+                    borderColor(colors.border)
+                    shape(RoundedCornerShape(shapes.lg))
+                    contentPadding(horizontal = spacing.md, vertical = spacing.sm)
+                    fontSize(14.sp)
+                    focused { borderColor(colors.borderFocus) }
+                    disabled { alpha(0.5f) }
+                }
 
-            TextFieldVariant.Filled -> Style {
-                background(colors.surfaceVariant)
-                contentColor(colors.onSurface)
-                borderWidth(1.dp)
-                borderColor(Color.Transparent)
-                shape(RoundedCornerShape(shapes.lg))
-                contentPadding(horizontal = spacing.md, vertical = spacing.sm)
-                fontSize(14.sp)
-                focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.5f) }
-            }
+            TextFieldVariant.Filled ->
+                Style {
+                    background(colors.surfaceVariant)
+                    contentColor(colors.onSurface)
+                    borderWidth(1.dp)
+                    borderColor(Color.Transparent)
+                    shape(RoundedCornerShape(shapes.lg))
+                    contentPadding(horizontal = spacing.md, vertical = spacing.sm)
+                    fontSize(14.sp)
+                    focused { borderColor(colors.borderFocus) }
+                    disabled { alpha(0.5f) }
+                }
 
-            TextFieldVariant.Ghost -> Style {
-                contentColor(colors.onSurface)
-                borderWidth(1.dp)
-                borderColor(Color.Transparent)
-                contentPadding(horizontal = spacing.xs, vertical = spacing.xs)
-                fontSize(14.sp)
-                focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.5f) }
-            }
+            TextFieldVariant.Ghost ->
+                Style {
+                    contentColor(colors.onSurface)
+                    borderWidth(1.dp)
+                    borderColor(Color.Transparent)
+                    contentPadding(horizontal = spacing.xs, vertical = spacing.xs)
+                    fontSize(14.sp)
+                    focused { borderColor(colors.borderFocus) }
+                    disabled { alpha(0.5f) }
+                }
         }
     }
 }

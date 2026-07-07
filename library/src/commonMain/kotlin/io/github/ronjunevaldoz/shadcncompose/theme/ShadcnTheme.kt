@@ -13,17 +13,13 @@ import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnAccent
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnAnimations
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnBaseColor
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors
-import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnDarkColors
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnIconStyles
-import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnLightColors
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnRadius
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnRing
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnShapes
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnSpacing
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnTypography
-
-
 
 /**
  * 1. The Global Design System State Container.
@@ -41,8 +37,9 @@ data class ShadcnThemeData(
     val baseRadius: ShadcnRadius,
     val activePreset: ShadcnStylePreset,
     val activeBaseColor: ShadcnBaseColor,
-    val activeAccent: ShadcnAccent
+    val activeAccent: ShadcnAccent,
 )
+
 /**
  * 2. The Singleton Composition Local Access Point.
  */
@@ -68,7 +65,7 @@ object ShadcnTheme {
                 baseRadius = ShadcnRadius(6.dp),
                 activePreset = defaultPreset,
                 activeBaseColor = defaultBase,
-                activeAccent = defaultAccent
+                activeAccent = defaultAccent,
             )
         }
 }
@@ -88,31 +85,32 @@ fun ShadcnTheme(
     content: @Composable () -> Unit,
 ) {
     // Dynamically compile tokens and resolve accents ONLY when parameters change
-    val configuredThemeData = remember(preset, baseColor, accent, isDark, baseRadius) {
-        // A. Extract the raw base color sheet depending on dark/light status
-        val rawBaseColors = if (isDark) baseColor.dark else baseColor.light
+    val configuredThemeData =
+        remember(preset, baseColor, accent, isDark, baseRadius) {
+            // A. Extract the raw base color sheet depending on dark/light status
+            val rawBaseColors = if (isDark) baseColor.dark else baseColor.light
 
-        // B. Cascade accent overrides over the base layer safely
-        val finalizedColors = accent.applyTo(base = rawBaseColors, dark = isDark)
+            // B. Cascade accent overrides over the base layer safely
+            val finalizedColors = accent.applyTo(base = rawBaseColors, dark = isDark)
 
-        ShadcnThemeData(
-            colors = finalizedColors,
-            typography = preset.typography,
-            shapes = preset.shapes,
-            spacing = preset.spacing,
-            ring = preset.ring,
-            animations = preset.animations,
-            icons = preset.icons,
-            baseRadius = baseRadius,
-            activePreset = preset,
-            activeBaseColor = baseColor,
-            activeAccent = accent
-        )
-    }
+            ShadcnThemeData(
+                colors = finalizedColors,
+                typography = preset.typography,
+                shapes = preset.shapes,
+                spacing = preset.spacing,
+                ring = preset.ring,
+                animations = preset.animations,
+                icons = preset.icons,
+                baseRadius = baseRadius,
+                activePreset = preset,
+                activeBaseColor = baseColor,
+                activeAccent = accent,
+            )
+        }
 
     CompositionLocalProvider(
         ShadcnTheme.LocalShadcnTheme provides configuredThemeData,
-        content = content
+        content = content,
     )
 }
 

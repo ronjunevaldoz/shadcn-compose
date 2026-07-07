@@ -11,17 +11,12 @@ import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.theme.colors
-import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.theme.shapes
 import io.github.ronjunevaldoz.shadcncompose.theme.spacing
-import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors
-import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnShapes
-import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnSpacing
 
 // Chip isn't a real shadcn/ui component (shadcn only ships a static Badge), so
 // there's no upstream reference here -- but it follows the same conventions
@@ -30,7 +25,9 @@ import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnSpacing
 // ever resizes the chip.
 sealed interface ChipVariant {
     data object Default : ChipVariant
+
     data object Selected : ChipVariant
+
     data object Outline : ChipVariant
     // Easily inject unique modifiers per-instance if needed down the road
 //    data class CustomTint(val customColor: Color) : ChipVariant
@@ -47,43 +44,46 @@ fun ChipVariant.rememberStyle(): Style {
     // 2. Cache the style; recalculate only if variant or theme changes
     return remember(this, colors) {
         when (this) {
-            ChipVariant.Default -> Style {
-                background(colors.secondary)
-                contentColor(colors.onSecondary) // Dynamically resolves Color(0xFFFAFAFA) in dark mode!
-                borderWidth(1.dp)
-                borderColor(colors.border)
-                shape(RoundedCornerShape(shapes.full))
-                contentPadding(horizontal = spacing.md, vertical = spacing.xs)
-                fontSize(13.sp)
-                hovered { background(colors.secondaryHover) }
-                pressed { background(colors.secondaryHover) }
-                focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.5f) }
-            }
+            ChipVariant.Default ->
+                Style {
+                    background(colors.secondary)
+                    contentColor(colors.onSecondary) // Dynamically resolves Color(0xFFFAFAFA) in dark mode!
+                    borderWidth(1.dp)
+                    borderColor(colors.border)
+                    shape(RoundedCornerShape(shapes.full))
+                    contentPadding(horizontal = spacing.md, vertical = spacing.xs)
+                    fontSize(13.sp)
+                    hovered { background(colors.secondaryHover) }
+                    pressed { background(colors.secondaryHover) }
+                    focused { borderColor(colors.borderFocus) }
+                    disabled { alpha(0.5f) }
+                }
 
-            ChipVariant.Selected -> Style {
-                background(colors.primary)
-                contentColor(colors.onPrimary)
-                borderWidth(1.dp)
-                borderColor(colors.primary)
-                shape(RoundedCornerShape(shapes.full))
-                contentPadding(horizontal = spacing.md, vertical = spacing.xs)
-                fontSize(13.sp)
-                focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.5f) }
-            }
+            ChipVariant.Selected ->
+                Style {
+                    background(colors.primary)
+                    contentColor(colors.onPrimary)
+                    borderWidth(1.dp)
+                    borderColor(colors.primary)
+                    shape(RoundedCornerShape(shapes.full))
+                    contentPadding(horizontal = spacing.md, vertical = spacing.xs)
+                    fontSize(13.sp)
+                    focused { borderColor(colors.borderFocus) }
+                    disabled { alpha(0.5f) }
+                }
 
-            ChipVariant.Outline -> Style {
-                borderWidth(1.dp)
-                borderColor(colors.border)
-                contentColor(colors.onSurface)
-                shape(RoundedCornerShape(shapes.full))
-                contentPadding(horizontal = spacing.md, vertical = spacing.xs)
-                fontSize(13.sp)
-                hovered { background(colors.secondary) }
-                focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.5f) }
-            }
+            ChipVariant.Outline ->
+                Style {
+                    borderWidth(1.dp)
+                    borderColor(colors.border)
+                    contentColor(colors.onSurface)
+                    shape(RoundedCornerShape(shapes.full))
+                    contentPadding(horizontal = spacing.md, vertical = spacing.xs)
+                    fontSize(13.sp)
+                    hovered { background(colors.secondary) }
+                    focused { borderColor(colors.borderFocus) }
+                    disabled { alpha(0.5f) }
+                }
         }
     }
 }

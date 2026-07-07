@@ -70,6 +70,72 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
 - Until then, treat any signature change to a public `Shadcn*` component or `styles/*Variant`
   sealed interface as a breaking change requiring a version bump.
 
+## Component styling rules
+
+1. **Variants are flat, stateless sealed interfaces** (`data object` per variant, e.g.
+   `ButtonVariant`, `ChipVariant`) -- no hardcoded theme values baked into the object.
+2. **Variant -> `Style` mapping is a `@Composable fun <Variant>.rememberStyle(): Style`**
+   (see `styles/ButtonStyles.kt`, `styles/ChipStyles.kt`), not a plain non-composable
+   `val style: Style get() = ...` property. Read the theme via `ShadcnTheme.current`,
+   then `remember(this, <every theme sub-object the block reads>) { Style { ... } }`.
+   **The remember keys must list every theme field the block actually reads** (`colors`,
+   `shapes`, `spacing`, ...) -- switching a `ShadcnStylePreset` changes `shapes`/`spacing`
+   without necessarily changing `colors`, so an incomplete key list leaves a stale cached
+   `Style` until an unrelated key happens to change too. **Known bug:** `ChipStyles.kt`'s
+   `remember(this, colors)` is missing `shapes`/`spacing` despite reading `shapes.full`
+   and `spacing.md`/`spacing.xs` -- exactly the caching failure this rule exists to
+   prevent. Fix by keying on all three like every other `*Styles.kt` file already does.
+3. Inside a `Style { }` block passed to `Modifier.styleable`, use the
+   `StyleScope.colors/shapes/spacing/typography` extensions
+   (`theme/StyleScopeExtensions.kt`, backed by `StyleScope.currentValue`), not the
+   `@Composable shadcnTheme` getter -- `Style` blocks can resolve outside normal
+   composition, and `currentValue` is the only read guaranteed fresh there.
+4. **`contentColor()` set inside a `Style` block is not reliable for text painted by a
+   *nested* `ShadcnText`/`BasicText`/`BasicTextField`** on a live dark-mode toggle, for
+   variants with no explicit `background()` (confirmed live: `ChipVariant.Outline`).
+   Fix: read the resolved color via a plain (non-memoized) `@Composable get()` and pass
+   it explicitly into `ShadcnText(color = ...)` / `BasicTextField(textStyle = ...,
+   cursorBrush = ...)` -- never rely on ambient Style-color inheritance for text.
+   **Known regression:** `ShadcnChip.kt` dropped its `color = variant.contentColor`
+   pass-through when `ChipVariant.rememberStyle()` was introduced -- needs re-adding.
+5. Context-aware modifiers may default *derivable, non-per-instance* values (color,
+   shape, corner radius) from `CompositionLocal` when the caller omits them -- e.g.
+   `shadcnFocusRing(isFocused, shape = null, color = null)` resolving `shape`/`color`
+   internally. **Per-instance interaction state (`isFocused`, `checked`, `pressed`) must
+   stay an explicit required parameter** -- there is no single global "the currently
+   focused node," so it can never come from a `CompositionLocal`. "Parameter-free call
+   sites" applies only to the derivable subset, not to per-instance state.
+6. `shadcnFocusRing`'s ring **must be drawn before `drawContent()`**, not after -- see the
+   doc comment on `styles/FocusRing.kt` explaining why (a centered `Stroke` at `offset =
+   0` relies on the component's own opaque background painting over the stroke's inward
+   half; drawing the ring after content leaves that half visible as a translucent
+   overlay, roughly doubling the ring's apparent thickness). **Known regression:** the
+   ring draw call currently runs after `drawContent()`, contradicting its own comment --
+   fix before trusting any Vega/Nova ring comparison (e.g. `StylePresetMatrixTest`).
+7. Model compound-component spacing/density (icon+label pairs, group item corners,
+   leading/trailing addons) as **explicit per-position parameters passed down the
+   composition** (see `ButtonGroupCorners` / `ToggleCorners`), not a `CompositionLocal`.
+   Real shadcn's `data-slot="..."` is inert HTML markup that exists only for CSS
+   attribute selectors (`[data-slot=button-group]:gap-2`) -- it carries no spacing logic
+   of its own, and Compose has no CSS-selector equivalent to translate it into. A
+   `LocalShadcnDataSlots`-style CompositionLocal is a plausible-sounding but non-
+   equivalent reimplementation; only introduce one once a *second* real component needs
+   the exact same slot values -- don't add it speculatively.
+8. `ShadcnStylePreset` bundling `shapes`/`spacing`/`typography`/`ring`/`animations`/
+   `icons` per entry is correct. **`ShadcnBaseColor` is a separate axis from style
+   presets**, matching real shadcn where `tailwind.baseColor` and the style/registry
+   choice are independent `components.json` fields. Real shadcn's `tailwind.baseColor`
+   only accepts **`neutral`, `gray`, `zinc`, `stone`, `slate`** -- five values, nothing
+   else. `Mauve`/`Olive`/`Mist`/`Taupe` (already in `ShadcnBaseColor.kt`) are **not**
+   part of the official spec -- they're this library's own deliberate extension beyond
+   it; document them that way rather than as "official," and note `Gray`/`Slate` (both
+   real, currently missing here) would be needed for actual spec parity.
+9. Color conversion already has one documented, verified methodology
+   (`docs/shadcn-parity.md` §5): oklch -> linear sRGB -> gamma-encoded hex, **no
+   perceptual gamut mapping applied**. Don't introduce a second "wide-gamut
+   approximation" path for the same tokens -- one checked-against-real-source conversion
+   method per color, not two competing ones.
+
 ## Notes for future sessions
 
 - **The Compose Styles API does not match what the `kotlin-multiplatform-design-system`
@@ -80,20 +146,28 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
   (`~/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.foundation/`) with a
   compile spike before writing component code, the same way `library/build.gradle.kts`'s
   history did -- don't trust the skill's code samples verbatim for this API surface.
-- **Focus rings are drop shadows, not border-width changes.** shadcn's real focus
-  indicator (`focus-visible:ring-[3px] ring-ring/50`) is a paint-only box-shadow that
-  never affects layout size. Every interactive component composes the shared
-  `styles/FocusRingStyle.kt` (`focusRingStyle`) via `then` for this -- do not reintroduce
-  a border-width-reservation hack to fix focus-related resizing bugs.
+- **Focus rings are drawn directly with `Stroke`, not `dropShadow`.** shadcn's real focus
+  indicator (`focus-visible:ring-[3px] ring-ring/50`) is a crisp, hard-edged ring; the
+  Style API's `dropShadow` always rasterizes through an offscreen bitmap and visibly
+  blurs a ring this thin. Every interactive component composes the shared
+  `styles/FocusRing.kt` (`Modifier.shadcnFocusRing`) for this -- do not reintroduce
+  `dropShadow` or a border-width-reservation hack to fix focus-related resizing bugs.
 - **Colors and hover semantics are checked against real shadcn/ui source**, not memory --
   see `ui.shadcn.com/docs/theming` for token values and
   `github.com/shadcn-ui/ui/blob/main/apps/v4/registry/new-york-v4/ui/*.tsx` for exact
   per-variant Tailwind classes (hover treatment, border presence, disabled opacity).
   When adding a new component, fetch its real source first rather than approximating.
-- No test infrastructure (`kotlin-multiplatform-unit-testing`, Roborazzi) is wired yet --
-  the project has shipped ~12 components across two sprints without automated tests
-  beyond compile + lint gates and manual desktop smoke runs. Worth prioritizing before
-  the component count grows much further.
+  The same rule applies to `components.json` fields (`tailwind.baseColor`, `style`) --
+  see item 8 above for a case where this was skipped and a fabricated-sounding but
+  actually-real set of custom base colors got documented as "official" when it isn't.
+- Roborazzi screenshot tests are wired (`library/src/jvmTest/`, Robolectric-less
+  JVM/Desktop capture, see `docs/visual-testing.md`) -- run
+  `./gradlew :library:verifyRoborazziJvm` after any component visual change. As of
+  2026-07-08 this suite does not compile against the current `ShadcnTheme` API (the
+  `ShadcnTheme` data-class -> `ShadcnThemeData` + singleton `object ShadcnTheme` rename,
+  plus `shadcnFocusRing`'s new `isFocused`/`shape`/`color` signature, aren't reflected in
+  `ShadcnScreenshotTest.kt`/`StylePresetMatrixTest.kt` yet) -- needs a follow-up pass
+  before it can catch regressions again.
 
 ## Commands installed
 

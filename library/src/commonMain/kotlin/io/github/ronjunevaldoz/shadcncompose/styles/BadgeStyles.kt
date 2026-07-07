@@ -14,9 +14,13 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface BadgeVariant {
     data object Default : BadgeVariant
+
     data object Secondary : BadgeVariant
+
     data object Destructive : BadgeVariant
+
     data object Outline : BadgeVariant
+
     data object Ghost : BadgeVariant
 }
 
@@ -29,50 +33,55 @@ fun BadgeVariant.rememberStyle(): Style {
 
     return remember(this, colors, shapes, spacing) {
         when (this) {
-            BadgeVariant.Default -> Style {
-                background(colors.primary)
-                contentColor(colors.onPrimary)
-                shape(RoundedCornerShape(shapes.full))
-                contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
-                fontSize(12.sp)
-                fontWeight(FontWeight.SemiBold)
-            }
+            BadgeVariant.Default ->
+                Style {
+                    background(colors.primary)
+                    contentColor(colors.onPrimary)
+                    shape(RoundedCornerShape(shapes.full))
+                    contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
+                    fontSize(12.sp)
+                    fontWeight(FontWeight.SemiBold)
+                }
 
-            BadgeVariant.Secondary -> Style {
-                background(colors.secondary)
-                contentColor(colors.onSecondary)
-                shape(RoundedCornerShape(shapes.full))
-                contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
-                fontSize(12.sp)
-                fontWeight(FontWeight.SemiBold)
-            }
+            BadgeVariant.Secondary ->
+                Style {
+                    background(colors.secondary)
+                    contentColor(colors.onSecondary)
+                    shape(RoundedCornerShape(shapes.full))
+                    contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
+                    fontSize(12.sp)
+                    fontWeight(FontWeight.SemiBold)
+                }
 
-            BadgeVariant.Destructive -> Style {
-                background(colors.destructive)
-                contentColor(colors.onDestructive)
-                shape(RoundedCornerShape(shapes.full))
-                contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
-                fontSize(12.sp)
-                fontWeight(FontWeight.SemiBold)
-            }
+            BadgeVariant.Destructive ->
+                Style {
+                    background(colors.destructive)
+                    contentColor(colors.onDestructive)
+                    shape(RoundedCornerShape(shapes.full))
+                    contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
+                    fontSize(12.sp)
+                    fontWeight(FontWeight.SemiBold)
+                }
 
-            BadgeVariant.Outline -> Style {
-                contentColor(colors.onSurface)
-                borderWidth(1.dp)
-                borderColor(colors.border)
-                shape(RoundedCornerShape(shapes.full))
-                contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
-                fontSize(12.sp)
-                fontWeight(FontWeight.SemiBold)
-            }
+            BadgeVariant.Outline ->
+                Style {
+                    contentColor(colors.onSurface)
+                    borderWidth(1.dp)
+                    borderColor(colors.border)
+                    shape(RoundedCornerShape(shapes.full))
+                    contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
+                    fontSize(12.sp)
+                    fontWeight(FontWeight.SemiBold)
+                }
 
-            BadgeVariant.Ghost -> Style {
-                background(colors.muted)
-                contentColor(colors.onMuted)
-                shape(RoundedCornerShape(shapes.full))
-                contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
-                fontSize(12.sp)
-            }
+            BadgeVariant.Ghost ->
+                Style {
+                    background(colors.muted)
+                    contentColor(colors.onMuted)
+                    shape(RoundedCornerShape(shapes.full))
+                    contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
+                    fontSize(12.sp)
+                }
         }
     }
 }

@@ -13,7 +13,9 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface CardVariant {
     data object Default : CardVariant
+
     data object Elevated : CardVariant
+
     data object Filled : CardVariant
 }
 
@@ -26,34 +28,38 @@ fun CardVariant.rememberStyle(): Style {
 
     return remember(this, colors, shapes, spacing) {
         when (this) {
-            CardVariant.Default -> Style {
-                background(colors.surface)
-                contentColor(colors.onSurface)
-                borderWidth(1.dp)
-                borderColor(colors.border)
-                shape(RoundedCornerShape(shapes.xxl))
-                contentPadding(spacing.lg)
-            }
+            CardVariant.Default ->
+                Style {
+                    background(colors.surface)
+                    contentColor(colors.onSurface)
+                    borderWidth(1.dp)
+                    borderColor(colors.border)
+                    shape(RoundedCornerShape(shapes.xxl))
+                    contentPadding(spacing.lg)
+                }
 
-            CardVariant.Elevated -> Style {
-                background(colors.surface)
-                contentColor(colors.onSurface)
-                shape(RoundedCornerShape(shapes.xxl))
-                contentPadding(spacing.lg)
-            }
+            CardVariant.Elevated ->
+                Style {
+                    background(colors.surface)
+                    contentColor(colors.onSurface)
+                    shape(RoundedCornerShape(shapes.xxl))
+                    contentPadding(spacing.lg)
+                }
 
-            CardVariant.Filled -> Style {
-                background(colors.surfaceVariant)
-                contentColor(colors.onSurface)
-                shape(RoundedCornerShape(shapes.xxl))
-                contentPadding(spacing.lg)
-            }
+            CardVariant.Filled ->
+                Style {
+                    background(colors.surfaceVariant)
+                    contentColor(colors.onSurface)
+                    shape(RoundedCornerShape(shapes.xxl))
+                    contentPadding(spacing.lg)
+                }
         }
     }
 }
 
 sealed interface CardSize {
     data object Default : CardSize
+
     data object Sm : CardSize
 }
 

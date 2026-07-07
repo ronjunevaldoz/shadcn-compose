@@ -7,5 +7,5 @@ import androidx.compose.ui.unit.Dp
 data class ShadcnIconStyles(
     val standardSize: Dp,
     val smallSize: Dp,
-    val strokeWidth: Float
+    val strokeWidth: Float,
 )

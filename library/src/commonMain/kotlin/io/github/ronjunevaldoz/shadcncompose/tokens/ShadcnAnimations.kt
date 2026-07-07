@@ -6,5 +6,5 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class ShadcnAnimations(
     val defaultTransition: TweenSpec<Float>,
-    val visibilityTransition: TweenSpec<Float>
+    val visibilityTransition: TweenSpec<Float>,
 )

@@ -22,6 +22,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 // color wins if both interaction states are active at once, same as CSS cascade order.
 sealed interface ToggleVariant {
     data object Default : ToggleVariant
+
     data object Outline : ToggleVariant
 }
 
@@ -34,34 +35,36 @@ fun ToggleVariant.rememberStyle(): Style {
 
     return remember(this, colors, shapes, spacing) {
         when (this) {
-            ToggleVariant.Default -> Style {
-                background(Color.Transparent)
-                contentColor(colors.onSurface)
-                shape(RoundedCornerShape(shapes.lg))
-                contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
-                height(36.dp)
-                minWidth(36.dp)
-                fontSize(14.sp)
-                hovered { background(colors.muted) }
-                checked { background(colors.secondary) }
-                disabled { alpha(0.5f) }
-            }
+            ToggleVariant.Default ->
+                Style {
+                    background(Color.Transparent)
+                    contentColor(colors.onSurface)
+                    shape(RoundedCornerShape(shapes.lg))
+                    contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
+                    height(36.dp)
+                    minWidth(36.dp)
+                    fontSize(14.sp)
+                    hovered { background(colors.muted) }
+                    checked { background(colors.secondary) }
+                    disabled { alpha(0.5f) }
+                }
 
-            ToggleVariant.Outline -> Style {
-                background(Color.Transparent)
-                contentColor(colors.onSurface)
-                borderWidth(1.dp)
-                borderColor(colors.border)
-                shape(RoundedCornerShape(shapes.lg))
-                contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
-                height(36.dp)
-                minWidth(36.dp)
-                fontSize(14.sp)
-                hovered { background(colors.secondary) }
-                checked { background(colors.secondary) }
-                focused { borderColor(colors.borderFocus) }
-                disabled { alpha(0.5f) }
-            }
+            ToggleVariant.Outline ->
+                Style {
+                    background(Color.Transparent)
+                    contentColor(colors.onSurface)
+                    borderWidth(1.dp)
+                    borderColor(colors.border)
+                    shape(RoundedCornerShape(shapes.lg))
+                    contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
+                    height(36.dp)
+                    minWidth(36.dp)
+                    fontSize(14.sp)
+                    hovered { background(colors.secondary) }
+                    checked { background(colors.secondary) }
+                    focused { borderColor(colors.borderFocus) }
+                    disabled { alpha(0.5f) }
+                }
         }
     }
 }

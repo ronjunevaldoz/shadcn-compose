@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import io.github.ronjunevaldoz.shadcncompose.components.LocalGroupCorners
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
@@ -41,57 +40,63 @@ fun Modifier.shadcnFocusRing(
     // Change the default to null so the modifier resolves it automatically!
     shape: CornerBasedShape? = null,
     color: Color? = null,
-): Modifier = composed {
-    if (!isFocused) return@composed this
+): Modifier =
+    composed {
+        if (!isFocused) return@composed this
 
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val resolvedColor = color ?: theme.colors.borderFocus.copy(alpha = theme.ring.opacity)
-    val width = theme.ring.width
-    val offset = theme.ring.offset
+        val theme = ShadcnTheme.LocalShadcnTheme.current
+        val resolvedColor = color ?: theme.colors.borderFocus.copy(alpha = theme.ring.opacity)
+        val width = theme.ring.width
+        val offset = theme.ring.offset
 
-    // 1. Resolve your group and theme corners completely automatically!
-    val resolvedShape = shape ?: run {
-        val defaultRingCorner = theme.shapes.lg
-        val groupCorners = LocalGroupCorners.current
+        // 1. Resolve your group and theme corners completely automatically!
+        val resolvedShape =
+            shape ?: run {
+                val defaultRingCorner = theme.shapes.lg
+                val groupCorners = LocalGroupCorners.current
 
-        RoundedCornerShape(
-            topStart = groupCorners?.topStart ?: defaultRingCorner,
-            topEnd = groupCorners?.topEnd ?: defaultRingCorner,
-            bottomEnd = groupCorners?.bottomEnd ?: defaultRingCorner,
-            bottomStart = groupCorners?.bottomStart ?: defaultRingCorner
-        )
-    }
-
-    this
-        .zIndex(1f)
-        .drawWithContent {
-            drawContent()
-
-            val strokePx = width.toPx()
-            val offsetPx = offset.toPx()
-            val growth = offsetPx + strokePx / 2f
-
-            inset(-growth) {
-                val maxRadiusPx = minOf(size.width, size.height) / 2f
-
-                // 2. Use the dynamically resolved shape corners
-                val ts = resolvedShape.topStart.toPx(size, this)
-                val te = resolvedShape.topEnd.toPx(size, this)
-                val be = resolvedShape.bottomEnd.toPx(size, this)
-                val bs = resolvedShape.bottomStart.toPx(size, this)
-
-                fun corner(px: Float) = CornerRadius((px + growth).coerceAtMost(maxRadiusPx))
-
-                val roundRect = RoundRect(
-                    left = 0f, top = 0f, right = size.width, bottom = size.height,
-                    topLeftCornerRadius = corner(ts),
-                    topRightCornerRadius = corner(te),
-                    bottomRightCornerRadius = corner(be),
-                    bottomLeftCornerRadius = corner(bs),
+                RoundedCornerShape(
+                    topStart = groupCorners?.topStart ?: defaultRingCorner,
+                    topEnd = groupCorners?.topEnd ?: defaultRingCorner,
+                    bottomEnd = groupCorners?.bottomEnd ?: defaultRingCorner,
+                    bottomStart = groupCorners?.bottomStart ?: defaultRingCorner,
                 )
-
-                val path = Path().apply { addRoundRect(roundRect) }
-                drawPath(path, color = resolvedColor, style = Stroke(width = strokePx))
             }
-        }
-}
+
+        this
+            .zIndex(1f)
+            .drawWithContent {
+                drawContent()
+
+                val strokePx = width.toPx()
+                val offsetPx = offset.toPx()
+                val growth = offsetPx + strokePx / 2f
+
+                inset(-growth) {
+                    val maxRadiusPx = minOf(size.width, size.height) / 2f
+
+                    // 2. Use the dynamically resolved shape corners
+                    val ts = resolvedShape.topStart.toPx(size, this)
+                    val te = resolvedShape.topEnd.toPx(size, this)
+                    val be = resolvedShape.bottomEnd.toPx(size, this)
+                    val bs = resolvedShape.bottomStart.toPx(size, this)
+
+                    fun corner(px: Float) = CornerRadius((px + growth).coerceAtMost(maxRadiusPx))
+
+                    val roundRect =
+                        RoundRect(
+                            left = 0f,
+                            top = 0f,
+                            right = size.width,
+                            bottom = size.height,
+                            topLeftCornerRadius = corner(ts),
+                            topRightCornerRadius = corner(te),
+                            bottomRightCornerRadius = corner(be),
+                            bottomLeftCornerRadius = corner(bs),
+                        )
+
+                    val path = Path().apply { addRoundRect(roundRect) }
+                    drawPath(path, color = resolvedColor, style = Stroke(width = strokePx))
+                }
+            }
+    }
