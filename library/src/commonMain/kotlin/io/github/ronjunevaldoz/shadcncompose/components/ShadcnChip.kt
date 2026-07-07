@@ -5,20 +5,21 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.ChipVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
+import io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnDataSlots
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnDataSlots
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
@@ -41,11 +42,10 @@ fun ShadcnChip(
     variant: ChipVariant = if (selected) ChipVariant.Selected else ChipVariant.Default,
     style: Style = Style,
 ) {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    // Resolve the clean, dynamic base variant style for dark/light parity
+    // 1. Resolve the clean, dynamic base variant style for dark/light parity
     val baseVariantStyle = variant.rememberStyle()
 
     val styleState = rememberUpdatedStyleState(interactionSource) {
@@ -63,17 +63,28 @@ fun ShadcnChip(
         Modifier
     }
 
-    Row(
-        modifier = modifier
-            .shadcnFocusRing(
-                isFocused = isFocused,
-                shape = RoundedCornerShape(theme.shapes.full),
-            )
-            .then(clickableModifier)
-            .styleable(styleState, baseVariantStyle, style),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        ShadcnText(text = label)
+    // 2. Set up the Tailwind v4 data-slot rules for child layouts automatically!
+    val theme = ShadcnTheme.current
+    val slotDimensions = remember(theme) {
+        ShadcnDataSlots(
+            iconSize = theme.icons.standardSize,
+            paddingHorizontal = theme.spacing.md,
+            paddingVertical = theme.spacing.xs
+        )
+    }
+
+    CompositionLocalProvider(LocalShadcnDataSlots provides slotDimensions) {
+        Row(
+            modifier = modifier
+                // 3. Cleaner! No more passing theme shapes manually. Focus ring handles its own context.
+                .shadcnFocusRing(isFocused = isFocused)
+                .then(clickableModifier)
+                .styleable(styleState, baseVariantStyle, style),
+            verticalAlignment = Alignment.CenterVertically,
+            // 4. Use your structural layout tokens instead of hardcoded numbers
+            horizontalArrangement = Arrangement.spacedBy(theme.spacing.xxs),
+        ) {
+            ShadcnText(text = label)
+        }
     }
 }

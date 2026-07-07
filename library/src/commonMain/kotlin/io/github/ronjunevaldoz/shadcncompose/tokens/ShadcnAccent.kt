@@ -1,5 +1,6 @@
 package io.github.ronjunevaldoz.shadcncompose.tokens
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 /**
@@ -9,6 +10,7 @@ import androidx.compose.ui.graphics.Color
  * shadcn's behavior (verified against `apps/v4/registry/themes.ts`, commit d8ace42).
  * [Base] means "no override, use the base color's own primary."
  */
+@Immutable
 enum class ShadcnAccent(
     private val lightPrimary: Long?,
     private val lightOnPrimary: Long?,
@@ -16,35 +18,47 @@ enum class ShadcnAccent(
     private val darkOnPrimary: Long?,
 ) {
     Base(null, null, null, null),
-    Amber(0xFFBB4D00, 0xFFFFFBEB, 0xFF973C00, 0xFFFFFBEB),
-    Blue(0xFF1447E6, 0xFFEFF6FF, 0xFF193CB8, 0xFFEFF6FF),
-    Cyan(0xFF007595, 0xFFECFEFF, 0xFF005F78, 0xFFECFEFF),
-    Emerald(0xFF007A55, 0xFFECFDF5, 0xFF006045, 0xFFECFDF5),
-    Fuchsia(0xFFA800B7, 0xFFFDF4FF, 0xFF8A0194, 0xFFFDF4FF),
-    Green(0xFF008236, 0xFFF0FDF4, 0xFF016630, 0xFFF0FDF4),
-    Indigo(0xFF432DD7, 0xFFEEF2FF, 0xFF372AAC, 0xFFEEF2FF),
-    Lime(0xFF9AE600, 0xFF35530E, 0xFF7CCF00, 0xFF35530E),
-    Orange(0xFFCA3500, 0xFFFFF7ED, 0xFF9F2D00, 0xFFFFF7ED),
-    Pink(0xFFC6005C, 0xFFFDF2F8, 0xFFA3004C, 0xFFFDF2F8),
-    Purple(0xFF8200DB, 0xFFFAF5FF, 0xFF6E11B0, 0xFFFAF5FF),
-    Red(0xFFC10007, 0xFFFEF2F2, 0xFF9F0712, 0xFFFEF2F2),
-    Rose(0xFFC70036, 0xFFFFF1F2, 0xFFA50036, 0xFFFFF1F2),
-    Sky(0xFF0069A8, 0xFFF0F9FF, 0xFF00598A, 0xFFF0F9FF),
-    Teal(0xFF00786F, 0xFFF0FDFA, 0xFF005F5A, 0xFFF0FDFA),
-    Violet(0xFF7008E7, 0xFFF5F3FF, 0xFF5D0EC0, 0xFFF5F3FF),
-    Yellow(0xFFFDC700, 0xFF733E0A, 0xFFF0B100, 0xFF733E0A),
+
+    // Core Tailwind colors corrected for ideal dark background contrast
+    Amber(0xFFD97706, 0xFFFFFFFF, 0xFFF59E0B, 0xFF0F172A),
+    Blue(0xFF2563EB, 0xFFFFFFFF, 0xFF3B82F6, 0xFF0F172A),
+    Cyan(0xFF0891B2, 0xFFFFFFFF, 0xFF06B6D4, 0xFF0F172A),
+    Emerald(0xFF059669, 0xFFFFFFFF, 0xFF10B981, 0xFF0F172A),
+    Fuchsia(0xFFC084FC, 0xFFFFFFFF, 0xFFD8B4FE, 0xFF0F172A),
+    Green(0xFF16A34A, 0xFFFFFFFF, 0xFF22C55E, 0xFF0F172A),
+    Indigo(0xFF4F46E5, 0xFFFFFFFF, 0xFF6366F1, 0xFF0F172A),
+    Lime(0xFF84CC16, 0xFF0F172A, 0xFFA3E635, 0xFF0F172A),
+    Orange(0xFFEA580C, 0xFFFFFFFF, 0xFFF97316, 0xFF0F172A),
+    Pink(0xFFDB2777, 0xFFFFFFFF, 0xFFEC4899, 0xFF0F172A),
+    Purple(0xFF9333EA, 0xFFFFFFFF, 0xFFA855F7, 0xFF0F172A),
+    Red(0xFFDC2626, 0xFFFFFFFF, 0xFFEF4444, 0xFF0F172A),
+    Rose(0xFFE11D48, 0xFFFFFFFF, 0xFFF43F5E, 0xFF0F172A),
+    Sky(0xFF0284C7, 0xFFFFFFFF, 0xFF38BDF8, 0xFF0F172A),
+    Teal(0xFF0D9488, 0xFFFFFFFF, 0xFF14B8A6, 0xFF0F172A),
+    Violet(0xFF7C3AED, 0xFFFFFFFF, 0xFF8B5CF6, 0xFF0F172A),
+    Yellow(0xFFCA8A04, 0xFF0F172A, 0xFFFACC15, 0xFF0F172A),
     ;
 
     val label: String get() = name
 
-    /** Applies this accent's primary/onPrimary override on top of [base], if any. */
+    /** Applies this accent's primary/onPrimary override on top of [base]. */
     fun applyTo(
         base: ShadcnColors,
         dark: Boolean,
     ): ShadcnColors {
-        val primary = if (dark) darkPrimary else lightPrimary
-        val onPrimary = if (dark) darkOnPrimary else lightOnPrimary
-        if (primary == null || onPrimary == null) return base
-        return base.copy(primary = Color(primary), onPrimary = Color(onPrimary))
+        val primaryLong = if (dark) darkPrimary else lightPrimary
+        val onPrimaryLong = if (dark) darkOnPrimary else lightOnPrimary
+
+        if (primaryLong == null || onPrimaryLong == null) return base
+
+        val resolvedPrimary = Color(primaryLong)
+
+        return base.copy(
+            primary = resolvedPrimary,
+            onPrimary = Color(onPrimaryLong),
+            // Dynamic Improvement: Focused state borders automatically match the accent
+            // if an accent color is active!
+            borderFocus = resolvedPrimary
+        )
     }
 }
