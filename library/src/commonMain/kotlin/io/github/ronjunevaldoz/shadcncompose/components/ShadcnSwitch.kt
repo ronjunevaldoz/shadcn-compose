@@ -20,8 +20,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberSwitchTrackStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
-import io.github.ronjunevaldoz.shadcncompose.styles.switchTrackStyle
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 // Matches real shadcn's default-size switch.tsx: track h-[1.15rem] (~18dp) w-8 (32dp),
@@ -72,7 +72,7 @@ fun ShadcnSwitch(
                     interactionSource = interactionSource,
                     indication = null,
                 )
-                .styleable(styleState, switchTrackStyle, style),
+                .styleable(styleState, rememberSwitchTrackStyle(), style),
     ) {
         Box(
             modifier =

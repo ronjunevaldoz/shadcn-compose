@@ -5,19 +5,28 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.theme.colors
-import io.github.ronjunevaldoz.shadcncompose.theme.shapes
-import io.github.ronjunevaldoz.shadcncompose.theme.spacing
-import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnSpacing
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface CardVariant {
-    val style: Style
+    data object Default : CardVariant
+    data object Elevated : CardVariant
+    data object Filled : CardVariant
+}
 
-    data object Default : CardVariant {
-        override val style get() =
-            Style {
+@Composable
+fun CardVariant.rememberStyle(): Style {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    val colors = theme.colors
+    val shapes = theme.shapes
+    val spacing = theme.spacing
+
+    return remember(this, colors, shapes, spacing) {
+        when (this) {
+            CardVariant.Default -> Style {
                 background(colors.surface)
                 contentColor(colors.onSurface)
                 borderWidth(1.dp)
@@ -25,37 +34,34 @@ sealed interface CardVariant {
                 shape(RoundedCornerShape(shapes.xxl))
                 contentPadding(spacing.lg)
             }
-    }
 
-    data object Elevated : CardVariant {
-        override val style get() =
-            Style {
+            CardVariant.Elevated -> Style {
                 background(colors.surface)
                 contentColor(colors.onSurface)
                 shape(RoundedCornerShape(shapes.xxl))
                 contentPadding(spacing.lg)
             }
-    }
 
-    data object Filled : CardVariant {
-        override val style get() =
-            Style {
+            CardVariant.Filled -> Style {
                 background(colors.surfaceVariant)
                 contentColor(colors.onSurface)
                 shape(RoundedCornerShape(shapes.xxl))
                 contentPadding(spacing.lg)
             }
+        }
     }
 }
 
 sealed interface CardSize {
-    val headerSpacing: Dp
+    data object Default : CardSize
+    data object Sm : CardSize
+}
 
-    data object Default : CardSize {
-        override val headerSpacing = ShadcnSpacing().sm
-    }
-
-    data object Sm : CardSize {
-        override val headerSpacing = ShadcnSpacing().xs
+@Composable
+fun CardSize.headerSpacing(): Dp {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    return when (this) {
+        CardSize.Default -> theme.spacing.sm
+        CardSize.Sm -> theme.spacing.xs
     }
 }

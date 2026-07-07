@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.CardSize
 import io.github.ronjunevaldoz.shadcncompose.styles.CardVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.headerSpacing
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 
 /**
  * Card with header/content/footer slots.
@@ -44,17 +46,18 @@ fun ShadcnCard(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val styleState = remember { MutableStyleState(MutableInteractionSource()) }
+    val headerSpacing = size.headerSpacing()
 
     Column(
-        modifier = modifier.styleable(styleState, variant.style, style),
+        modifier = modifier.styleable(styleState, variant.rememberStyle(), style),
     ) {
         if (header != null) {
             header()
-            Spacer(Modifier.height(size.headerSpacing))
+            Spacer(Modifier.height(headerSpacing))
         }
         content()
         if (footer != null) {
-            Spacer(Modifier.height(size.headerSpacing))
+            Spacer(Modifier.height(headerSpacing))
             footer()
         }
     }

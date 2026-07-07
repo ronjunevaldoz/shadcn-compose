@@ -7,23 +7,33 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.focused
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.ronjunevaldoz.shadcncompose.theme.colors
-import io.github.ronjunevaldoz.shadcncompose.theme.shapes
-import io.github.ronjunevaldoz.shadcncompose.theme.spacing
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 // Matches shadcn/ui's real input.tsx: border border-input (1.dp, always visible),
 // focus-visible:border-ring (color swap only). The ring-[3px] ring-ring/50 focus
 // ring is drawn by Modifier.shadcnFocusRing (see ShadcnTextField.kt), not here --
 // border width never changes, so focusing never reflows layout.
 sealed interface TextFieldVariant {
-    val style: Style
+    data object Default : TextFieldVariant
+    data object Filled : TextFieldVariant
+    data object Ghost : TextFieldVariant
+}
 
-    data object Default : TextFieldVariant {
-        override val style get() =
-            Style {
+@Composable
+fun TextFieldVariant.rememberStyle(): Style {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    val colors = theme.colors
+    val shapes = theme.shapes
+    val spacing = theme.spacing
+
+    return remember(this, colors, shapes, spacing) {
+        when (this) {
+            TextFieldVariant.Default -> Style {
                 background(colors.background)
                 contentColor(colors.onSurface)
                 borderWidth(1.dp)
@@ -34,11 +44,8 @@ sealed interface TextFieldVariant {
                 focused { borderColor(colors.borderFocus) }
                 disabled { alpha(0.5f) }
             }
-    }
 
-    data object Filled : TextFieldVariant {
-        override val style get() =
-            Style {
+            TextFieldVariant.Filled -> Style {
                 background(colors.surfaceVariant)
                 contentColor(colors.onSurface)
                 borderWidth(1.dp)
@@ -49,11 +56,8 @@ sealed interface TextFieldVariant {
                 focused { borderColor(colors.borderFocus) }
                 disabled { alpha(0.5f) }
             }
-    }
 
-    data object Ghost : TextFieldVariant {
-        override val style get() =
-            Style {
+            TextFieldVariant.Ghost -> Style {
                 contentColor(colors.onSurface)
                 borderWidth(1.dp)
                 borderColor(Color.Transparent)
@@ -62,5 +66,6 @@ sealed interface TextFieldVariant {
                 focused { borderColor(colors.borderFocus) }
                 disabled { alpha(0.5f) }
             }
+        }
     }
 }

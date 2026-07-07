@@ -8,12 +8,12 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.ronjunevaldoz.shadcncompose.theme.colors
-import io.github.ronjunevaldoz.shadcncompose.theme.shapes
-import io.github.ronjunevaldoz.shadcncompose.theme.spacing
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 // Matches shadcn/ui's real button.tsx (github.com/shadcn-ui/ui) as closely as our
 // Style API allows: most variants have zero border (only Outline has one), hover
@@ -22,24 +22,31 @@ import io.github.ronjunevaldoz.shadcncompose.theme.spacing
 // must be a crisp drawn ring -- so none of this ever changes a button's measured size.
 
 sealed interface ButtonVariant {
-    val style: Style
+    data object Default : ButtonVariant
+    data object Outline : ButtonVariant
+    data object Secondary : ButtonVariant
+    data object Ghost : ButtonVariant
+    data object Destructive : ButtonVariant
+    data object Link : ButtonVariant
+}
 
-    data object Default : ButtonVariant {
-        // bg-primary text-primary-foreground hover:bg-primary/90
-        override val style get() =
-            Style {
+@Composable
+fun ButtonVariant.rememberStyle(): Style {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    val colors = theme.colors
+    val shapes = theme.shapes
+
+    return remember(this, colors, shapes) {
+        when (this) {
+            ButtonVariant.Default -> Style {
                 background(colors.primary)
                 contentColor(colors.onPrimary)
                 shape(RoundedCornerShape(shapes.lg))
                 hovered { background(colors.primary.copy(alpha = 0.9f)) }
                 disabled { alpha(0.5f) }
             }
-    }
 
-    data object Outline : ButtonVariant {
-        // border bg-background hover:bg-accent hover:text-accent-foreground
-        override val style get() =
-            Style {
+            ButtonVariant.Outline -> Style {
                 background(colors.background)
                 contentColor(colors.onSurface)
                 borderWidth(1.dp)
@@ -52,24 +59,16 @@ sealed interface ButtonVariant {
                 focused { borderColor(colors.borderFocus) }
                 disabled { alpha(0.5f) }
             }
-    }
 
-    data object Secondary : ButtonVariant {
-        // bg-secondary text-secondary-foreground hover:bg-secondary/80
-        override val style get() =
-            Style {
+            ButtonVariant.Secondary -> Style {
                 background(colors.secondary)
                 contentColor(colors.onSecondary)
                 shape(RoundedCornerShape(shapes.lg))
                 hovered { background(colors.secondary.copy(alpha = 0.8f)) }
                 disabled { alpha(0.5f) }
             }
-    }
 
-    data object Ghost : ButtonVariant {
-        // hover:bg-accent hover:text-accent-foreground
-        override val style get() =
-            Style {
+            ButtonVariant.Ghost -> Style {
                 contentColor(colors.onSurface)
                 shape(RoundedCornerShape(shapes.lg))
                 hovered {
@@ -78,79 +77,68 @@ sealed interface ButtonVariant {
                 }
                 disabled { alpha(0.5f) }
             }
-    }
 
-    data object Destructive : ButtonVariant {
-        // bg-destructive text-white hover:bg-destructive/90
-        override val style get() =
-            Style {
+            ButtonVariant.Destructive -> Style {
                 background(colors.destructive)
                 contentColor(colors.onDestructive)
                 shape(RoundedCornerShape(shapes.lg))
                 hovered { background(colors.destructive.copy(alpha = 0.9f)) }
                 disabled { alpha(0.5f) }
             }
-    }
 
-    data object Link : ButtonVariant {
-        // text-primary underline-offset-4 hover:underline
-        override val style get() =
-            Style {
+            ButtonVariant.Link -> Style {
                 contentColor(colors.primary)
                 hovered { textDecoration(TextDecoration.Underline) }
                 disabled { alpha(0.5f) }
             }
+        }
     }
 }
 
 sealed interface ButtonSize {
-    val style: Style
+    data object Xs : ButtonSize
+    data object Sm : ButtonSize
+    data object Md : ButtonSize
+    data object Lg : ButtonSize
+    data object Icon : ButtonSize
+}
 
-    data object Xs : ButtonSize {
-        override val style get() =
-            Style {
+@Composable
+fun ButtonSize.rememberStyle(): Style {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    val spacing = theme.spacing
+
+    return remember(this, spacing) {
+        when (this) {
+            ButtonSize.Xs -> Style {
                 contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
                 fontSize(12.sp)
                 height(28.dp)
             }
-    }
 
-    data object Sm : ButtonSize {
-        override val style get() =
-            Style {
+            ButtonSize.Sm -> Style {
                 contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                 fontSize(14.sp)
                 height(32.dp)
             }
-    }
 
-    // Matches real shadcn's default size exactly: h-9 (36px) px-4 (16dp) py-2 (8dp).
-    data object Md : ButtonSize {
-        override val style get() =
-            Style {
+            ButtonSize.Md -> Style {
                 contentPadding(horizontal = spacing.lg, vertical = spacing.sm)
                 fontSize(14.sp)
                 height(36.dp)
             }
-    }
 
-    // Matches real shadcn's lg size: h-10 (40px) px-6 (24dp).
-    data object Lg : ButtonSize {
-        override val style get() =
-            Style {
+            ButtonSize.Lg -> Style {
                 contentPadding(horizontal = spacing.xxl, vertical = spacing.md)
                 fontSize(16.sp)
                 height(40.dp)
             }
-    }
 
-    // Matches real shadcn's icon size: size-9 (36px square).
-    data object Icon : ButtonSize {
-        override val style get() =
-            Style {
+            ButtonSize.Icon -> Style {
                 contentPadding(spacing.sm)
                 width(36.dp)
                 height(36.dp)
             }
+        }
     }
 }

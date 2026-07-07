@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.ronjunevaldoz.shadcncompose.styles.BadgeVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 
 /**
  * Label/tag component.
@@ -34,7 +35,7 @@ fun ShadcnBadge(
     val styleState = remember { MutableStyleState(MutableInteractionSource()) }
 
     Box(
-        modifier = modifier.styleable(styleState, variant.style, style),
+        modifier = modifier.styleable(styleState, variant.rememberStyle(), style),
         contentAlignment = Alignment.Center,
     ) {
         content()

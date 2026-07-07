@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.styles.radioButtonStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberRadioButtonStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -72,7 +72,7 @@ fun ShadcnRadioButton(
                     interactionSource = interactionSource,
                     indication = null,
                 )
-                .styleable(styleState, radioButtonStyle, style),
+                .styleable(styleState, rememberRadioButtonStyle(), style),
         contentAlignment = Alignment.Center,
     ) {
         if (selected) {

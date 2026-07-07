@@ -5,19 +5,31 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.ronjunevaldoz.shadcncompose.theme.colors
-import io.github.ronjunevaldoz.shadcncompose.theme.shapes
-import io.github.ronjunevaldoz.shadcncompose.theme.spacing
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface BadgeVariant {
-    val style: Style
+    data object Default : BadgeVariant
+    data object Secondary : BadgeVariant
+    data object Destructive : BadgeVariant
+    data object Outline : BadgeVariant
+    data object Ghost : BadgeVariant
+}
 
-    data object Default : BadgeVariant {
-        override val style get() =
-            Style {
+@Composable
+fun BadgeVariant.rememberStyle(): Style {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    val colors = theme.colors
+    val shapes = theme.shapes
+    val spacing = theme.spacing
+
+    return remember(this, colors, shapes, spacing) {
+        when (this) {
+            BadgeVariant.Default -> Style {
                 background(colors.primary)
                 contentColor(colors.onPrimary)
                 shape(RoundedCornerShape(shapes.full))
@@ -25,11 +37,8 @@ sealed interface BadgeVariant {
                 fontSize(12.sp)
                 fontWeight(FontWeight.SemiBold)
             }
-    }
 
-    data object Secondary : BadgeVariant {
-        override val style get() =
-            Style {
+            BadgeVariant.Secondary -> Style {
                 background(colors.secondary)
                 contentColor(colors.onSecondary)
                 shape(RoundedCornerShape(shapes.full))
@@ -37,11 +46,8 @@ sealed interface BadgeVariant {
                 fontSize(12.sp)
                 fontWeight(FontWeight.SemiBold)
             }
-    }
 
-    data object Destructive : BadgeVariant {
-        override val style get() =
-            Style {
+            BadgeVariant.Destructive -> Style {
                 background(colors.destructive)
                 contentColor(colors.onDestructive)
                 shape(RoundedCornerShape(shapes.full))
@@ -49,11 +55,8 @@ sealed interface BadgeVariant {
                 fontSize(12.sp)
                 fontWeight(FontWeight.SemiBold)
             }
-    }
 
-    data object Outline : BadgeVariant {
-        override val style get() =
-            Style {
+            BadgeVariant.Outline -> Style {
                 contentColor(colors.onSurface)
                 borderWidth(1.dp)
                 borderColor(colors.border)
@@ -62,16 +65,14 @@ sealed interface BadgeVariant {
                 fontSize(12.sp)
                 fontWeight(FontWeight.SemiBold)
             }
-    }
 
-    data object Ghost : BadgeVariant {
-        override val style get() =
-            Style {
+            BadgeVariant.Ghost -> Style {
                 background(colors.muted)
                 contentColor(colors.onMuted)
                 shape(RoundedCornerShape(shapes.full))
                 contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
                 fontSize(12.sp)
             }
+        }
     }
 }

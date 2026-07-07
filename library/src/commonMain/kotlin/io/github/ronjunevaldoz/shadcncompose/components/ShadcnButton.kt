@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 
 /**
@@ -64,7 +65,7 @@ fun ShadcnButton(
                     role = Role.Button,
                     onClick = onClick,
                 )
-                .styleable(styleState, variant.style then size.style, style),
+                .styleable(styleState, variant.rememberStyle() then size.rememberStyle(), style),
         contentAlignment = Alignment.Center,
     ) {
         Row(

@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.styles.checkboxStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberCheckboxStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -74,7 +74,7 @@ fun ShadcnCheckbox(
                     interactionSource = interactionSource,
                     indication = null,
                 )
-                .styleable(styleState, checkboxStyle, style),
+                .styleable(styleState, rememberCheckboxStyle(), style),
         contentAlignment = Alignment.Center,
     ) {
         val markColor = shadcnTheme.colors.onPrimary

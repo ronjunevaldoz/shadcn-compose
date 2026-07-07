@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.VisualTransformation
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -104,7 +105,7 @@ fun ShadcnTextField(
                         isFocused = isFocused && !insideGroup,
                         shape = RoundedCornerShape(shadcnTheme.shapes.lg),
                     )
-                    .styleable(styleState, variant.style then errorStyle then insideGroupStyle, style),
+                    .styleable(styleState, variant.rememberStyle() then errorStyle then insideGroupStyle, style),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             visualTransformation = visualTransformation,

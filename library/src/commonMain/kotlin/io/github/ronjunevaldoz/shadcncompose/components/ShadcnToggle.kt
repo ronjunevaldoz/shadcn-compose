@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.ronjunevaldoz.shadcncompose.styles.ToggleVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 
 /**
@@ -59,7 +60,7 @@ fun ShadcnToggle(
                     interactionSource = interactionSource,
                     indication = null,
                 )
-                .styleable(styleState, variant.style, style),
+                .styleable(styleState, variant.rememberStyle(), style),
         contentAlignment = Alignment.Center,
     ) {
         content()

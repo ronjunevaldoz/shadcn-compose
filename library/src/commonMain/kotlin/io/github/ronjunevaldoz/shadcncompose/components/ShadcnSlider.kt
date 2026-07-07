@@ -26,10 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberSliderRangeStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberSliderThumbStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberSliderTrackStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
-import io.github.ronjunevaldoz.shadcncompose.styles.sliderRangeStyle
-import io.github.ronjunevaldoz.shadcncompose.styles.sliderThumbStyle
-import io.github.ronjunevaldoz.shadcncompose.styles.sliderTrackStyle
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 private val THUMB_SIZE = 16.dp
@@ -76,7 +76,7 @@ fun ShadcnSlider(
                 Modifier
                     .fillMaxWidth()
                     .height(TRACK_HEIGHT)
-                    .styleable(trackStyleState, sliderTrackStyle)
+                    .styleable(trackStyleState, rememberSliderTrackStyle())
                     .pointerInput(enabled, valueRange) {
                         if (!enabled) return@pointerInput
                         detectTapGestures { offset ->
@@ -90,7 +90,7 @@ fun ShadcnSlider(
                 Modifier
                     .fillMaxWidth(fraction)
                     .height(TRACK_HEIGHT)
-                    .styleable(remember { MutableStyleState(MutableInteractionSource()) }, sliderRangeStyle),
+                    .styleable(remember { MutableStyleState(MutableInteractionSource()) }, rememberSliderRangeStyle()),
         )
         Box(
             modifier =
@@ -120,7 +120,7 @@ fun ShadcnSlider(
                             onValueChange(newValue)
                         }
                     }
-                    .styleable(thumbStyleState, sliderThumbStyle, style),
+                    .styleable(thumbStyleState, rememberSliderThumbStyle(), style),
         )
     }
 }
