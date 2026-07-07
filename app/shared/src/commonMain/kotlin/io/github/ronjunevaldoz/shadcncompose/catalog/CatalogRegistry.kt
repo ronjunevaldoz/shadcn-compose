@@ -11,6 +11,9 @@ enum class CatalogCategory(val title: String) {
     GETTING_STARTED("Getting Started"),
     CORE_PRIMITIVES("Core Primitives"),
     FORMS_AND_INPUTS("Forms & Inputs"),
+    DATA_DISPLAY("Data Display"),
+    FEEDBACK("Feedback"),
+    DISCLOSURE("Disclosure & Navigation"),
 }
 
 data class CatalogEntry(
@@ -45,6 +48,20 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "input-group", title = "Input Group", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "button-group", title = "Button Group", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "textarea", title = "Textarea", category = CatalogCategory.FORMS_AND_INPUTS),
+        // Data Display
+        CatalogEntry(id = "avatar", title = "Avatar", category = CatalogCategory.DATA_DISPLAY),
+        CatalogEntry(id = "aspect-ratio", title = "Aspect Ratio", category = CatalogCategory.DATA_DISPLAY),
+        CatalogEntry(id = "separator", title = "Separator", category = CatalogCategory.DATA_DISPLAY),
+        CatalogEntry(id = "kbd", title = "Kbd", category = CatalogCategory.DATA_DISPLAY),
+        // Feedback
+        CatalogEntry(id = "alert", title = "Alert", category = CatalogCategory.FEEDBACK),
+        CatalogEntry(id = "progress", title = "Progress", category = CatalogCategory.FEEDBACK),
+        CatalogEntry(id = "skeleton", title = "Skeleton", category = CatalogCategory.FEEDBACK),
+        CatalogEntry(id = "spinner", title = "Spinner", category = CatalogCategory.FEEDBACK),
+        // Disclosure & Navigation
+        CatalogEntry(id = "collapsible", title = "Collapsible", category = CatalogCategory.DISCLOSURE),
+        CatalogEntry(id = "accordion", title = "Accordion", category = CatalogCategory.DISCLOSURE),
+        CatalogEntry(id = "tabs", title = "Tabs", category = CatalogCategory.DISCLOSURE),
     )
 
 val catalogEntriesByCategory: Map<CatalogCategory, List<CatalogEntry>> =

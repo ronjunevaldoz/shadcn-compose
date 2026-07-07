@@ -47,6 +47,11 @@ abstract class ShadcnScreenshotTest {
         composeRule.setContent {
             ShadcnSnapshotSurface(darkTheme, stylePreset, content)
         }
+        // Lets finite transitions (AnimatedVisibility, animateFloatAsState, ...) settle
+        // before capture -- Compose UI Test explicitly excludes InfiniteTransition-driven
+        // animations (Skeleton's pulse, Spinner's rotation) from idle-detection, so this
+        // never blocks on those.
+        composeRule.waitForIdle()
         composeRule.onRoot().captureRoboImage("$snapshotDir/$name${themeSuffix(darkTheme)}.png")
     }
 
