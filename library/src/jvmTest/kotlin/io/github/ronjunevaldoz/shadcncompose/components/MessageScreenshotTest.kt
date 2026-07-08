@@ -1,5 +1,9 @@
+@file:OptIn(androidx.compose.foundation.style.ExperimentalFoundationStyleApi::class)
+
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -49,6 +53,57 @@ class MessageScreenshotTest : ShadcnScreenshotTest() {
         }
     }
 
+    private fun conversationWithBubbles(darkTheme: Boolean) {
+        snapshot("message_conversation_with_bubbles", darkTheme = darkTheme) {
+            Column(modifier = Modifier.width(280.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ShadcnMessageGroup {
+                    ShadcnMessage(
+                        align = ShadcnMessageAlign.End,
+                        avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                    ) {
+                        ShadcnBubble(align = ShadcnMessageAlign.End) {
+                            ShadcnBubbleContent { ShadcnText("Deploying to prod real quick.") }
+                        }
+                    }
+                    ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                        ShadcnBubble {
+                            ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                ShadcnText("It's 4:55 PM. On a Friday.")
+                            }
+                        }
+                    }
+                    ShadcnMessage(
+                        align = ShadcnMessageAlign.End,
+                        avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                    ) {
+                        ShadcnBubble(align = ShadcnMessageAlign.End) {
+                            ShadcnBubbleContent { ShadcnText("It's a one-line change.") }
+                        }
+                        ShadcnMessageFooter {
+                            ShadcnText("Delivered", style = ShadcnTextStyle.LabelSmall, muted = true)
+                        }
+                    }
+                    ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                        ShadcnBubble {
+                            ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                ShadcnText("It's always a one-line change 😭.")
+                            }
+                        }
+                    }
+                    ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                        ShadcnBubble {
+                            ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                ShadcnText("Alright, let me take a look.")
+                            }
+                            ShadcnBubbleReactions { ShadcnText("👍", style = ShadcnTextStyle.LabelSmall) }
+                        }
+                    }
+                }
+                ShadcnText("Oliver is typing…", style = ShadcnTextStyle.LabelSmall, muted = true)
+            }
+        }
+    }
+
     @Test fun start_aligned_light() = startAligned(darkTheme = false)
 
     @Test fun start_aligned_dark() = startAligned(darkTheme = true)
@@ -58,4 +113,8 @@ class MessageScreenshotTest : ShadcnScreenshotTest() {
     @Test fun end_aligned_dark() = endAligned(darkTheme = true)
 
     @Test fun group_light() = group(darkTheme = false)
+
+    @Test fun conversation_with_bubbles_light() = conversationWithBubbles(darkTheme = false)
+
+    @Test fun conversation_with_bubbles_dark() = conversationWithBubbles(darkTheme = true)
 }

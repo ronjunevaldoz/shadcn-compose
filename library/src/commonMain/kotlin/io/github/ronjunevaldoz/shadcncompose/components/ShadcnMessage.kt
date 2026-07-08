@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -17,6 +19,16 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /** Which side of a [ShadcnMessage] row its avatar sits on -- the sender's own messages are usually [End]. */
 enum class ShadcnMessageAlign { Start, End }
+
+/**
+ * The enclosing [ShadcnMessage]'s [ShadcnMessageAlign], read by [ShadcnMessageHeader] and
+ * [ShadcnMessageFooter] so they self-align to match -- matches real shadcn's CSS
+ * `group-data-[align=end]/message:justify-end` (a parent-state selector with no direct
+ * Compose equivalent, so this is threaded down via [CompositionLocalProvider] instead).
+ * Defaults to [ShadcnMessageAlign.Start] so Header/Footer degrade gracefully if ever used
+ * outside a [ShadcnMessage].
+ */
+internal val LocalMessageAlign = compositionLocalOf { ShadcnMessageAlign.Start }
 
 /**
  * One chat-transcript message row: avatar + content side by side, part of shadcn's "AI
@@ -53,12 +65,14 @@ fun ShadcnMessage(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
     ) {
-        if (align == ShadcnMessageAlign.Start) {
-            Box(modifier = Modifier.align(Alignment.Bottom)) { avatar() }
-            ShadcnMessageContent(content = content)
-        } else {
-            ShadcnMessageContent(content = content)
-            Box(modifier = Modifier.align(Alignment.Bottom)) { avatar() }
+        CompositionLocalProvider(LocalMessageAlign provides align) {
+            if (align == ShadcnMessageAlign.Start) {
+                Box(modifier = Modifier.align(Alignment.Bottom)) { avatar() }
+                ShadcnMessageContent(content = content)
+            } else {
+                ShadcnMessageContent(content = content)
+                Box(modifier = Modifier.align(Alignment.Bottom)) { avatar() }
+            }
         }
     }
 }
@@ -94,14 +108,24 @@ fun ShadcnMessageGroup(
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm), content = content)
 }
 
-/** A metadata row (e.g. sender name) above a [ShadcnMessage]'s content. */
+/** A metadata row (e.g. sender name) above a [ShadcnMessage]'s content, self-aligned to match [LocalMessageAlign]. */
 @Composable
-fun ShadcnMessageHeader(content: @Composable RowScope.() -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs), content = content)
+fun ColumnScope.ShadcnMessageHeader(content: @Composable RowScope.() -> Unit) {
+    val align = LocalMessageAlign.current
+    Row(
+        modifier = Modifier.align(if (align == ShadcnMessageAlign.End) Alignment.End else Alignment.Start),
+        horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs),
+        content = content,
+    )
 }
 
-/** A metadata row (e.g. timestamp) below a [ShadcnMessage]'s content. */
+/** A metadata row (e.g. timestamp) below a [ShadcnMessage]'s content, self-aligned to match [LocalMessageAlign]. */
 @Composable
-fun ShadcnMessageFooter(content: @Composable RowScope.() -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs), content = content)
+fun ColumnScope.ShadcnMessageFooter(content: @Composable RowScope.() -> Unit) {
+    val align = LocalMessageAlign.current
+    Row(
+        modifier = Modifier.align(if (align == ShadcnMessageAlign.End) Alignment.End else Alignment.Start),
+        horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs),
+        content = content,
+    )
 }

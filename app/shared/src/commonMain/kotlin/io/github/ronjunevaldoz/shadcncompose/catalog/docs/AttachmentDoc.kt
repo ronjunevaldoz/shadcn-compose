@@ -1,6 +1,15 @@
+@file:OptIn(androidx.compose.foundation.style.ExperimentalFoundationStyleApi::class)
+
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachment
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentActions
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentContent
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentDescription
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentGroup
@@ -8,7 +17,11 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentMedia
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentOrientation
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentState
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentTitle
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSpinner
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
+import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
+import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 
 val attachmentDoc =
     ComponentDoc(
@@ -86,26 +99,120 @@ val attachmentDoc =
                     },
                 ),
                 ComponentExample(
-                    title = "Vertical orientation",
+                    title = "Composer upload tray",
                     code =
                         """
-                        ShadcnAttachmentGroup {
-                            ShadcnAttachment(orientation = ShadcnAttachmentOrientation.Vertical) {
-                                ShadcnAttachmentMedia { ShadcnText("🖼️") }
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            ShadcnAttachmentGroup {
+                                ShadcnAttachment(
+                                    orientation = ShadcnAttachmentOrientation.Vertical,
+                                    actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                                ) {
+                                    ShadcnAttachmentMedia { ShadcnText("🏢") }
+                                    ShadcnAttachmentContent {
+                                        ShadcnAttachmentTitle("workspace.png")
+                                        ShadcnAttachmentDescription("PNG · 820 KB")
+                                    }
+                                }
+                                ShadcnAttachment(
+                                    orientation = ShadcnAttachmentOrientation.Vertical,
+                                    actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                                ) {
+                                    ShadcnAttachmentMedia { ShadcnText("🌿") }
+                                    ShadcnAttachmentContent {
+                                        ShadcnAttachmentTitle("desk-reference-photo.jpg")
+                                        ShadcnAttachmentDescription("JPG · 1.1 MB")
+                                    }
+                                }
+                                ShadcnAttachment(
+                                    orientation = ShadcnAttachmentOrientation.Vertical,
+                                    actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                                ) {
+                                    ShadcnAttachmentMedia { ShadcnText("🪑") }
+                                    ShadcnAttachmentContent {
+                                        ShadcnAttachmentTitle("office-reference.jpg")
+                                        ShadcnAttachmentDescription("JPG · 940 KB")
+                                    }
+                                }
+                            }
+                            ShadcnAttachment(
+                                state = ShadcnAttachmentState.Uploading,
+                                actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                            ) {
+                                ShadcnAttachmentMedia { ShadcnSpinner() }
                                 ShadcnAttachmentContent {
-                                    ShadcnAttachmentTitle("photo.png")
-                                    ShadcnAttachmentDescription("1.1 MB")
+                                    ShadcnAttachmentTitle("sales-dashboard.pdf", state = ShadcnAttachmentState.Uploading)
+                                    ShadcnAttachmentDescription("Uploading · 64%")
+                                }
+                            }
+                            ShadcnAttachment(
+                                actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                            ) {
+                                ShadcnAttachmentMedia { ShadcnText("</>") }
+                                ShadcnAttachmentContent {
+                                    ShadcnAttachmentTitle("message-renderer.tsx")
+                                    ShadcnAttachmentDescription("TypeScript · 12 KB")
                                 }
                             }
                         }
                         """.trimIndent(),
                     preview = {
-                        ShadcnAttachmentGroup {
-                            ShadcnAttachment(orientation = ShadcnAttachmentOrientation.Vertical) {
-                                ShadcnAttachmentMedia { ShadcnText("🖼️") }
+                        Column(
+                            modifier = Modifier.width(320.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            ShadcnAttachmentGroup {
+                                ShadcnAttachment(
+                                    orientation = ShadcnAttachmentOrientation.Vertical,
+                                    actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                                ) {
+                                    ShadcnAttachmentMedia { ShadcnText("🏢") }
+                                    ShadcnAttachmentContent {
+                                        ShadcnAttachmentTitle("workspace.png")
+                                        ShadcnAttachmentDescription("PNG · 820 KB")
+                                    }
+                                }
+                                ShadcnAttachment(
+                                    orientation = ShadcnAttachmentOrientation.Vertical,
+                                    actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                                ) {
+                                    ShadcnAttachmentMedia { ShadcnText("🌿") }
+                                    ShadcnAttachmentContent {
+                                        ShadcnAttachmentTitle("desk-reference-photo.jpg")
+                                        ShadcnAttachmentDescription("JPG · 1.1 MB")
+                                    }
+                                }
+                                ShadcnAttachment(
+                                    orientation = ShadcnAttachmentOrientation.Vertical,
+                                    actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                                ) {
+                                    ShadcnAttachmentMedia { ShadcnText("🪑") }
+                                    ShadcnAttachmentContent {
+                                        ShadcnAttachmentTitle("office-reference.jpg")
+                                        ShadcnAttachmentDescription("JPG · 940 KB")
+                                    }
+                                }
+                            }
+                            ShadcnAttachment(
+                                state = ShadcnAttachmentState.Uploading,
+                                actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                            ) {
+                                ShadcnAttachmentMedia { ShadcnSpinner() }
                                 ShadcnAttachmentContent {
-                                    ShadcnAttachmentTitle("photo.png")
-                                    ShadcnAttachmentDescription("1.1 MB")
+                                    ShadcnAttachmentTitle(
+                                        "sales-dashboard.pdf",
+                                        state = ShadcnAttachmentState.Uploading,
+                                    )
+                                    ShadcnAttachmentDescription("Uploading · 64%")
+                                }
+                            }
+                            ShadcnAttachment(
+                                actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
+                            ) {
+                                ShadcnAttachmentMedia { ShadcnText("</>") }
+                                ShadcnAttachmentContent {
+                                    ShadcnAttachmentTitle("message-renderer.tsx")
+                                    ShadcnAttachmentDescription("TypeScript · 12 KB")
                                 }
                             }
                         }
@@ -113,3 +220,10 @@ val attachmentDoc =
                 ),
             ),
     )
+
+@Composable
+private fun AttachmentRemoveButton() {
+    ShadcnButton(onClick = {}, variant = ButtonVariant.Ghost, size = ButtonSize.Xs) {
+        ShadcnText("✕")
+    }
+}

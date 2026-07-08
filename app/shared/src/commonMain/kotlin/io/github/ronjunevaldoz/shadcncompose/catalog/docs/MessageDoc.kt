@@ -1,5 +1,16 @@
+@file:OptIn(androidx.compose.foundation.style.ExperimentalFoundationStyleApi::class)
+
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubble
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleContent
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleReactions
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleVariant
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessage
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessageAlign
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessageAvatar
@@ -70,36 +81,105 @@ val messageDoc =
                     },
                 ),
                 ComponentExample(
-                    title = "Group with footer timestamp",
+                    title = "Conversation with bubbles",
                     code =
                         """
                         ShadcnMessageGroup {
-                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("AI") } }) {
-                                ShadcnText("Sure, one moment.")
-                            }
                             ShadcnMessage(
                                 align = ShadcnMessageAlign.End,
-                                avatar = { ShadcnMessageAvatar { ShadcnText("Me") } },
+                                avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
                             ) {
-                                ShadcnText("Thanks!")
-                                ShadcnMessageFooter { ShadcnText("2:04 PM", style = ShadcnTextStyle.LabelSmall, muted = true) }
-                            }
-                        }
-                        """.trimIndent(),
-                    preview = {
-                        ShadcnMessageGroup {
-                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("AI") } }) {
-                                ShadcnText("Sure, one moment.")
-                            }
-                            ShadcnMessage(
-                                align = ShadcnMessageAlign.End,
-                                avatar = { ShadcnMessageAvatar { ShadcnText("Me") } },
-                            ) {
-                                ShadcnText("Thanks!")
-                                ShadcnMessageFooter {
-                                    ShadcnText("2:04 PM", style = ShadcnTextStyle.LabelSmall, muted = true)
+                                ShadcnBubble(align = ShadcnMessageAlign.End) {
+                                    ShadcnBubbleContent { ShadcnText("Deploying to prod real quick.") }
                                 }
                             }
+                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                ShadcnBubble {
+                                    ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                        ShadcnText("It's 4:55 PM. On a Friday.")
+                                    }
+                                }
+                            }
+                            ShadcnMessage(
+                                align = ShadcnMessageAlign.End,
+                                avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                            ) {
+                                ShadcnBubble(align = ShadcnMessageAlign.End) {
+                                    ShadcnBubbleContent { ShadcnText("It's a one-line change.") }
+                                }
+                                ShadcnMessageFooter {
+                                    ShadcnText("Delivered", style = ShadcnTextStyle.LabelSmall, muted = true)
+                                }
+                            }
+                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                ShadcnBubble {
+                                    ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                        ShadcnText("It's always a one-line change 😭.")
+                                    }
+                                }
+                            }
+                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                ShadcnBubble {
+                                    ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                        ShadcnText("Alright, let me take a look.")
+                                    }
+                                    ShadcnBubbleReactions { ShadcnText("👍", style = ShadcnTextStyle.LabelSmall) }
+                                }
+                            }
+                        }
+                        ShadcnText("Oliver is typing…", style = ShadcnTextStyle.LabelSmall, muted = true)
+                        """.trimIndent(),
+                    preview = {
+                        Column(
+                            modifier = Modifier.width(280.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            ShadcnMessageGroup {
+                                ShadcnMessage(
+                                    align = ShadcnMessageAlign.End,
+                                    avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                                ) {
+                                    ShadcnBubble(align = ShadcnMessageAlign.End) {
+                                        ShadcnBubbleContent { ShadcnText("Deploying to prod real quick.") }
+                                    }
+                                }
+                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                    ShadcnBubble {
+                                        ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                            ShadcnText("It's 4:55 PM. On a Friday.")
+                                        }
+                                    }
+                                }
+                                ShadcnMessage(
+                                    align = ShadcnMessageAlign.End,
+                                    avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                                ) {
+                                    ShadcnBubble(align = ShadcnMessageAlign.End) {
+                                        ShadcnBubbleContent { ShadcnText("It's a one-line change.") }
+                                    }
+                                    ShadcnMessageFooter {
+                                        ShadcnText("Delivered", style = ShadcnTextStyle.LabelSmall, muted = true)
+                                    }
+                                }
+                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                    ShadcnBubble {
+                                        ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                            ShadcnText("It's always a one-line change 😭.")
+                                        }
+                                    }
+                                }
+                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                    ShadcnBubble {
+                                        ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
+                                            ShadcnText("Alright, let me take a look.")
+                                        }
+                                        ShadcnBubbleReactions {
+                                            ShadcnText("👍", style = ShadcnTextStyle.LabelSmall)
+                                        }
+                                    }
+                                }
+                            }
+                            ShadcnText("Oliver is typing…", style = ShadcnTextStyle.LabelSmall, muted = true)
                         }
                     },
                 ),
