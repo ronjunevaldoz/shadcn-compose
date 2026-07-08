@@ -14,9 +14,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isShiftPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubble
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleContent
@@ -65,6 +75,42 @@ private fun DocIcon(
         colorFilter = ColorFilter.tint(tint),
     )
 }
+
+/**
+ * Chat-composer key handling, matching every real chat app's convention: plain Enter
+ * sends (consumed, so BasicTextField never sees it and can't insert a newline);
+ * Shift+Enter is left unconsumed so BasicTextField's own default multiline behavior
+ * inserts the newline; Tab/Shift+Tab move focus instead of doing nothing or typing a
+ * literal tab character. Requires the field to be `singleLine = false` -- a truly
+ * single-line field has nowhere to put a Shift+Enter newline in the first place.
+ *
+ * `onPreviewKeyEvent` (not `onKeyEvent`): the interception must win *before*
+ * BasicTextField's own key handling runs, not after -- `preview` handlers are visited
+ * root-to-focused-leaf, ahead of the focused node's own handling, which is exactly
+ * what's needed to stop the default newline-on-Enter behavior from ever firing.
+ */
+private fun composerKeyHandler(
+    focusManager: FocusManager,
+    onSend: () -> Unit,
+): (KeyEvent) -> Boolean =
+    keyEvent@{ event ->
+        if (event.type != KeyEventType.KeyDown) return@keyEvent false
+        when {
+            (event.key == Key.Enter || event.key == Key.NumPadEnter) && !event.isShiftPressed -> {
+                onSend()
+                true
+            }
+            event.key == Key.Tab && !event.isShiftPressed -> {
+                focusManager.moveFocus(FocusDirection.Next)
+                true
+            }
+            event.key == Key.Tab && event.isShiftPressed -> {
+                focusManager.moveFocus(FocusDirection.Previous)
+                true
+            }
+            else -> false
+        }
+    }
 
 /** One row in the interactive demo's transcript -- [text] grows in place while [isUser] is false and streaming. */
 private data class ScrollerDemoMessage(
@@ -177,11 +223,28 @@ val messageScrollerDoc =
                                         }
                                     },
                                 ) {
+                                    // singleLine = false + onPreviewKeyEvent: Enter sends (consumed before
+                                    // BasicTextField can insert a newline), Shift+Enter is left unconsumed
+                                    // so the default multiline behavior inserts the newline, and Tab/
+                                    // Shift+Tab move focus instead of doing nothing or typing a tab.
                                     ShadcnTextField(
                                         value = composerText,
                                         onValueChange = { composerText = it },
                                         placeholder = "Message MessageScroller…",
                                         variant = TextFieldVariant.Ghost,
+                                        singleLine = false,
+                                        modifier = Modifier.onPreviewKeyEvent { event ->
+                                            if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
+                                            when {
+                                                event.key == Key.Enter && !event.isShiftPressed -> {
+                                                    send(); true
+                                                }
+                                                event.key == Key.Tab && !event.isShiftPressed -> {
+                                                    focusManager.moveFocus(FocusDirection.Next); true
+                                                }
+                                                else -> false
+                                            }
+                                        },
                                     )
                                 }
                             },
@@ -226,6 +289,7 @@ private fun InteractiveChatPanel() {
     var composerText by remember { mutableStateOf("") }
     var isStreaming by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
 
     fun send() {
         val prompt = composerText.ifBlank { return }
@@ -243,6 +307,10 @@ private fun InteractiveChatPanel() {
             }
             isStreaming = false
         }
+    }
+
+    fun sendIfEligible() {
+        if (composerText.isNotBlank() && !isStreaming) send()
     }
 
     fun reset() {
@@ -292,6 +360,8 @@ private fun InteractiveChatPanel() {
                     onValueChange = { composerText = it },
                     placeholder = "Message MessageScroller…",
                     variant = TextFieldVariant.Ghost,
+                    singleLine = false,
+                    modifier = Modifier.onPreviewKeyEvent(composerKeyHandler(focusManager, ::sendIfEligible)),
                 )
             }
         },
