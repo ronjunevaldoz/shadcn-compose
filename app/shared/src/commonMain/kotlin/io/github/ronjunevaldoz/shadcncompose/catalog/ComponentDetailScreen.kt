@@ -58,16 +58,25 @@ private fun ComponentDetailContent(doc: ComponentDoc) {
             CodeBlock(code = doc.usageCode, modifier = Modifier.fillMaxWidth())
         }
 
-        Section(title = "Examples") {
-            Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xl)) {
-                doc.examples.forEach { example ->
-                    Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
-                        ShadcnText(example.title, style = ShadcnTextStyle.TitleSmall)
-                        PreviewCodeSection(
-                            code = example.code,
-                            modifier = Modifier.fillMaxWidth(),
-                            preview = example.preview,
-                        )
+        // doc.examples.first() is already shown above under "Preview & Code" -- re-showing
+        // it here too was displaying the exact same preview+code a second time on every
+        // single component page (a third time, near-identically, counting "Usage"), most
+        // visibly on the many components with only one example, where "Examples" rendered
+        // nothing but a word-for-word repeat of "Preview & Code". Only the *remaining*
+        // examples belong here, and only when there's more than one to show.
+        val additionalExamples = doc.examples.drop(1)
+        if (additionalExamples.isNotEmpty()) {
+            Section(title = "Examples") {
+                Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xl)) {
+                    additionalExamples.forEach { example ->
+                        Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
+                            ShadcnText(example.title, style = ShadcnTextStyle.TitleSmall)
+                            PreviewCodeSection(
+                                code = example.code,
+                                modifier = Modifier.fillMaxWidth(),
+                                preview = example.preview,
+                            )
+                        }
                     }
                 }
             }

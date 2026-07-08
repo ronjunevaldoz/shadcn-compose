@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
@@ -42,13 +44,19 @@ val carouselDoc =
                     code =
                         """
                         val state = rememberPagerState { 5 }
-                        Column {
-                            ShadcnCarousel(state = state, modifier = Modifier.height(120.dp)) { page ->
+                        // Fixed width: HorizontalPager needs a bounded main-axis size to know
+                        // its own page width -- without one it silently expands to fill
+                        // whatever ambient width it's given, which is rarely what you want.
+                        Column(
+                            modifier = Modifier.width(280.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxWidth().height(120.dp)) { page ->
                                 Box(Modifier.padding(8.dp), contentAlignment = Alignment.Center) {
                                     ShadcnText("Slide ${'$'}{page + 1}", style = ShadcnTextStyle.TitleLarge)
                                 }
                             }
-                            Row {
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 ShadcnCarouselPrevious(state = state)
                                 ShadcnCarouselNext(state = state)
                             }
@@ -57,8 +65,14 @@ val carouselDoc =
                         """.trimIndent(),
                     preview = {
                         val state = rememberPagerState { 5 }
-                        Column {
-                            ShadcnCarousel(state = state, modifier = Modifier.height(120.dp)) { page ->
+                        Column(
+                            modifier = Modifier.width(280.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            ShadcnCarousel(
+                                state = state,
+                                modifier = Modifier.fillMaxWidth().height(120.dp),
+                            ) { page ->
                                 Box(
                                     Modifier
                                         .padding(8.dp)
@@ -72,6 +86,7 @@ val carouselDoc =
                                 }
                             }
                             Row(
+                                modifier = Modifier.padding(top = shadcnTheme.spacing.sm),
                                 horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
                             ) {
                                 ShadcnCarouselPrevious(state = state)

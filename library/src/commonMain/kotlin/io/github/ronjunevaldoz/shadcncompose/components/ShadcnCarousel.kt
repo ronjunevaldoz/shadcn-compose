@@ -31,10 +31,18 @@ import kotlinx.coroutines.launch
  * already provide the same snap-per-item scrolling behavior natively, so this wraps
  * those directly rather than reimplementing snap physics.
  *
+ * [modifier] must constrain the main-axis size (`width` for [Orientation.Horizontal],
+ * `height` for [Orientation.Vertical]) -- this composable fills whatever it's given
+ * ([HorizontalPager]/[VerticalPager] need a bounded main-axis size to know each page's
+ * own size), so an unconstrained caller silently gets a carousel that expands to the
+ * full ambient width/height instead of a sensible card-like size.
+ *
  * Usage:
  * ```
  * val state = rememberPagerState { items.size }
- * ShadcnCarousel(state = state) { page -> ShadcnText(items[page]) }
+ * ShadcnCarousel(state = state, modifier = Modifier.width(280.dp).height(160.dp)) {
+ *     page -> ShadcnText(items[page])
+ * }
  * ```
  */
 @Composable

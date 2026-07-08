@@ -4,7 +4,9 @@ package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,8 +18,10 @@ class CarouselScreenshotTest : ShadcnScreenshotTest() {
     private fun states(darkTheme: Boolean) {
         snapshot("carousel_states", darkTheme = darkTheme) {
             val state = rememberPagerState { 3 }
-            Column {
-                ShadcnCarousel(state = state, modifier = Modifier.height(100.dp)) { page ->
+            // Fixed width: HorizontalPager needs a bounded main-axis size for its own page
+            // width -- without one it silently expands to whatever ambient width it's given.
+            Column(modifier = Modifier.width(200.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                ShadcnCarousel(state = state, modifier = Modifier.fillMaxWidth().height(100.dp)) { page ->
                     Box(Modifier, contentAlignment = Alignment.Center) { ShadcnText("Slide ${page + 1}") }
                 }
                 ShadcnCarouselDots(state = state)

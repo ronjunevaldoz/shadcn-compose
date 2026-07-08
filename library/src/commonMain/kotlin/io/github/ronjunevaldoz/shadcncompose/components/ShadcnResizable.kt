@@ -26,6 +26,23 @@ import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
+ * The entire drag-to-resize calculation, as a plain function with no Compose dependency:
+ * given the current split and how far the handle just moved (in px), returns the new
+ * split, clamped to `[minFraction, maxFraction]`. `containerExtentPx <= 0` (not measured
+ * yet) is a no-op, returning [currentFraction] unchanged rather than dividing by zero.
+ */
+internal fun resizablePanelFraction(
+    currentFraction: Float,
+    dragDeltaPx: Float,
+    containerExtentPx: Float,
+    minFraction: Float,
+    maxFraction: Float,
+): Float {
+    if (containerExtentPx <= 0f) return currentFraction
+    return (currentFraction + dragDeltaPx / containerExtentPx).coerceIn(minFraction, maxFraction)
+}
+
+/**
  * Two panes divided by a draggable handle, matching real shadcn/ui's `resizable.tsx`
  * (a thin wrapper over `react-resizable-panels`). Since there is no Compose Multiplatform
  * equivalent library, the split is driven directly here as a fraction (0f..1f) of the
@@ -42,6 +59,18 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  *     Box(second) { ShadcnText("Two") }
  * }
  * ```
+ *
+ * Testing this: don't simulate a live drag gesture in Compose UI Test --
+ * `performMouseInput`/`performTouchInput` drag simulations against a raw
+ * `Modifier.draggable` have previously hung this project's JVM test worker outright
+ * (see git history). Instead this is two separately-testable halves:
+ * 1. [resizablePanelFraction] is the entire drag *math*, extracted as a plain pure
+ *    function with no Compose dependency at all -- unit test it directly
+ *    (`ShadcnResizablePanelGroupTest`) the same way [scrollDragDeltaToContentDelta]
+ *    is tested for [ShadcnScrollArea].
+ * 2. The *rendering* at a given split -- does `weight(fraction)` actually produce the
+ *    right pixel proportions -- is covered by screenshot-testing fixed `initialFraction`
+ *    values (e.g. 0.3, 0.5, 0.7) rather than dragging to reach them.
  */
 @Composable
 fun ShadcnResizablePanelGroup(
@@ -56,9 +85,7 @@ fun ShadcnResizablePanelGroup(
     var containerExtentPx by remember { mutableFloatStateOf(0f) }
 
     val onHandleDrag: (Float) -> Unit = { delta ->
-        if (containerExtentPx > 0f) {
-            fraction = (fraction + delta / containerExtentPx).coerceIn(minFraction, maxFraction)
-        }
+        fraction = resizablePanelFraction(fraction, delta, containerExtentPx, minFraction, maxFraction)
     }
 
     if (orientation == Orientation.Horizontal) {

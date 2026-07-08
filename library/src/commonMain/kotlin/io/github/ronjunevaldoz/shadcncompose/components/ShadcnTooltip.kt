@@ -48,6 +48,10 @@ fun ShadcnTooltip(
             onDismissRequest = {},
             placement = placement,
             dismissOnClickOutside = false,
+            // Not focusable: a focusable popup fights the trigger's own hoverable()
+            // for focus the instant it opens, which was flickering the tooltip open
+            // and closed in a loop -- see ShadcnAnchoredPopup's `focusable` doc.
+            focusable = false,
         ) {
             Box(
                 modifier =

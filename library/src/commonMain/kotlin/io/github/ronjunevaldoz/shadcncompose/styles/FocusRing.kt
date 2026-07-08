@@ -66,8 +66,14 @@ fun Modifier.shadcnFocusRing(
         this
             .zIndex(1f)
             .drawWithContent {
-                drawContent()
-
+                // Ring first, drawContent() after -- the reverse order silently regressed
+                // in an earlier pass despite this file's own doc comment already explaining
+                // why it matters (see above): drawing content first left the stroke's inward
+                // half visible as a translucent overlay on top of it, making the ring look
+                // roughly twice as thick as intended at the default offset=0. drawContent()
+                // must stay *outside* the inset() block below -- inset() transforms every
+                // draw call made within its lambda, and drawContent() must paint at the
+                // real, untransformed content bounds.
                 val strokePx = width.toPx()
                 val offsetPx = offset.toPx()
                 val growth = offsetPx + strokePx / 2f
@@ -105,5 +111,7 @@ fun Modifier.shadcnFocusRing(
                     val path = Path().apply { addRoundRect(roundRect) }
                     drawPath(path, color = resolvedColor, style = Stroke(width = strokePx))
                 }
+
+                drawContent()
             }
     }

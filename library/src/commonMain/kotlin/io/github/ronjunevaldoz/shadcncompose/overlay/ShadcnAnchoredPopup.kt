@@ -36,6 +36,16 @@ fun ShadcnAnchoredPopup(
     placement: ShadcnPopupPlacement = ShadcnPopupPlacement.Bottom,
     offset: Dp = 4.dp,
     dismissOnClickOutside: Boolean = true,
+    // Tooltip/HoverCard pass false: a hover-triggered popup has nothing worth tabbing
+    // into and must never take keyboard focus away from whatever the user was actually
+    // interacting with. Worse, a focusable popup competes with the trigger's own
+    // hoverable() for pointer/focus ownership the instant it opens -- on desktop this
+    // observably flickers the popup open/closed in a loop, because taking focus can
+    // itself perturb the hover state that decided to open the popup in the first
+    // place. Popover/DropdownMenu/Dialog/etc. still default to true: those are
+    // click-triggered and their content (menu items, form fields) genuinely needs
+    // keyboard focus and Escape-to-dismiss.
+    focusable: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     if (!expanded) return
@@ -48,8 +58,8 @@ fun ShadcnAnchoredPopup(
         onDismissRequest = onDismissRequest,
         properties =
             PopupProperties(
-                focusable = true,
-                dismissOnBackPress = true,
+                focusable = focusable,
+                dismissOnBackPress = focusable,
                 dismissOnClickOutside = dismissOnClickOutside,
             ),
         content = content,

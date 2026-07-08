@@ -47,6 +47,9 @@ fun ShadcnHoverCard(
             onDismissRequest = {},
             placement = placement,
             dismissOnClickOutside = false,
+            // See ShadcnTooltip / ShadcnAnchoredPopup's `focusable` doc: a focusable
+            // popup on a hover-triggered overlay flickers open/closed in a loop.
+            focusable = false,
         ) {
             Box(
                 modifier =

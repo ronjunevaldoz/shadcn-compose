@@ -109,9 +109,19 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
    doc comment on `styles/FocusRing.kt` explaining why (a centered `Stroke` at `offset =
    0` relies on the component's own opaque background painting over the stroke's inward
    half; drawing the ring after content leaves that half visible as a translucent
-   overlay, roughly doubling the ring's apparent thickness). **Known regression:** the
-   ring draw call currently runs after `drawContent()`, contradicting its own comment --
-   fix before trusting any Vega/Nova ring comparison (e.g. `StylePresetMatrixTest`).
+   overlay, roughly doubling the ring's apparent thickness). Fixed -- draw order is now
+   ring-then-`drawContent()`, matching the doc comment.
+   Also fixed in the same pass: `shadcnFocusRing`'s corner-radius growth math
+   unconditionally added the ring's outward `growth` to *every* corner, including
+   corners that are legitimately square (`px == 0`, e.g. the flush inner edge between
+   two `ShadcnButtonGroup` items via `LocalGroupCorners`) -- rounding a corner that
+   should stay perfectly square. Now `corner(px) = if (px <= 0f) 0f else px + growth`.
+   `ShadcnChip` was also the one of 7 `shadcnFocusRing` call sites missing an explicit
+   `shape` -- it fell back to the default `shapes.lg` instead of its own pill shape
+   (`shapes.full`), visibly mismatching the ring to the pill underneath. `ShadcnButton`/
+   `ShadcnToggle` are correctly exempt from needing an explicit shape: they rely on the
+   null-shape default specifically to auto-inherit `LocalGroupCorners` inside a
+   `ButtonGroup`/`ToggleGroup`, so forcing a shape there would break grouping instead.
 7. Model compound-component spacing/density (icon+label pairs, group item corners,
    leading/trailing addons) as **explicit per-position parameters passed down the
    composition** (see `ButtonGroupCorners` / `ToggleCorners`), not a `CompositionLocal`.
@@ -135,6 +145,56 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
    perceptual gamut mapping applied**. Don't introduce a second "wide-gamut
    approximation" path for the same tokens -- one checked-against-real-source conversion
    method per color, not two competing ones.
+
+## Component creation checklist
+
+Every new component's doc comment and screenshot-test coverage must account for these
+before considering the component done -- most of the bugs found in review passes so far
+(ring corner-radius mismatch, Collapsible fade-through overlap, ScrollArea thumb
+mispositioning, Tooltip/HoverCard focus-steal flicker, missing Carousel width) were
+caused by one of these being silently skipped, not by a typo:
+
+1. **List every visual state** the component can be in (default, hover, focused,
+   pressed, selected, disabled, error, loading, empty) and confirm each one actually has
+   a screenshot test -- not just the ones that happen to be easy to trigger without a
+   gesture. A state with no golden is a state nobody is actually checking.
+2. **List every animation/transition** (expand/collapse, fade, slide) and check it at a
+   **mid-transition frame**, not just the two settled endpoints. `mainClock.autoAdvance =
+   false` + `mainClock.advanceTimeBy(...)` is the safe, gesture-free way to do this (see
+   `ShadcnCollapsible`'s doc comment) -- freezing the animation clock is not a gesture
+   simulation and has never caused the hangs `performMouseInput`/`performTouchInput` drag
+   simulation has (see point 4). The Collapsible overlap bug only showed up mid-fade;
+   both settled states looked completely correct.
+3. **Positive scenario:** does the component render/behave correctly with realistic
+   content at its intended size? **Negative scenario:** what happens with zero items, an
+   empty string, content wider than the container, or a size the caller forgot to
+   constrain (see `ShadcnCarousel`'s doc comment -- an unconstrained `HorizontalPager`
+   silently expands to fill the ambient width instead of failing loudly). Prefer a
+   component that documents a hard requirement (`modifier` must set a main-axis size) or
+   handles the empty case explicitly over one that silently does something ambient/
+   unpredictable.
+4. **Any pointer-driven interaction** (drag-to-resize, drag-to-scroll, hover-to-open)
+   needs its *math* extracted into a plain, non-Composable function and unit tested
+   directly (see `resizablePanelFraction` for `ShadcnResizablePanelGroup`,
+   `scrollDragDeltaToContentDelta` for `ShadcnScrollArea`) -- never write the positioning
+   math inline inside a `rememberDraggableState { }` lambda where it can only be
+   exercised by actually dragging. Simulating a real drag/hover gesture via
+   `performMouseInput`/`performTouchInput` has hung this project's JVM test worker
+   outright before; the *rendering* half (does the resulting layout look right at a given
+   state) is instead covered by screenshot-testing fixed values (a few different
+   `initialFraction`s, a few different scroll positions) rather than by reaching those
+   values through a live gesture.
+5. **Any `Popup`-backed hover-triggered overlay** (`Tooltip`, `HoverCard`) must pass
+   `focusable = false` to `ShadcnAnchoredPopup` -- a focusable popup competes with the
+   trigger's own `hoverable()` for focus the instant it opens, which flickers the popup
+   open/closed in a loop on desktop. Click-triggered overlays (`Popover`, `DropdownMenu`,
+   `Dialog`) keep the `focusable = true` default; their content genuinely needs keyboard
+   focus and Escape-to-dismiss.
+6. **A component's own doc page must not duplicate itself.** `ComponentDetailScreen`
+   shows `examples.first()` once under "Preview & Code"; the "Examples" section must
+   only render `examples.drop(1)` (and only render the whole section when that's
+   non-empty) -- otherwise every single-example component shows the identical
+   preview+code twice on its own page.
 
 ## Notes for future sessions
 
