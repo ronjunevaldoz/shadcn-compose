@@ -10,13 +10,15 @@ import androidx.compose.runtime.setValue
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenu
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenuItem
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenuLabel
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenuSeparator
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 
 val dropdownMenuDoc =
     ComponentDoc(
         id = "dropdown-menu",
         title = "Dropdown Menu",
-        description = "An anchored list of actions.",
+        description = "An anchored list of actions, optionally grouped under labels and separators.",
         usageCode =
             """
             import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenu
@@ -25,14 +27,14 @@ val dropdownMenuDoc =
             var open by remember { mutableStateOf(false) }
             Box {
                 ShadcnButton(onClick = { open = true }) { ShadcnText("Open") }
-                ShadcnDropdownMenu(
-                    expanded = open,
-                    onDismissRequest = { open = false },
-                    items = listOf(
-                        ShadcnDropdownMenuItem("Edit", onClick = {}),
-                        ShadcnDropdownMenuItem("Delete", onClick = {}, destructive = true),
-                    ),
-                )
+                ShadcnDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                    ShadcnDropdownMenuLabel("My Account")
+                    ShadcnDropdownMenuSeparator()
+                    ShadcnDropdownMenuItem("Profile", onClick = {})
+                    ShadcnDropdownMenuItem("Billing", onClick = {})
+                    ShadcnDropdownMenuSeparator()
+                    ShadcnDropdownMenuItem("Log out", onClick = {}, destructive = true)
+                }
             }
             """.trimIndent(),
         examples =
@@ -44,31 +46,30 @@ val dropdownMenuDoc =
                         var open by remember { mutableStateOf(false) }
                         Box {
                             ShadcnButton(onClick = { open = true }) { ShadcnText("Open") }
-                            ShadcnDropdownMenu(
-                                expanded = open,
-                                onDismissRequest = { open = false },
-                                items = listOf(
-                                    ShadcnDropdownMenuItem("Edit", onClick = {}),
-                                    ShadcnDropdownMenuItem("Duplicate", onClick = {}),
-                                    ShadcnDropdownMenuItem("Delete", onClick = {}, destructive = true),
-                                ),
-                            )
+                            ShadcnDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                                ShadcnDropdownMenuLabel("My Account")
+                                ShadcnDropdownMenuSeparator()
+                                ShadcnDropdownMenuItem("Profile", onClick = {})
+                                ShadcnDropdownMenuItem("Billing", onClick = {})
+                                ShadcnDropdownMenuItem("Team", onClick = {})
+                                ShadcnDropdownMenuSeparator()
+                                ShadcnDropdownMenuItem("Log out", onClick = {}, destructive = true)
+                            }
                         }
                         """.trimIndent(),
                     preview = {
                         var open by remember { mutableStateOf(false) }
                         Box {
                             ShadcnButton(onClick = { open = true }) { ShadcnText("Open") }
-                            ShadcnDropdownMenu(
-                                expanded = open,
-                                onDismissRequest = { open = false },
-                                items =
-                                    listOf(
-                                        ShadcnDropdownMenuItem("Edit", onClick = {}),
-                                        ShadcnDropdownMenuItem("Duplicate", onClick = {}),
-                                        ShadcnDropdownMenuItem("Delete", onClick = {}, destructive = true),
-                                    ),
-                            )
+                            ShadcnDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+                                ShadcnDropdownMenuLabel("My Account")
+                                ShadcnDropdownMenuSeparator()
+                                ShadcnDropdownMenuItem("Profile", onClick = {})
+                                ShadcnDropdownMenuItem("Billing", onClick = {})
+                                ShadcnDropdownMenuItem("Team", onClick = {})
+                                ShadcnDropdownMenuSeparator()
+                                ShadcnDropdownMenuItem("Log out", onClick = {}, destructive = true)
+                            }
                         }
                     },
                 ),

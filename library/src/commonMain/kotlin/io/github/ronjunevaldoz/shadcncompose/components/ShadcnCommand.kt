@@ -30,30 +30,53 @@ data class ShadcnCommandItem(
 )
 
 /**
+ * A labeled section of [ShadcnCommandItem]s, matching real shadcn/ui's
+ * `CommandGroup`/`CommandGroup[heading]` (e.g. a "Suggestions" heading above a set
+ * of items, separated from the next group). A group with no items left after
+ * filtering is dropped entirely, matching real cmdk's behavior.
+ */
+data class ShadcnCommandGroup(
+    val items: List<ShadcnCommandItem>,
+    val heading: String? = null,
+)
+
+/**
  * A searchable/filterable action list -- real shadcn/ui's `command.tsx` (built on
  * `cmdk`), the shared building block behind both a standalone command palette and
- * (composed with a trigger + popover) a [ShadcnCombobox]. Filters [items] by
- * case-insensitive substring match against `label` as the user types.
+ * (composed with a trigger + popover) a [ShadcnCombobox]. Filters each group's items
+ * by case-insensitive substring match against `label` as the user types, dropping
+ * groups left with no matches.
+ *
+ * Groups use a plain data model rather than a slot API (unlike [ShadcnDropdownMenu])
+ * because filtering needs to inspect every item's label up front -- a freely-composed
+ * slot API would need extra machinery to hide non-matching children mid-composition.
  *
  * Usage:
  * ```
  * ShadcnCommand(
- *     items = listOf(
- *         ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
- *         ShadcnCommandItem("search", "Search Emoji", onSelect = {}),
+ *     groups = listOf(
+ *         ShadcnCommandGroup(
+ *             heading = "Suggestions",
+ *             items = listOf(ShadcnCommandItem("calendar", "Calendar", onSelect = {})),
+ *         ),
  *     ),
  * )
  * ```
  */
 @Composable
 fun ShadcnCommand(
-    items: List<ShadcnCommandItem>,
+    groups: List<ShadcnCommandGroup>,
     modifier: Modifier = Modifier,
     placeholder: String = "Type a command or search...",
     emptyText: String = "No results found.",
 ) {
     var query by remember { mutableStateOf("") }
-    val filtered = remember(items, query) { items.filter { it.label.contains(query, ignoreCase = true) } }
+    val filteredGroups =
+        remember(groups, query) {
+            groups
+                .map { group -> group.copy(items = group.items.filter { it.label.contains(query, ignoreCase = true) }) }
+                .filter { it.items.isNotEmpty() }
+        }
 
     Column(
         modifier =
@@ -70,12 +93,27 @@ fun ShadcnCommand(
             variant = TextFieldVariant.Ghost,
             modifier = Modifier.fillMaxWidth(),
         )
-        if (filtered.isEmpty()) {
+        if (filteredGroups.isEmpty()) {
             Box(modifier = Modifier.fillMaxWidth().padding(shadcnTheme.spacing.md)) {
                 ShadcnText(emptyText, style = ShadcnTextStyle.BodySmall, muted = true)
             }
         } else {
-            filtered.forEach { item -> CommandRow(item) }
+            filteredGroups.forEachIndexed { index, group ->
+                if (group.heading != null) {
+                    ShadcnText(
+                        group.heading,
+                        style = ShadcnTextStyle.LabelSmall,
+                        muted = true,
+                        modifier =
+                            Modifier.fillMaxWidth().padding(
+                                horizontal = shadcnTheme.spacing.sm,
+                                vertical = shadcnTheme.spacing.xs,
+                            ),
+                    )
+                }
+                group.items.forEach { item -> CommandRow(item) }
+                if (index != filteredGroups.lastIndex) ShadcnDropdownMenuSeparator()
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ import kotlin.test.Test
 class ContextMenuScreenshotTest : ShadcnScreenshotTest() {
     private fun states(darkTheme: Boolean) {
         snapshot("context_menu_idle", darkTheme = darkTheme) {
-            ShadcnContextMenu(items = listOf(ShadcnDropdownMenuItem("Back", onClick = {}))) {
+            ShadcnContextMenu(menuContent = { ShadcnDropdownMenuItem("Back", onClick = {}) }) {
                 Box(
                     modifier =
                         Modifier

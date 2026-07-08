@@ -11,16 +11,14 @@ class DropdownMenuScreenshotTest : ShadcnScreenshotTest() {
         snapshot("dropdown_menu_states", darkTheme = darkTheme) {
             Box {
                 ShadcnButton(onClick = {}) { ShadcnText("Open") }
-                ShadcnDropdownMenu(
-                    expanded = true,
-                    onDismissRequest = {},
-                    items =
-                        listOf(
-                            ShadcnDropdownMenuItem("Edit", onClick = {}),
-                            ShadcnDropdownMenuItem("Duplicate", onClick = {}),
-                            ShadcnDropdownMenuItem("Delete", onClick = {}, destructive = true),
-                        ),
-                )
+                ShadcnDropdownMenu(expanded = true, onDismissRequest = {}) {
+                    ShadcnDropdownMenuLabel("My Account")
+                    ShadcnDropdownMenuSeparator()
+                    ShadcnDropdownMenuItem("Edit", onClick = {})
+                    ShadcnDropdownMenuItem("Duplicate", onClick = {})
+                    ShadcnDropdownMenuSeparator()
+                    ShadcnDropdownMenuItem("Delete", onClick = {}, destructive = true)
+                }
             }
         }
     }

@@ -26,19 +26,19 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 /**
  * Right-click-triggered menu, opened at the cursor. Matches real shadcn/ui's
  * `context-menu.tsx` styling (shares `dropdown-menu.tsx`'s visuals in the real
- * library too) -- reuses [ShadcnDropdownMenuItem] for its rows.
+ * library too) -- reuses [ShadcnDropdownMenuScope]'s row composables.
  *
  * Usage:
  * ```
- * ShadcnContextMenu(items = listOf(ShadcnDropdownMenuItem("Copy", onClick = {}))) {
+ * ShadcnContextMenu(menuContent = { ShadcnDropdownMenuItem("Copy", onClick = {}) }) {
  *     ShadcnCard { ShadcnText("Right-click me") }
  * }
  * ```
  */
 @Composable
 fun ShadcnContextMenu(
-    items: List<ShadcnDropdownMenuItem>,
     modifier: Modifier = Modifier,
+    menuContent: @Composable ShadcnDropdownMenuScope.() -> Unit,
     content: @Composable () -> Unit,
 ) {
     var clickPoint by remember { mutableStateOf<IntOffset?>(null) }
@@ -69,14 +69,13 @@ fun ShadcnContextMenu(
                 Column(
                     modifier =
                         Modifier
-                            .width(160.dp)
+                            .width(224.dp)
                             .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                             .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
                             .padding(shadcnTheme.spacing.xxs),
                 ) {
-                    items.forEach { item ->
-                        DropdownMenuRow(item = item, onDismissRequest = { clickPoint = null })
-                    }
+                    val scope = remember { ShadcnDropdownMenuScope(onDismissRequest = { clickPoint = null }) }
+                    scope.menuContent()
                 }
             }
         }

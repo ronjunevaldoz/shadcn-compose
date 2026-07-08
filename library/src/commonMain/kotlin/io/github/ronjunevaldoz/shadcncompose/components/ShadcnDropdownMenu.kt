@@ -19,17 +19,17 @@ import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnPopupPlacement
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
-/** One row in a [ShadcnDropdownMenu]. */
-data class ShadcnDropdownMenuItem(
-    val label: String,
-    val onClick: () -> Unit,
-    val enabled: Boolean = true,
-    val destructive: Boolean = false,
-)
+/**
+ * Scope for composing a [ShadcnDropdownMenu]'s content -- callers freely mix
+ * [ShadcnDropdownMenuItem]s, [ShadcnDropdownMenuLabel]s, and [ShadcnDropdownMenuSeparator]s
+ * in any order, matching real shadcn/ui's `DropdownMenuContent`/`DropdownMenuGroup` composition
+ * model (e.g. a "My Account" label, a group of items, a separator, then a destructive item).
+ */
+class ShadcnDropdownMenuScope internal constructor(internal val onDismissRequest: () -> Unit)
 
 /**
  * An anchored list of actions. Matches real shadcn/ui's `dropdown-menu.tsx`
- * (`min-w-32 rounded-md border bg-popover p-1 shadow-md`, items
+ * (`min-w-56 rounded-md border bg-popover p-1 shadow-md`, items
  * `rounded-sm px-2 py-1.5 text-sm`, destructive items in `text-destructive`).
  *
  * Usage:
@@ -37,14 +37,14 @@ data class ShadcnDropdownMenuItem(
  * var open by remember { mutableStateOf(false) }
  * Box {
  *     ShadcnButton(onClick = { open = true }) { ShadcnText("Open") }
- *     ShadcnDropdownMenu(
- *         expanded = open,
- *         onDismissRequest = { open = false },
- *         items = listOf(
- *             ShadcnDropdownMenuItem("Edit", onClick = {}),
- *             ShadcnDropdownMenuItem("Delete", onClick = {}, destructive = true),
- *         ),
- *     )
+ *     ShadcnDropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+ *         ShadcnDropdownMenuLabel("My Account")
+ *         ShadcnDropdownMenuSeparator()
+ *         ShadcnDropdownMenuItem("Profile", onClick = {})
+ *         ShadcnDropdownMenuItem("Billing", onClick = {})
+ *         ShadcnDropdownMenuSeparator()
+ *         ShadcnDropdownMenuItem("Log out", onClick = {}, destructive = true)
+ *     }
  * }
  * ```
  */
@@ -52,42 +52,45 @@ data class ShadcnDropdownMenuItem(
 fun ShadcnDropdownMenu(
     expanded: Boolean,
     onDismissRequest: () -> Unit,
-    items: List<ShadcnDropdownMenuItem>,
     modifier: Modifier = Modifier,
     placement: ShadcnPopupPlacement = ShadcnPopupPlacement.Bottom,
+    content: @Composable ShadcnDropdownMenuScope.() -> Unit,
 ) {
     ShadcnAnchoredPopup(expanded = expanded, onDismissRequest = onDismissRequest, placement = placement) {
         Column(
             modifier =
                 modifier
-                    .width(160.dp)
+                    .width(224.dp)
                     .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                     .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
                     .padding(shadcnTheme.spacing.xxs),
         ) {
-            items.forEach { item ->
-                DropdownMenuRow(item = item, onDismissRequest = onDismissRequest)
-            }
+            val scope = remember(onDismissRequest) { ShadcnDropdownMenuScope(onDismissRequest) }
+            scope.content()
         }
     }
 }
 
+/** One clickable row in a [ShadcnDropdownMenu]/[ShadcnContextMenu]/[ShadcnMenubar]. */
 @Composable
-internal fun DropdownMenuRow(
-    item: ShadcnDropdownMenuItem,
-    onDismissRequest: () -> Unit,
+fun ShadcnDropdownMenuScope.ShadcnDropdownMenuItem(
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    destructive: Boolean = false,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
-                    enabled = item.enabled,
+                    enabled = enabled,
                     onClick = {
-                        item.onClick()
+                        onClick()
                         onDismissRequest()
                     },
                 )
@@ -95,16 +98,33 @@ internal fun DropdownMenuRow(
                 .padding(horizontal = shadcnTheme.spacing.sm, vertical = shadcnTheme.spacing.xs),
     ) {
         ShadcnText(
-            item.label,
+            label,
             style = ShadcnTextStyle.BodySmall,
             color =
                 when {
-                    item.destructive -> shadcnTheme.colors.error
-                    !item.enabled -> shadcnTheme.colors.onSurfaceVariant
+                    destructive -> shadcnTheme.colors.error
+                    !enabled -> shadcnTheme.colors.onSurfaceVariant
                     else -> shadcnTheme.colors.onPopover
                 },
         )
     }
+}
+
+/** A non-interactive small heading row, matching real shadcn's `DropdownMenuLabel` (e.g. "My Account"). */
+@Composable
+fun ShadcnDropdownMenuScope.ShadcnDropdownMenuLabel(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    ShadcnText(
+        text,
+        style = ShadcnTextStyle.LabelSmall,
+        modifier =
+            modifier.fillMaxWidth().padding(
+                horizontal = shadcnTheme.spacing.sm,
+                vertical = shadcnTheme.spacing.xs,
+            ),
+    )
 }
 
 /** A thin divider between rows in a [ShadcnDropdownMenu]. */

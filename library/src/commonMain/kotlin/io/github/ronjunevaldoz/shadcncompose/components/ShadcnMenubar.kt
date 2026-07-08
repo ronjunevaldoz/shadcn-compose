@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
-/** One top-level menu in a [ShadcnMenubar] (e.g. "File", "Edit"), with its own dropdown items. */
+/** One top-level menu in a [ShadcnMenubar] (e.g. "File", "Edit"), with its own dropdown content. */
 data class ShadcnMenubarMenu(
     val label: String,
-    val items: List<ShadcnDropdownMenuItem>,
+    val content: @Composable ShadcnDropdownMenuScope.() -> Unit,
 )
 
 /**
@@ -33,8 +33,12 @@ data class ShadcnMenubarMenu(
  * ```
  * ShadcnMenubar(
  *     menus = listOf(
- *         ShadcnMenubarMenu("File", listOf(ShadcnDropdownMenuItem("New Tab", onClick = {}))),
- *         ShadcnMenubarMenu("Edit", listOf(ShadcnDropdownMenuItem("Undo", onClick = {}))),
+ *         ShadcnMenubarMenu("File") {
+ *             ShadcnDropdownMenuItem("New Tab", onClick = {})
+ *             ShadcnDropdownMenuSeparator()
+ *             ShadcnDropdownMenuItem("Close Window", onClick = {}, destructive = true)
+ *         },
+ *         ShadcnMenubarMenu("Edit") { ShadcnDropdownMenuItem("Undo", onClick = {}) },
  *     ),
  * )
  * ```
@@ -74,7 +78,7 @@ fun ShadcnMenubar(
                 ShadcnDropdownMenu(
                     expanded = isOpen,
                     onDismissRequest = { openIndex = -1 },
-                    items = menu.items,
+                    content = menu.content,
                 )
             }
         }

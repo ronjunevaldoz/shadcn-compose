@@ -10,9 +10,9 @@ class MenubarScreenshotTest : ShadcnScreenshotTest() {
             ShadcnMenubar(
                 menus =
                     listOf(
-                        ShadcnMenubarMenu("File", listOf(ShadcnDropdownMenuItem("New Tab", onClick = {}))),
-                        ShadcnMenubarMenu("Edit", listOf(ShadcnDropdownMenuItem("Undo", onClick = {}))),
-                        ShadcnMenubarMenu("View", listOf(ShadcnDropdownMenuItem("Zoom In", onClick = {}))),
+                        ShadcnMenubarMenu("File") { ShadcnDropdownMenuItem("New Tab", onClick = {}) },
+                        ShadcnMenubarMenu("Edit") { ShadcnDropdownMenuItem("Undo", onClick = {}) },
+                        ShadcnMenubarMenu("View") { ShadcnDropdownMenuItem("Zoom In", onClick = {}) },
                     ),
             )
         }

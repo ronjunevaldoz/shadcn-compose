@@ -9,11 +9,16 @@ class CommandScreenshotTest : ShadcnScreenshotTest() {
     private fun states(darkTheme: Boolean) {
         snapshot("command_states", darkTheme = darkTheme) {
             ShadcnCommand(
-                items =
+                groups =
                     listOf(
-                        ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
-                        ShadcnCommandItem("emoji", "Search Emoji", onSelect = {}),
-                        ShadcnCommandItem("calculator", "Calculator", onSelect = {}),
+                        ShadcnCommandGroup(
+                            items =
+                                listOf(
+                                    ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
+                                    ShadcnCommandItem("emoji", "Search Emoji", onSelect = {}),
+                                    ShadcnCommandItem("calculator", "Calculator", onSelect = {}),
+                                ),
+                        ),
                     ),
             )
         }

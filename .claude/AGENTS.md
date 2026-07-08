@@ -310,6 +310,21 @@ decision**:
   role tokens instead of generic `surface`/`onSurface` (same class of fix as the
   Popover/DropdownMenu/ContextMenu/Command/Combobox/HoverCard/NavigationMenu pass
   earlier), and gave it a proper `SelectDoc.kt` catalog page.
+- **`dropdown-menu`/`command`/`menubar`/`context-menu`** -- **was a real gap**, fixed.
+  All four previously took a flat `items: List<ShadcnDropdownMenuItem>` (or
+  `ShadcnCommandItem`), with no way to reproduce real shadcn's default demos --
+  a "My Account" label, a grouped set of items, a separator, then a destructive item.
+  `ShadcnDropdownMenu`/`ShadcnContextMenu`/`ShadcnMenubarMenu` were redesigned from a
+  data-list API to a slot-based `content: @Composable ShadcnDropdownMenuScope.() -> Unit`
+  (`ShadcnDropdownMenuItem`/`ShadcnDropdownMenuLabel` are now composables in that scope,
+  freely mixed with the existing `ShadcnDropdownMenuSeparator`; `ShadcnContextMenu` and
+  `ShadcnMenubarMenu` reuse the same scope since they already shared the row rendering).
+  `ShadcnCommand` kept a data model instead (`groups: List<ShadcnCommandGroup>`, each
+  with an optional `heading`) rather than going full slot-based, because its live
+  search-filtering needs to inspect every item's label up front -- a freely-composed
+  slot API would need extra machinery to hide non-matching children mid-composition.
+  This was a deliberate, user-approved API redesign (not additive/backward-compatible --
+  nothing is published to Maven Central yet, so no external consumers exist).
 
 **shadcn's "AI Elements" family is implemented**, not out of scope: `ShadcnMarker`,
 `ShadcnMessage`/`ShadcnMessageGroup`, `ShadcnBubble`/`ShadcnBubbleGroup`,
@@ -352,13 +367,13 @@ missing.
   see item 8 above for a case where this was skipped and a fabricated-sounding but
   actually-real set of custom base colors got documented as "official" when it isn't.
 - Roborazzi screenshot tests are wired (`library/src/jvmTest/`, Robolectric-less
-  JVM/Desktop capture, see `docs/visual-testing.md`) -- run
-  `./gradlew :library:verifyRoborazziJvm` after any component visual change. As of
-  2026-07-08 this suite does not compile against the current `ShadcnTheme` API (the
-  `ShadcnTheme` data-class -> `ShadcnThemeData` + singleton `object ShadcnTheme` rename,
-  plus `shadcnFocusRing`'s new `isFocused`/`shape`/`color` signature, aren't reflected in
-  `ShadcnScreenshotTest.kt`/`StylePresetMatrixTest.kt` yet) -- needs a follow-up pass
-  before it can catch regressions again.
+  JVM/Desktop capture, see `docs/visual-testing.md`) and compile/pass cleanly (verified
+  2026-07-08 via `./gradlew :library:verifyRoborazziJvm`). Plain `:library:jvmTest` does
+  *not* pixel-compare against the committed goldens (`captureRoboImage` is a no-op writer
+  without the record/verify system properties the wrapper tasks set) -- after any
+  component visual change, run `./gradlew :library:recordRoborazziJvm` to update the
+  affected goldens, then `./gradlew :library:verifyRoborazziJvm` to confirm a clean diff
+  before committing.
 
 ## Commands installed
 

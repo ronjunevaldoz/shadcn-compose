@@ -1,6 +1,7 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCommand
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCommandGroup
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCommandItem
 
 val commandDoc =
@@ -11,13 +12,22 @@ val commandDoc =
         usageCode =
             """
             import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCommand
+            import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCommandGroup
             import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCommandItem
 
             ShadcnCommand(
-                items = listOf(
-                    ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
-                    ShadcnCommandItem("emoji", "Search Emoji", onSelect = {}),
-                    ShadcnCommandItem("calculator", "Calculator", onSelect = {}),
+                groups = listOf(
+                    ShadcnCommandGroup(
+                        heading = "Suggestions",
+                        items = listOf(
+                            ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
+                            ShadcnCommandItem("emoji", "Search Emoji", onSelect = {}),
+                        ),
+                    ),
+                    ShadcnCommandGroup(
+                        heading = "Settings",
+                        items = listOf(ShadcnCommandItem("profile", "Profile", onSelect = {})),
+                    ),
                 ),
             )
             """.trimIndent(),
@@ -28,20 +38,46 @@ val commandDoc =
                     code =
                         """
                         ShadcnCommand(
-                            items = listOf(
-                                ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
-                                ShadcnCommandItem("emoji", "Search Emoji", onSelect = {}),
-                                ShadcnCommandItem("calculator", "Calculator", onSelect = {}),
+                            groups = listOf(
+                                ShadcnCommandGroup(
+                                    heading = "Suggestions",
+                                    items = listOf(
+                                        ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
+                                        ShadcnCommandItem("emoji", "Search Emoji", onSelect = {}),
+                                        ShadcnCommandItem("calculator", "Calculator", onSelect = {}),
+                                    ),
+                                ),
+                                ShadcnCommandGroup(
+                                    heading = "Settings",
+                                    items = listOf(
+                                        ShadcnCommandItem("profile", "Profile", onSelect = {}),
+                                        ShadcnCommandItem("billing", "Billing", onSelect = {}),
+                                    ),
+                                ),
                             ),
                         )
                         """.trimIndent(),
                     preview = {
                         ShadcnCommand(
-                            items =
+                            groups =
                                 listOf(
-                                    ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
-                                    ShadcnCommandItem("emoji", "Search Emoji", onSelect = {}),
-                                    ShadcnCommandItem("calculator", "Calculator", onSelect = {}),
+                                    ShadcnCommandGroup(
+                                        heading = "Suggestions",
+                                        items =
+                                            listOf(
+                                                ShadcnCommandItem("calendar", "Calendar", onSelect = {}),
+                                                ShadcnCommandItem("emoji", "Search Emoji", onSelect = {}),
+                                                ShadcnCommandItem("calculator", "Calculator", onSelect = {}),
+                                            ),
+                                    ),
+                                    ShadcnCommandGroup(
+                                        heading = "Settings",
+                                        items =
+                                            listOf(
+                                                ShadcnCommandItem("profile", "Profile", onSelect = {}),
+                                                ShadcnCommandItem("billing", "Billing", onSelect = {}),
+                                            ),
+                                    ),
                                 ),
                         )
                     },

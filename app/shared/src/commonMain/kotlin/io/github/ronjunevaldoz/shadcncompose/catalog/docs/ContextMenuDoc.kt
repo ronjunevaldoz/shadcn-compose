@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnContextMenu
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenuItem
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenuSeparator
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -22,7 +23,7 @@ val contextMenuDoc =
             import io.github.ronjunevaldoz.shadcncompose.components.ShadcnContextMenu
             import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenuItem
 
-            ShadcnContextMenu(items = listOf(ShadcnDropdownMenuItem("Copy", onClick = {}))) {
+            ShadcnContextMenu(menuContent = { ShadcnDropdownMenuItem("Copy", onClick = {}) }) {
                 ShadcnText("Right-click me")
             }
             """.trimIndent(),
@@ -33,10 +34,12 @@ val contextMenuDoc =
                     code =
                         """
                         ShadcnContextMenu(
-                            items = listOf(
-                                ShadcnDropdownMenuItem("Back", onClick = {}),
-                                ShadcnDropdownMenuItem("Reload", onClick = {}),
-                            ),
+                            menuContent = {
+                                ShadcnDropdownMenuItem("Back", onClick = {})
+                                ShadcnDropdownMenuItem("Reload", onClick = {})
+                                ShadcnDropdownMenuSeparator()
+                                ShadcnDropdownMenuItem("Inspect", onClick = {})
+                            },
                         ) {
                             Box(
                                 modifier = Modifier.size(width = 240.dp, height = 80.dp)
@@ -49,11 +52,12 @@ val contextMenuDoc =
                         """.trimIndent(),
                     preview = {
                         ShadcnContextMenu(
-                            items =
-                                listOf(
-                                    ShadcnDropdownMenuItem("Back", onClick = {}),
-                                    ShadcnDropdownMenuItem("Reload", onClick = {}),
-                                ),
+                            menuContent = {
+                                ShadcnDropdownMenuItem("Back", onClick = {})
+                                ShadcnDropdownMenuItem("Reload", onClick = {})
+                                ShadcnDropdownMenuSeparator()
+                                ShadcnDropdownMenuItem("Inspect", onClick = {})
+                            },
                         ) {
                             Box(
                                 modifier =

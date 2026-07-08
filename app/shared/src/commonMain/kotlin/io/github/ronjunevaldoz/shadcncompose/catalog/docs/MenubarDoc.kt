@@ -1,6 +1,7 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenuItem
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDropdownMenuSeparator
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMenubar
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMenubarMenu
 
@@ -16,8 +17,12 @@ val menubarDoc =
 
             ShadcnMenubar(
                 menus = listOf(
-                    ShadcnMenubarMenu("File", listOf(ShadcnDropdownMenuItem("New Tab", onClick = {}))),
-                    ShadcnMenubarMenu("Edit", listOf(ShadcnDropdownMenuItem("Undo", onClick = {}))),
+                    ShadcnMenubarMenu("File") {
+                        ShadcnDropdownMenuItem("New Tab", onClick = {})
+                        ShadcnDropdownMenuSeparator()
+                        ShadcnDropdownMenuItem("Close Window", onClick = {}, destructive = true)
+                    },
+                    ShadcnMenubarMenu("Edit") { ShadcnDropdownMenuItem("Undo", onClick = {}) },
                 ),
             )
             """.trimIndent(),
@@ -29,20 +34,20 @@ val menubarDoc =
                         """
                         ShadcnMenubar(
                             menus = listOf(
-                                ShadcnMenubarMenu(
-                                    "File",
-                                    listOf(
-                                        ShadcnDropdownMenuItem("New Tab", onClick = {}),
-                                        ShadcnDropdownMenuItem("New Window", onClick = {}),
-                                    ),
-                                ),
-                                ShadcnMenubarMenu(
-                                    "Edit",
-                                    listOf(
-                                        ShadcnDropdownMenuItem("Undo", onClick = {}),
-                                        ShadcnDropdownMenuItem("Redo", onClick = {}),
-                                    ),
-                                ),
+                                ShadcnMenubarMenu("File") {
+                                    ShadcnDropdownMenuItem("New Tab", onClick = {})
+                                    ShadcnDropdownMenuItem("New Window", onClick = {})
+                                    ShadcnDropdownMenuSeparator()
+                                    ShadcnDropdownMenuItem("Close Window", onClick = {}, destructive = true)
+                                },
+                                ShadcnMenubarMenu("Edit") {
+                                    ShadcnDropdownMenuItem("Undo", onClick = {})
+                                    ShadcnDropdownMenuItem("Redo", onClick = {})
+                                },
+                                ShadcnMenubarMenu("View") {
+                                    ShadcnDropdownMenuItem("Zoom In", onClick = {})
+                                    ShadcnDropdownMenuItem("Zoom Out", onClick = {})
+                                },
                             ),
                         )
                         """.trimIndent(),
@@ -50,20 +55,20 @@ val menubarDoc =
                         ShadcnMenubar(
                             menus =
                                 listOf(
-                                    ShadcnMenubarMenu(
-                                        "File",
-                                        listOf(
-                                            ShadcnDropdownMenuItem("New Tab", onClick = {}),
-                                            ShadcnDropdownMenuItem("New Window", onClick = {}),
-                                        ),
-                                    ),
-                                    ShadcnMenubarMenu(
-                                        "Edit",
-                                        listOf(
-                                            ShadcnDropdownMenuItem("Undo", onClick = {}),
-                                            ShadcnDropdownMenuItem("Redo", onClick = {}),
-                                        ),
-                                    ),
+                                    ShadcnMenubarMenu("File") {
+                                        ShadcnDropdownMenuItem("New Tab", onClick = {})
+                                        ShadcnDropdownMenuItem("New Window", onClick = {})
+                                        ShadcnDropdownMenuSeparator()
+                                        ShadcnDropdownMenuItem("Close Window", onClick = {}, destructive = true)
+                                    },
+                                    ShadcnMenubarMenu("Edit") {
+                                        ShadcnDropdownMenuItem("Undo", onClick = {})
+                                        ShadcnDropdownMenuItem("Redo", onClick = {})
+                                    },
+                                    ShadcnMenubarMenu("View") {
+                                        ShadcnDropdownMenuItem("Zoom In", onClick = {})
+                                        ShadcnDropdownMenuItem("Zoom Out", onClick = {})
+                                    },
                                 ),
                         )
                     },
