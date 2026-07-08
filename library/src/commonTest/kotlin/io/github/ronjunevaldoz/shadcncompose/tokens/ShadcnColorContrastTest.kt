@@ -82,6 +82,11 @@ private fun assertPalette(
     assertContrast(colors.warning, colors.onStatus, "$label warning/onStatus")
     assertContrast(colors.error, colors.onStatus, "$label error/onStatus")
     assertContrast(colors.primary, colors.background, "$label primary/background (Switch checked thumb, Slider thumb)")
+    assertContrast(colors.card, colors.onCard, "$label card/onCard")
+    assertContrast(colors.popover, colors.onPopover, "$label popover/onPopover")
+    assertContrast(colors.sidebar, colors.onSidebar, "$label sidebar/onSidebar")
+    assertContrast(colors.sidebarPrimary, colors.onSidebarPrimary, "$label sidebarPrimary/onSidebarPrimary")
+    assertContrast(colors.sidebarAccent, colors.onSidebarAccent, "$label sidebarAccent/onSidebarAccent")
 }
 
 class ShadcnColorContrastTest {

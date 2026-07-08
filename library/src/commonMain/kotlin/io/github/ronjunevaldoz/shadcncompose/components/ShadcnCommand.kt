@@ -59,7 +59,7 @@ fun ShadcnCommand(
         modifier =
             modifier
                 .width(280.dp)
-                .background(shadcnTheme.colors.surface, RoundedCornerShape(shadcnTheme.shapes.md))
+                .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                 .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
                 .padding(shadcnTheme.spacing.sm),
     ) {
@@ -88,7 +88,7 @@ private fun CommandRow(item: ShadcnCommandItem) {
             Modifier
                 .fillMaxWidth()
                 .clickable(interactionSource = interactionSource, indication = null, onClick = item.onSelect)
-                .background(shadcnTheme.colors.surface, RoundedCornerShape(shadcnTheme.shapes.sm))
+                .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.sm))
                 .padding(horizontal = shadcnTheme.spacing.sm, vertical = shadcnTheme.spacing.xs),
     ) {
         ShadcnText(item.label, style = ShadcnTextStyle.BodySmall)

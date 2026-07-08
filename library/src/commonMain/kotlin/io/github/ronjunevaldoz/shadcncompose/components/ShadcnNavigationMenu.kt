@@ -86,7 +86,7 @@ fun ShadcnNavigationMenu(
                             modifier =
                                 Modifier
                                     .width(320.dp)
-                                    .background(shadcnTheme.colors.surface, RoundedCornerShape(shadcnTheme.shapes.md))
+                                    .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                                     .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
                                     .padding(shadcnTheme.spacing.lg),
                         ) {

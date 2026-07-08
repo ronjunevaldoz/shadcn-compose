@@ -61,7 +61,7 @@ fun ShadcnDropdownMenu(
             modifier =
                 modifier
                     .width(160.dp)
-                    .background(shadcnTheme.colors.surface, RoundedCornerShape(shadcnTheme.shapes.md))
+                    .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                     .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
                     .padding(shadcnTheme.spacing.xxs),
         ) {
@@ -91,7 +91,7 @@ internal fun DropdownMenuRow(
                         onDismissRequest()
                     },
                 )
-                .background(shadcnTheme.colors.surface, RoundedCornerShape(shadcnTheme.shapes.sm))
+                .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.sm))
                 .padding(horizontal = shadcnTheme.spacing.sm, vertical = shadcnTheme.spacing.xs),
     ) {
         ShadcnText(
@@ -101,7 +101,7 @@ internal fun DropdownMenuRow(
                 when {
                     item.destructive -> shadcnTheme.colors.error
                     !item.enabled -> shadcnTheme.colors.onSurfaceVariant
-                    else -> shadcnTheme.colors.onSurface
+                    else -> shadcnTheme.colors.onPopover
                 },
         )
     }

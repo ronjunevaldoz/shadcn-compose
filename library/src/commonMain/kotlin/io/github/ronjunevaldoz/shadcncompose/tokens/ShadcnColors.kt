@@ -29,6 +29,26 @@ data class ShadcnColors(
     val warning: Color,
     val error: Color,
     val onStatus: Color,
+    // Per-container-role tokens, matching real shadcn's `--card`/`--popover`/`--sidebar*`
+    // CSS variable families (see ui.shadcn.com/r/colors/zinc.json). Real shadcn keeps
+    // these as their own roles -- distinct from `surface`/`background`/`muted` -- so a
+    // theme can recolor "just the sidebar" or "just floating panels" without that change
+    // leaking into every other surface. Values below default to the same hex as their
+    // closest existing token (since this project's default palette already has
+    // `surface == background`), but exist as independent fields so a future
+    // ShadcnStylePreset can diverge them.
+    val card: Color,
+    val onCard: Color,
+    val popover: Color,
+    val onPopover: Color,
+    val sidebar: Color,
+    val onSidebar: Color,
+    val sidebarPrimary: Color,
+    val onSidebarPrimary: Color,
+    val sidebarAccent: Color,
+    val onSidebarAccent: Color,
+    val sidebarBorder: Color,
+    val sidebarRing: Color,
     val isLight: Boolean,
 )
 
@@ -69,6 +89,24 @@ val ShadcnLightColors =
         // `destructive` above.
         error = Color(0xFFE7000B),
         onStatus = Color(0xFFFFFFFF),
+        // card/popover verified against zinc.json's oklch(1 0 0)/oklch(0.141 0.005
+        // 285.823) -- identical to background/onSurface in this palette (real shadcn's
+        // default zinc theme keeps them equal too; only the dark palette diverges them).
+        card = Color(0xFFFFFFFF),
+        onCard = Color(0xFF09090B),
+        popover = Color(0xFFFFFFFF),
+        onPopover = Color(0xFF09090B),
+        // sidebar verified against oklch(0.985 0 0) -- a hair lighter than onPrimary's
+        // near-white, distinct from the pure-white background so a sidebar rail reads as
+        // a faintly shaded panel rather than blending into the page.
+        sidebar = Color(0xFFFAFAFA),
+        onSidebar = Color(0xFF09090B),
+        sidebarPrimary = Color(0xFF171717),
+        onSidebarPrimary = Color(0xFFFAFAFA),
+        sidebarAccent = Color(0xFFF4F4F5),
+        onSidebarAccent = Color(0xFF171717),
+        sidebarBorder = Color(0xFFE4E4E7),
+        sidebarRing = Color(0xFFA1A1AA),
         isLight = true,
     )
 
@@ -107,5 +145,27 @@ val ShadcnDarkColors =
         warning = Color(0xFFB45309),
         error = Color(0xFFFF6467),
         onStatus = Color(0xFFFFFFFF),
+        // card/popover/sidebar verified against zinc.json's dark oklch(0.21 0.006
+        // 285.885) -- unlike the light palette, these diverge from `background`
+        // (#09090B): real shadcn's dark theme raises cards/popovers/the sidebar to a
+        // lighter panel tone so they read as distinct surfaces against the near-black page.
+        card = Color(0xFF18181B),
+        onCard = Color(0xFFFAFAFA),
+        popover = Color(0xFF18181B),
+        onPopover = Color(0xFFFAFAFA),
+        sidebar = Color(0xFF18181B),
+        onSidebar = Color(0xFFFAFAFA),
+        // Real shadcn's own zinc.json gives dark `sidebar-primary` a hardcoded blue
+        // (oklch(0.488 0.243 264.376)) unrelated to this theme's neutral primary -- an
+        // artifact of their theme generator, not a deliberate two-tier design (their own
+        // light palette keeps sidebar-primary == primary). Aliased to this palette's own
+        // primary/onPrimary instead of importing an arbitrary blue with no connection to
+        // this project's ShadcnStylePreset accent system.
+        sidebarPrimary = Color(0xFFE5E5E5),
+        onSidebarPrimary = Color(0xFF171717),
+        sidebarAccent = Color(0xFF27272A),
+        onSidebarAccent = Color(0xFFFAFAFA),
+        sidebarBorder = Color(0xFF27272A),
+        sidebarRing = Color(0xFF71717A),
         isLight = false,
     )

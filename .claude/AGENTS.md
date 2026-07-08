@@ -155,6 +155,36 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
    perceptual gamut mapping applied**. Don't introduce a second "wide-gamut
    approximation" path for the same tokens -- one checked-against-real-source conversion
    method per color, not two competing ones.
+10. **`ShadcnColors` has per-container-role tokens** (`card`/`onCard`, `popover`/
+    `onPopover`, `sidebar`/`onSidebar`, `sidebarPrimary`/`onSidebarPrimary`,
+    `sidebarAccent`/`onSidebarAccent`, `sidebarBorder`, `sidebarRing`), matching real
+    shadcn's `--card`/`--popover`/`--sidebar*` CSS variable families (verified against
+    `ui.shadcn.com/r/colors/zinc.json`) -- these are a **separate namespace** from the
+    generic `surface`/`background`/`muted` tokens, not aliases of them, even though the
+    default light palette's hex values happen to coincide (real shadcn's own light theme
+    does too; only dark mode raises card/popover/sidebar to a distinct panel tone).
+    **Use `card`/`popover` correctly, don't default back to `surface`:** `ShadcnCard` →
+    `card`/`onCard`; floating anchored panels (`ShadcnPopover`, `ShadcnDropdownMenu`,
+    `ShadcnContextMenu`, `ShadcnCommand`, `ShadcnCombobox`, `ShadcnHoverCard`,
+    `ShadcnNavigationMenu`'s panel) → `popover`/`onPopover`; `ShadcnSidebar` → `sidebar`/
+    `onSidebar` for the rail, `sidebarAccent`/`onSidebarAccent` for the active menu item,
+    `sidebarBorder` for its edge divider. **`ShadcnDialog`/`ShadcnSheet`/`ShadcnDrawer`
+    stay on plain `background`** -- confirmed against real dialog.tsx/sheet.tsx source,
+    they use `bg-background`, not `bg-popover`, unlike every anchored-popup component.
+    `ShadcnTooltip` stays on `onSurface`/`background` (inverted) -- confirmed against
+    real tooltip.tsx's `bg-foreground text-background`, a genuinely different pattern
+    from the popover family, not a card/popover role at all.
+    For `ShadcnBaseColor`'s 7 base families: light-mode card/popover/sidebar are set
+    `== background` (matches real shadcn universally); dark-mode values are derived via
+    `blend()` (a 50/50 RGB midpoint of `background`/`secondary`) rather than
+    hand-verified per-family oklch, since that reproduces Zinc's real verified value
+    (`#18181B`) to within one rounding unit -- see `blend()`'s doc comment in
+    `ShadcnBaseColor.kt`. `sidebarPrimary`/`onSidebarPrimary` are aliased to
+    `primary`/`onPrimary` rather than importing real shadcn's own dark-mode zinc.json
+    anomaly (`sidebar-primary` is a hardcoded blue in dark mode only, unrelated to this
+    project's `ShadcnStylePreset` accent system, and an artifact of their theme
+    generator, not a deliberate two-tier design -- their own light palette keeps
+    `sidebar-primary == primary`).
 
 ## Component creation checklist
 

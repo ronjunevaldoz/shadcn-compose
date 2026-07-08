@@ -221,6 +221,31 @@ enum class ShadcnBaseColor(
 private const val DESTRUCTIVE_LIGHT = 0xFFE7000B
 private const val DESTRUCTIVE_DARK = 0xFFFF6467
 
+/**
+ * Midpoint RGB blend of two opaque colors -- used to derive dark-mode card/popover/
+ * sidebar tones as a "raised panel" between `background` and `secondary`. Verified
+ * against real shadcn's zinc.json: blending Zinc's dark `background` (#09090B) and
+ * `secondary` (#27272A) this way reproduces its real oklch-derived `card`/`popover`/
+ * `sidebar` value (#18181B) to within one rounding unit -- close enough that deriving
+ * the other six base-color families' card/popover/sidebar the same way (rather than
+ * hand-verifying oklch values across 7 families x 2 modes) is a reasonable trade.
+ */
+private fun blend(
+    a: Long,
+    b: Long,
+): Color {
+    val ar = (a shr 16) and 0xFF
+    val ag = (a shr 8) and 0xFF
+    val ab = a and 0xFF
+    val br = (b shr 16) and 0xFF
+    val bg = (b shr 8) and 0xFF
+    val bb = b and 0xFF
+    val r = (ar + br + 1) / 2
+    val g = (ag + bg + 1) / 2
+    val bl = (ab + bb + 1) / 2
+    return Color(0xFF000000 or (r shl 16) or (g shl 8) or bl)
+}
+
 private fun baseLight(
     background: Long,
     foreground: Long,
@@ -257,6 +282,20 @@ private fun baseLight(
     warning = Color(0xFFD97706),
     error = Color(DESTRUCTIVE_LIGHT),
     onStatus = Color(0xFFFFFFFF),
+    // Real shadcn's light-mode card/popover are universally == background across every
+    // base-color family (only dark mode raises them to a distinct panel tone).
+    card = Color(background),
+    onCard = Color(foreground),
+    popover = Color(background),
+    onPopover = Color(foreground),
+    sidebar = Color(background),
+    onSidebar = Color(foreground),
+    sidebarPrimary = Color(primary),
+    onSidebarPrimary = Color(onPrimary),
+    sidebarAccent = Color(secondary),
+    onSidebarAccent = Color(onSecondary),
+    sidebarBorder = Color(border),
+    sidebarRing = Color(ring),
     isLight = true,
 )
 
@@ -298,5 +337,21 @@ private fun baseDark(
     warning = Color(0xFFB45309),
     error = Color(DESTRUCTIVE_DARK),
     onStatus = Color(0xFFFFFFFF),
+    // Dark-mode card/popover/sidebar sit between background and secondary -- a raised
+    // panel tone, not equal to either (see `blend`'s doc comment for verification).
+    card = blend(background, secondary),
+    onCard = Color(foreground),
+    popover = blend(background, secondary),
+    onPopover = Color(foreground),
+    sidebar = blend(background, secondary),
+    onSidebar = Color(foreground),
+    // Aliased to primary/onPrimary rather than a hardcoded accent color -- see the
+    // matching comment on ShadcnDarkColors.sidebarPrimary in ShadcnColors.kt.
+    sidebarPrimary = Color(primary),
+    onSidebarPrimary = Color(onPrimary),
+    sidebarAccent = Color(secondary),
+    onSidebarAccent = Color(onSecondary),
+    sidebarBorder = Color(border),
+    sidebarRing = Color(ring),
     isLight = false,
 )

@@ -23,6 +23,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -75,12 +78,21 @@ fun ShadcnSidebar(
 ) {
     val state = LocalShadcnSidebarState.current
     val animatedWidth by animateDpAsState(if (state.expanded) width else 0.dp)
+    val sidebarBorderColor = shadcnTheme.colors.sidebarBorder
     Box(
         modifier =
             modifier
                 .width(animatedWidth)
                 .fillMaxHeight()
-                .background(shadcnTheme.colors.muted),
+                .background(shadcnTheme.colors.sidebar)
+                .drawBehind {
+                    drawLine(
+                        color = sidebarBorderColor,
+                        start = Offset(size.width, 0f),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = 1.dp.toPx(),
+                    )
+                },
     ) {
         if (state.expanded) {
             Column(
@@ -179,11 +191,16 @@ fun ShadcnSidebarMenu(
                     Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(shadcnTheme.shapes.md))
-                        .let { if (isActive) it.background(shadcnTheme.colors.background) else it }
+                        .let { if (isActive) it.background(shadcnTheme.colors.sidebarAccent) else it }
                         .clickable(interactionSource = interactionSource, indication = null) { onItemClick(item.id) }
                         .padding(horizontal = shadcnTheme.spacing.sm, vertical = shadcnTheme.spacing.sm),
             ) {
-                ShadcnText(item.label, style = ShadcnTextStyle.LabelLarge, muted = !isActive)
+                ShadcnText(
+                    item.label,
+                    style = ShadcnTextStyle.LabelLarge,
+                    muted = !isActive,
+                    color = if (isActive) shadcnTheme.colors.onSidebarAccent else Color.Unspecified,
+                )
             }
         }
     }

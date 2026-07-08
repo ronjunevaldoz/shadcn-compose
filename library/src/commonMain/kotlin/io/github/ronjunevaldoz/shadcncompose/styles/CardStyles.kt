@@ -30,8 +30,8 @@ fun CardVariant.rememberStyle(): Style {
         when (this) {
             CardVariant.Default ->
                 Style {
-                    background(colors.surface)
-                    contentColor(colors.onSurface)
+                    background(colors.card)
+                    contentColor(colors.onCard)
                     borderWidth(1.dp)
                     borderColor(colors.border)
                     shape(RoundedCornerShape(shapes.xxl))
@@ -40,8 +40,8 @@ fun CardVariant.rememberStyle(): Style {
 
             CardVariant.Elevated ->
                 Style {
-                    background(colors.surface)
-                    contentColor(colors.onSurface)
+                    background(colors.card)
+                    contentColor(colors.onCard)
                     shape(RoundedCornerShape(shapes.xxl))
                     contentPadding(spacing.lg)
                 }
@@ -49,7 +49,7 @@ fun CardVariant.rememberStyle(): Style {
             CardVariant.Filled ->
                 Style {
                     background(colors.surfaceVariant)
-                    contentColor(colors.onSurface)
+                    contentColor(colors.onCard)
                     shape(RoundedCornerShape(shapes.xxl))
                     contentPadding(spacing.lg)
                 }
