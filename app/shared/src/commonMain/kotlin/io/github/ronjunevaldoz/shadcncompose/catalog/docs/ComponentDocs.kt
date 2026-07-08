@@ -49,4 +49,9 @@ val componentDocsById: Map<String, ComponentDoc> =
         calendarDoc,
         chartDoc,
         sidebarDoc,
+        fieldDoc,
+        emptyDoc,
+        itemDoc,
+        inputOTPDoc,
+        toastDoc,
     ).associateBy { it.id }

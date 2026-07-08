@@ -50,16 +50,21 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "input-group", title = "Input Group", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "button-group", title = "Button Group", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "textarea", title = "Textarea", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "field", title = "Field", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "input-otp", title = "Input OTP", category = CatalogCategory.FORMS_AND_INPUTS),
         // Data Display
         CatalogEntry(id = "avatar", title = "Avatar", category = CatalogCategory.DATA_DISPLAY),
         CatalogEntry(id = "aspect-ratio", title = "Aspect Ratio", category = CatalogCategory.DATA_DISPLAY),
         CatalogEntry(id = "separator", title = "Separator", category = CatalogCategory.DATA_DISPLAY),
         CatalogEntry(id = "kbd", title = "Kbd", category = CatalogCategory.DATA_DISPLAY),
+        CatalogEntry(id = "item", title = "Item", category = CatalogCategory.DATA_DISPLAY),
+        CatalogEntry(id = "empty", title = "Empty", category = CatalogCategory.DATA_DISPLAY),
         // Feedback
         CatalogEntry(id = "alert", title = "Alert", category = CatalogCategory.FEEDBACK),
         CatalogEntry(id = "progress", title = "Progress", category = CatalogCategory.FEEDBACK),
         CatalogEntry(id = "skeleton", title = "Skeleton", category = CatalogCategory.FEEDBACK),
         CatalogEntry(id = "spinner", title = "Spinner", category = CatalogCategory.FEEDBACK),
+        CatalogEntry(id = "toast", title = "Toast", category = CatalogCategory.FEEDBACK),
         // Disclosure & Navigation
         CatalogEntry(id = "collapsible", title = "Collapsible", category = CatalogCategory.DISCLOSURE),
         CatalogEntry(id = "accordion", title = "Accordion", category = CatalogCategory.DISCLOSURE),
