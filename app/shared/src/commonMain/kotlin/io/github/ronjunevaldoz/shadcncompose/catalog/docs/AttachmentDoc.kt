@@ -2,11 +2,14 @@
 
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachment
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentActions
@@ -22,6 +25,8 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSpinner
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.tailwind.icons.outline.XMark
 
 val attachmentDoc =
     ComponentDoc(
@@ -224,6 +229,11 @@ val attachmentDoc =
 @Composable
 private fun AttachmentRemoveButton() {
     ShadcnButton(onClick = {}, variant = ButtonVariant.Ghost, size = ButtonSize.Xs) {
-        ShadcnText("✕")
+        Image(
+            imageVector = XMark,
+            contentDescription = null,
+            modifier = Modifier.size(14.dp),
+            colorFilter = ColorFilter.tint(shadcnTheme.colors.onSurface),
+        )
     }
 }

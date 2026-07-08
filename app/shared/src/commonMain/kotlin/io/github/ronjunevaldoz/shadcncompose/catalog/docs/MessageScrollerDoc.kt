@@ -2,7 +2,9 @@
 
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,6 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubble
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleContent
@@ -30,8 +34,29 @@ import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnShimmer
+import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.tailwind.icons.outline.ArrowPath
+import io.github.ronjunevaldoz.tailwind.icons.outline.PaperAirplane
+import io.github.ronjunevaldoz.tailwind.icons.outline.Plus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+/**
+ * A real tailwind-icons-outline glyph, tinted to match surrounding text -- catalog
+ * *examples* only, same as [DatePickerDoc]'s calendar icon. Never added to :library.
+ */
+@Composable
+private fun DocIcon(
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+) {
+    Image(
+        imageVector = icon,
+        contentDescription = null,
+        modifier = modifier.size(16.dp),
+        colorFilter = ColorFilter.tint(shadcnTheme.colors.onSurface),
+    )
+}
 
 /** One row in the interactive demo's transcript -- [text] grows in place while [isUser] is false and streaming. */
 private data class ScrollerDemoMessage(
@@ -140,7 +165,7 @@ val messageScrollerDoc =
                                 ShadcnInputGroup(
                                     trailing = {
                                         ShadcnButton(onClick = ::send, enabled = composerText.isNotBlank() && !isStreaming) {
-                                            ShadcnText("↑")
+                                            DocIcon(PaperAirplane)
                                         }
                                     },
                                 ) {
@@ -227,7 +252,7 @@ private fun InteractiveChatPanel() {
                 description = "How can I help you today?",
                 action = {
                     ShadcnButton(onClick = ::reset, variant = ButtonVariant.Outline, size = ButtonSize.Icon) {
-                        ShadcnText("↻")
+                        DocIcon(ArrowPath)
                     }
                 },
             )
@@ -238,6 +263,11 @@ private fun InteractiveChatPanel() {
             // own (LocalInsideInputGroup), so focusing the composer highlights the
             // whole pill once instead of nesting a second focus-ring box inside it.
             ShadcnInputGroup(
+                leading = {
+                    ShadcnButton(onClick = {}, variant = ButtonVariant.Ghost, size = ButtonSize.Icon) {
+                        DocIcon(Plus)
+                    }
+                },
                 trailing = {
                     ShadcnButton(
                         onClick = ::send,
@@ -245,7 +275,7 @@ private fun InteractiveChatPanel() {
                         size = ButtonSize.Icon,
                         enabled = composerText.isNotBlank() && !isStreaming,
                     ) {
-                        ShadcnText("↑")
+                        DocIcon(PaperAirplane)
                     }
                 },
             ) {
