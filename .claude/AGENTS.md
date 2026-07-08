@@ -206,6 +206,36 @@ caused by one of these being silently skipped, not by a typo:
    non-empty) -- otherwise every single-example component shows the identical
    preview+code twice on its own page.
 
+## Registry parity status
+
+Every real shadcn/ui component (`shadcn-ui/ui`, `apps/v4/registry/new-york-v4/ui`,
+fetched fresh, not from memory) is implemented **except one, by deliberate scope
+decision**:
+
+- **`native-select`** -- skipped. Real shadcn's version renders an actual HTML
+  `<select>`, so on the web it triggers the *browser's own OS-level* native dropdown --
+  not custom-drawn JS. Every component in this library, `ShadcnSelect` included, is
+  100% pure Compose drawing with zero platform-widget interop. Matching `native-select`'s
+  real behavior would mean embedding actual native pickers per platform (`UIPickerView`
+  on iOS, Android `Spinner`, no equivalent on Desktop, and Compose-for-Web doesn't render
+  to real DOM at all) -- a fundamentally different, much larger scope than every other
+  component here. A Compose-drawn "alias" with the same name wouldn't actually be native,
+  so it wasn't built as a consolation. User-confirmed scope decision, not an oversight.
+- **`direction`** -- not a gap, not implemented, and shouldn't be: Radix's
+  `DirectionProvider`/`useDirection` exists because the web has no built-in RTL/LTR
+  concept. Compose already has one natively (`LocalLayoutDirection`) -- there's nothing
+  to port.
+- **`form`** -- consolidated into `ShadcnField`. Real shadcn's `form.tsx` is itself a thin
+  wrapper of the same `Field` primitives around `react-hook-form`; this library has no
+  form-state-management dependency (every component here is already caller-hoisted
+  state), so there's no separate `ShadcnForm`.
+- **`input`**/**`sonner`** -- implemented as `ShadcnTextField`/`ShadcnToast` (naming
+  choices, not gaps).
+
+If a new component lands in the real registry, re-check this list before assuming it's
+missing -- `attachment`/`bubble`/`marker`/`message`/`message-scroller` are AI-chat-specific
+and out of scope for a general-purpose component library.
+
 ## Notes for future sessions
 
 - **The Compose Styles API does not match what the `kotlin-multiplatform-design-system`
