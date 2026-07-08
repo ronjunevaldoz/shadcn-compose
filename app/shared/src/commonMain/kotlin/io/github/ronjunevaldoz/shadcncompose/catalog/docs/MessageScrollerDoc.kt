@@ -2,13 +2,8 @@
 
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -16,7 +11,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubble
@@ -25,6 +19,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleVariant
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCard
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCardHeader
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnInputGroup
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessage
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessageAlign
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessageAvatar
@@ -35,7 +30,6 @@ import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnShimmer
-import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -142,17 +136,20 @@ val messageScrollerDoc =
                             modifier = Modifier.width(320.dp).height(420.dp),
                             header = { ShadcnCardHeader(title = "New Chat", description = "How can I help you today?") },
                             footer = {
-                                Row {
+                                // The group owns the single border/focus ring; the inner field drops its own.
+                                ShadcnInputGroup(
+                                    trailing = {
+                                        ShadcnButton(onClick = ::send, enabled = composerText.isNotBlank() && !isStreaming) {
+                                            ShadcnText("↑")
+                                        }
+                                    },
+                                ) {
                                     ShadcnTextField(
                                         value = composerText,
                                         onValueChange = { composerText = it },
                                         placeholder = "Message MessageScroller…",
                                         variant = TextFieldVariant.Ghost,
-                                        modifier = Modifier.weight(1f),
                                     )
-                                    ShadcnButton(onClick = ::send, enabled = composerText.isNotBlank() && !isStreaming) {
-                                        ShadcnText("↑")
-                                    }
                                 }
                             },
                         ) {
@@ -236,29 +233,28 @@ private fun InteractiveChatPanel() {
             )
         },
         footer = {
-            Row(
-                modifier =
-                    Modifier
-                        .background(shadcnTheme.colors.muted, RoundedCornerShape(shadcnTheme.shapes.full))
-                        .padding(horizontal = 8.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            // ShadcnInputGroup, not a hand-rolled Row -- the group owns the single
+            // border/focus ring and the inner ShadcnTextField automatically drops its
+            // own (LocalInsideInputGroup), so focusing the composer highlights the
+            // whole pill once instead of nesting a second focus-ring box inside it.
+            ShadcnInputGroup(
+                trailing = {
+                    ShadcnButton(
+                        onClick = ::send,
+                        variant = ButtonVariant.Default,
+                        size = ButtonSize.Icon,
+                        enabled = composerText.isNotBlank() && !isStreaming,
+                    ) {
+                        ShadcnText("↑")
+                    }
+                },
             ) {
                 ShadcnTextField(
                     value = composerText,
                     onValueChange = { composerText = it },
                     placeholder = "Message MessageScroller…",
                     variant = TextFieldVariant.Ghost,
-                    modifier = Modifier.weight(1f),
                 )
-                ShadcnButton(
-                    onClick = ::send,
-                    variant = ButtonVariant.Default,
-                    size = ButtonSize.Icon,
-                    enabled = composerText.isNotBlank() && !isStreaming,
-                ) {
-                    ShadcnText("↑")
-                }
             }
         },
     ) {
