@@ -63,6 +63,10 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.serialization.core)
             implementation(libs.navigation.compose)
+            // Catalog *examples* only (e.g. Date Picker's trigger icon) -- :library
+            // itself takes no icon-set dependency, matching every other icon spot
+            // there (plain text glyphs). Never add this to :library's dependencies.
+            implementation(libs.tailwind.icons.outline)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

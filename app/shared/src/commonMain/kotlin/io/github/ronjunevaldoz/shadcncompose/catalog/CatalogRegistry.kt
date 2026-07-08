@@ -82,6 +82,8 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "sheet", title = "Sheet", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "drawer", title = "Drawer", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "combobox", title = "Combobox", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "select", title = "Select", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "date-picker", title = "Date Picker", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "command", title = "Command", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "menubar", title = "Menubar", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "navigation-menu", title = "Navigation Menu", category = CatalogCategory.OVERLAYS),

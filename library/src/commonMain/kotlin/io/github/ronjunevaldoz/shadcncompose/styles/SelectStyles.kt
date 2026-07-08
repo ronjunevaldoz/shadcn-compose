@@ -14,6 +14,10 @@ sealed interface SelectVariant {
     data object Default : SelectVariant
 }
 
+/**
+ * The trigger's style. Matches real shadcn/ui's `select.tsx` `SelectTrigger`
+ * (`border border-input bg-transparent`) -- a bordered field, not a filled button.
+ */
 @Composable
 fun SelectVariant.rememberStyle(): Style {
     val theme = ShadcnTheme.LocalShadcnTheme.current
@@ -22,7 +26,28 @@ fun SelectVariant.rememberStyle(): Style {
 
     return remember(this, colors, shapes) {
         Style {
-            background(colors.surface)
+            background(colors.background)
+            borderWidth(1.dp)
+            borderColor(colors.border)
+            shape(RoundedCornerShape(shapes.lg))
+        }
+    }
+}
+
+/**
+ * The dropdown panel's style. Matches real shadcn's `SelectContent`
+ * (`bg-popover text-popover-foreground`) -- the floating-panel role, not the generic
+ * `surface` token (see [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors]).
+ */
+@Composable
+fun SelectVariant.rememberPanelStyle(): Style {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    val colors = theme.colors
+    val shapes = theme.shapes
+
+    return remember(this, colors, shapes) {
+        Style {
+            background(colors.popover)
             borderWidth(1.dp)
             borderColor(colors.border)
             shape(RoundedCornerShape(shapes.md))
@@ -30,6 +55,7 @@ fun SelectVariant.rememberStyle(): Style {
     }
 }
 
+/** Matches real shadcn's `SelectItem` (`focus:bg-accent`) -- selected rows highlight via [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.secondary]. */
 @Composable
 fun rememberSelectItemStyle(isSelected: Boolean): Style {
     val theme = ShadcnTheme.LocalShadcnTheme.current
@@ -38,8 +64,8 @@ fun rememberSelectItemStyle(isSelected: Boolean): Style {
 
     return remember(isSelected, colors, shapes) {
         Style {
-            background(if (isSelected) colors.secondary else colors.surface)
-            contentColor(if (isSelected) colors.onSecondary else colors.onSurface)
+            background(if (isSelected) colors.secondary else colors.popover)
+            contentColor(if (isSelected) colors.onSecondary else colors.onPopover)
             shape(RoundedCornerShape(shapes.sm))
         }
     }

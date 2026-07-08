@@ -28,6 +28,19 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
   (`ButtonVariant`, `CardVariant`, etc.).
   - `implementation`, not `api` — no `Shadcn*` function signature should ever require a
     caller to import `io.github.ronjunevaldoz.tailwind.*`.
+  - Bumped to `0.1.1` — also live on Maven Central, verified the same way. `Oklch(l, c,
+    h).toColor()` in its `tailwind-core` module is the preferred way to add any *new*
+    color token going forward (traces 1:1 to shadcn's real `oklch(...)` CSS source,
+    no separate hand-verified hex step) — see `ShadcnColors.kt`'s `card`/`popover`/
+    `sidebar` fields for the reference example.
+- **tailwind-icons-outline** (same sibling project, added at `0.1.1`) — a full
+  Heroicons-Outline set compiled to Compose `ImageVector`. **`:app:shared`-only,
+  never `:library`** — the catalog app's examples (e.g. Date Picker's trigger icon)
+  may use it, but every `:library` component still uses plain text glyphs for icons
+  (`"☰"`, `"✕"`, `"↓"`, ...), matching this library's zero-icon-set-dependency stance.
+  Render an `ImageVector` with `androidx.compose.foundation.Image(imageVector = ...,
+  colorFilter = ColorFilter.tint(...))` — not `androidx.compose.material.Icon`, which
+  would pull in a Material dependency this project deliberately avoids.
   - Only reach for a `tailwind-compose` utility where shadcn-compose's own `Style`/
     `StyleScope` DSL has **no equivalent property at all** — don't use it to duplicate
     something the Style block already handles (e.g. its `twCard()` combinator does its
@@ -275,6 +288,28 @@ decision**:
   state), so there's no separate `ShadcnForm`.
 - **`input`**/**`sonner`** -- implemented as `ShadcnTextField`/`ShadcnToast` (naming
   choices, not gaps).
+- **`data-table`** -- N/A, not a gap: real shadcn's own docs say *"instead of a
+  data-table component ... a guide on how to build your own"* on top of `Table` +
+  TanStack Table. No Compose Multiplatform equivalent of TanStack Table exists, and
+  building one is a much larger scope than this component library's remit.
+- **`toast`** (as distinct from `sonner`) -- N/A: real shadcn's own `toast` docs page
+  says it's *"deprecated. Use sonner instead"* -- already covered by the `sonner` ->
+  `ShadcnToast` mapping above, not a second component to build.
+- **`date-picker`** -- N/A as a standalone component in real shadcn either (their docs:
+  *"built using a composition of the `<Popover />` and the `<Calendar />`
+  components"*) -- added as a catalog doc example (`DatePickerDoc.kt`) composing this
+  library's own `ShadcnPopover` + `ShadcnCalendar`, not a new `:library` component.
+- **`select`** -- **was a real gap**, fixed. `ShadcnSelect` previously existed only as
+  an internal utility (this catalog app's own theme/base-color/accent pickers in
+  `CatalogTopBar`), never exposed as a documented public component, and its trigger
+  used `ButtonVariant.Outline` (a filled-button look) rather than real shadcn's actual
+  `SelectTrigger` style (`border-input bg-transparent`, a bordered field). Redesigned
+  the trigger to match, widened `value` from `T` to `T?` so it can show placeholder
+  text (backward-compatible -- `CatalogTopBar`'s existing non-null call sites still
+  compile unchanged), fixed its popup panel to use the `popover`/`onPopover` container-
+  role tokens instead of generic `surface`/`onSurface` (same class of fix as the
+  Popover/DropdownMenu/ContextMenu/Command/Combobox/HoverCard/NavigationMenu pass
+  earlier), and gave it a proper `SelectDoc.kt` catalog page.
 
 **shadcn's "AI Elements" family is implemented**, not out of scope: `ShadcnMarker`,
 `ShadcnMessage`/`ShadcnMessageGroup`, `ShadcnBubble`/`ShadcnBubbleGroup`,
