@@ -30,6 +30,15 @@ Not covered yet: hover state (no reliable hover-simulation API is used here -- o
 prop-driven states and real focus/click are exercised), and per-side border-stripping
 inside `ToggleGroup`/`ButtonGroup` (see `docs/shadcn-parity.md`).
 
+**A real blind spot, found the hard way:** every golden here composes once, under one
+fixed theme, and never recomposes -- so a `Style { }` block that captures a stale
+CompositionLocal snapshot (see `.claude/AGENTS.md`'s notes on this anti-pattern) renders
+*correctly* in a static test, because the one theme it was composed under happens to be
+the one it's frozen at. This exact bug shipped undetected in `ShadcnInputGroup`/
+`ShadcnTextField`'s error state until a live dark-mode toggle in the running catalog app
+revealed it. This suite catches wrong colors; it cannot catch colors that are right once
+and then never update.
+
 ## Running it
 
 ```bash

@@ -64,15 +64,24 @@ fun ShadcnInputGroup(
     val styleState = remember { MutableStyleState(MutableInteractionSource()) }
     var hasFocusWithin by remember { mutableStateOf(false) }
 
+    // colors/shapes read here, in a real @Composable position, and captured as plain
+    // vals -- reading `shadcnTheme.colors.*` directly *inside* the Style{} lambda body
+    // below captures a stale CompositionLocal snapshot instead (documented anti-pattern,
+    // see .claude/AGENTS.md's StyleScope notes): the container would silently freeze at
+    // whichever theme was active on first composition, e.g. staying light-mode white
+    // forever after a dark-mode toggle even though every sibling correctly re-themes.
+    val colors = shadcnTheme.colors
+    val shapes = shadcnTheme.shapes
+
     // Container style deliberately has no contentPadding: the inner field keeps its
     // own variant padding (real shadcn: the container is unpadded, `InputGroupInput`
     // keeps standard input padding), so text inset stays identical to a standalone field.
     val containerStyle =
         Style {
-            background(shadcnTheme.colors.background)
+            background(colors.background)
             borderWidth(1.dp)
-            borderColor(if (hasFocusWithin) shadcnTheme.colors.borderFocus else shadcnTheme.colors.border)
-            shape(RoundedCornerShape(shadcnTheme.shapes.lg))
+            borderColor(if (hasFocusWithin) colors.borderFocus else colors.border)
+            shape(RoundedCornerShape(shapes.lg))
         }
 
     Row(

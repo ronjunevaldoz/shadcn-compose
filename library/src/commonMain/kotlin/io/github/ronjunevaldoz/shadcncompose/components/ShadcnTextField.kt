@@ -66,7 +66,11 @@ fun ShadcnTextField(
             it.isEnabled = enabled
         }
 
-    val errorStyle = if (isError) Style { borderColor(shadcnTheme.colors.error) } else Style
+    // shadcnTheme.colors.error captured as a plain val before the Style{} block, not
+    // read directly inside it -- see ShadcnInputGroup.kt's comment on this same
+    // anti-pattern (a stale CompositionLocal snapshot that survives dark-mode toggles).
+    val errorColor = shadcnTheme.colors.error
+    val errorStyle = if (isError) Style { borderColor(errorColor) } else Style
 
     // Inside a ShadcnInputGroup the container owns the border and focus ring (real
     // shadcn's InputGroupInput is `border-0 focus-visible:ring-0`); drawing our own

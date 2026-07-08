@@ -112,7 +112,24 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
    `StyleScope.colors/shapes/spacing/typography` extensions
    (`theme/StyleScopeExtensions.kt`, backed by `StyleScope.currentValue`), not the
    `@Composable shadcnTheme` getter -- `Style` blocks can resolve outside normal
-   composition, and `currentValue` is the only read guaranteed fresh there.
+   composition, and `currentValue` is the only read guaranteed fresh there. In
+   practice, every `*Styles.kt` file in this project uses a *third*, equally-correct
+   option instead: read `shadcnTheme.colors`/`.shapes`/etc. once into a plain `val` in
+   the enclosing `@Composable` (a real composition position, properly subscribed to
+   `LocalShadcnTheme`), then reference *that captured val* -- not `shadcnTheme.colors.X`
+   again -- from inside the `Style { }` body. Either fix works; what's never safe is
+   calling the `shadcnTheme` getter directly from inside the `Style { }` lambda itself.
+   **Known bug, fixed:** `ShadcnInputGroup.kt`'s `containerStyle` and
+   `ShadcnTextField.kt`'s `errorStyle` both did exactly that (`Style { background(shadcnTheme.colors.background) }` inline in the component body, not in a
+   dedicated `*Styles.kt` factory) -- confirmed live via a real dark-mode toggle
+   screenshot: the input group's background froze at light-mode white forever after
+   toggling dark, while every sibling element (which read `shadcnTheme` from normal
+   composable-property-getter positions, not from inside a `Style{}` closure) correctly
+   re-themed. Existing static single-theme Roborazzi goldens never caught this --
+   they only ever compose once, under one theme, so a stale-frozen-at-first-theme
+   value is indistinguishable from a correct one in a screenshot that never
+   recomposes. This class of bug only shows up on a live in-place theme *change*, not a
+   fresh render under either theme alone.
 4. **`contentColor()` set inside a `Style` block is not reliable for text painted by a
    *nested* `ShadcnText`/`BasicText`/`BasicTextField`** on a live dark-mode toggle, for
    variants with no explicit `background()` (confirmed live: `ChipVariant.Outline`).
