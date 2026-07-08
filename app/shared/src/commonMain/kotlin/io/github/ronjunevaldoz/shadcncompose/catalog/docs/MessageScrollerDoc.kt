@@ -46,9 +46,9 @@ import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnShimmer
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
-import io.github.ronjunevaldoz.tailwind.icons.outline.ArrowPath
-import io.github.ronjunevaldoz.tailwind.icons.outline.PaperAirplane
-import io.github.ronjunevaldoz.tailwind.icons.outline.Plus
+import io.github.ronjunevaldoz.heroicons.outline.ArrowPath
+import io.github.ronjunevaldoz.heroicons.outline.PaperAirplane
+import io.github.ronjunevaldoz.heroicons.outline.Plus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

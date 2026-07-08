@@ -66,7 +66,10 @@ kotlin {
             // Catalog *examples* only (e.g. Date Picker's trigger icon) -- :library
             // itself takes no icon-set dependency, matching every other icon spot
             // there (plain text glyphs). Never add this to :library's dependencies.
-            implementation(libs.tailwind.icons.outline)
+            // heroicons-compose (github.com/ronjunevaldoz/heroicons-compose), split out
+            // of tailwind-compose since Heroicons is a separate upstream product from
+            // Tailwind CSS itself -- was tailwind-icons-outline before the split.
+            implementation(libs.heroicons.outline)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

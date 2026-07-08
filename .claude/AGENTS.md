@@ -33,12 +33,19 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
     color token going forward (traces 1:1 to shadcn's real `oklch(...)` CSS source,
     no separate hand-verified hex step) — see `ShadcnColors.kt`'s `card`/`popover`/
     `sidebar` fields for the reference example.
-- **tailwind-icons-outline** (same sibling project, added at `0.1.1`) — a full
-  Heroicons-Outline set compiled to Compose `ImageVector`. **`:app:shared`-only,
-  never `:library`** — the catalog app's examples (e.g. Date Picker's trigger icon)
-  may use it, but every `:library` component still uses plain text glyphs for icons
-  (`"☰"`, `"✕"`, `"↓"`, ...), matching this library's zero-icon-set-dependency stance.
-  Render an `ImageVector` with `androidx.compose.foundation.Image(imageVector = ...,
+- **heroicons-outline** (`io.github.ronjunevaldoz:heroicons-outline`, `0.1.0`) — a full
+  Heroicons-Outline set compiled to Compose `ImageVector`, published from its own repo,
+  [github.com/ronjunevaldoz/heroicons-compose](https://github.com/ronjunevaldoz/heroicons-compose)
+  -- split out of `tailwind-compose` (was `tailwind-icons-outline` before the split)
+  since Heroicons is a separate upstream product from Tailwind CSS itself, confirmed
+  live on Maven Central the same way as every other dependency here (not from the repo's
+  README alone). Kotlin package is `io.github.ronjunevaldoz.heroicons.outline`, not
+  `io.github.ronjunevaldoz.tailwind.icons.outline` -- update both the Gradle coordinate
+  and every import if you see the old path anywhere. **`:app:shared`-only, never
+  `:library`** — the catalog app's examples (e.g. Date Picker's trigger icon) may use
+  it, but every `:library` component still uses plain text glyphs for icons (`"☰"`,
+  `"✕"`, `"↓"`, ...), matching this library's zero-icon-set-dependency stance. Render an
+  `ImageVector` with `androidx.compose.foundation.Image(imageVector = ...,
   colorFilter = ColorFilter.tint(...))` — not `androidx.compose.material.Icon`, which
   would pull in a Material dependency this project deliberately avoids.
   - Only reach for a `tailwind-compose` utility where shadcn-compose's own `Style`/

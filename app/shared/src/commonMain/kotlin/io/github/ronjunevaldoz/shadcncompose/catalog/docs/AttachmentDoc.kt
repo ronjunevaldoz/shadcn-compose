@@ -26,7 +26,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
-import io.github.ronjunevaldoz.tailwind.icons.outline.XMark
+import io.github.ronjunevaldoz.heroicons.outline.XMark
 
 val attachmentDoc =
     ComponentDoc(

@@ -20,7 +20,7 @@ ktlint = "12.1.1"
 detekt = "1.23.7"
 vanniktech-publish = "0.37.0"
 tailwind-compose = "0.1.1"
-tailwind-icons-outline = "0.1.1"
+heroicons-outline = "0.1.0"
 roborazzi = "1.64.0"
 
 [libraries]
@@ -46,7 +46,7 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
 tailwind-compose = { module = "io.github.ronjunevaldoz:tailwind-compose", version.ref = "tailwind-compose" }
-tailwind-icons-outline = { module = "io.github.ronjunevaldoz:tailwind-icons-outline", version.ref = "tailwind-icons-outline" }
+heroicons-outline = { module = "io.github.ronjunevaldoz:heroicons-outline", version.ref = "heroicons-outline" }
 roborazzi-compose-desktop = { module = "io.github.takahirom.roborazzi:roborazzi-compose-desktop", version.ref = "roborazzi" }
 
 [plugins]

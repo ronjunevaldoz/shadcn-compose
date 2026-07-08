@@ -12,9 +12,10 @@ wrapping a design system it doesn't control.
 it's inline in the component's own source, except where a component already exposes an icon slot
 (`ShadcnAlert(icon = {...})`, `ShadcnTextField(leadingIcon/trailingIcon = {...})`, etc.), which
 accepts any `@Composable` content. The catalog app (`/app/shared` only, never `/library`) additionally
-depends on the sibling `tailwind-icons-outline` package (full Heroicons-Outline set as Compose
-`ImageVector`s) for real icons in some doc examples, purely to show what a consumer app could layer
-on top — that dependency is never pulled into the published library artifact.
+depends on [`heroicons-outline`](https://github.com/ronjunevaldoz/heroicons-compose) (full
+Heroicons-Outline set as Compose `ImageVector`s) for real icons in some doc examples, purely to show
+what a consumer app could layer on top — that dependency is never pulled into the published library
+artifact.
 
 If you're an AI agent working in this repo: the [component catalog](#component-catalog) below is
 written as a keyword index — search it for the UI pattern you need ("modal", "chat bubble", "date

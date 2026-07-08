@@ -19,7 +19,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnPopover
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
-import io.github.ronjunevaldoz.tailwind.icons.outline.Calendar as CalendarIcon
+import io.github.ronjunevaldoz.heroicons.outline.Calendar as CalendarIcon
 
 private val monthNames =
     listOf(
