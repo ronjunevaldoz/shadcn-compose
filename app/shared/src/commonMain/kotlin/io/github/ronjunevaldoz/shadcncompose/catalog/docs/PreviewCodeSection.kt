@@ -66,7 +66,14 @@ fun PreviewCodeSection(
                         .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.lg))
                         .background(shadcnTheme.colors.background, RoundedCornerShape(shadcnTheme.shapes.lg))
                         .padding(shadcnTheme.spacing.xxl),
-                contentAlignment = Alignment.Center,
+                // Not Alignment.Center: centering horizontally re-centers the whole preview
+                // block whenever its intrinsic width changes (e.g. a Collapsible expanding to
+                // reveal wider text, or switching Tabs to a longer content string) -- since
+                // that width change is driven by content BELOW/AROUND a Start-anchored trigger,
+                // the trigger visibly shifts sideways as the block recenters even though its
+                // own position within its own layout never changed. TopStart keeps every demo
+                // anchored to a fixed point regardless of how its content resizes.
+                contentAlignment = Alignment.TopStart,
             ) {
                 preview()
             }

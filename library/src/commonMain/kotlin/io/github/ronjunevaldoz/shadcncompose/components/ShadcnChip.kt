@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
@@ -77,7 +78,11 @@ fun ShadcnChip(
     Row(
         modifier =
             modifier
-                .shadcnFocusRing(isFocused = isFocused)
+                // Explicit shape: Chip is always pill-shaped (shapes.full below), never
+                // shapes.lg -- without this, shadcnFocusRing()'s own default corner
+                // fallback (shapes.lg) draws a ring with visibly sharper corners than the
+                // pill it's meant to trace.
+                .shadcnFocusRing(isFocused = isFocused, shape = RoundedCornerShape(theme.shapes.full))
                 .then(clickableModifier)
                 .styleable(styleState, baseVariantStyle, style),
         verticalAlignment = Alignment.CenterVertically,

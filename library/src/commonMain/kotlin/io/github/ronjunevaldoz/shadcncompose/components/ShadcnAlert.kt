@@ -42,8 +42,14 @@ fun ShadcnAlert(
     Row(
         modifier =
             modifier
-                .padding(horizontal = shadcnTheme.spacing.lg, vertical = shadcnTheme.spacing.md)
-                .styleable(styleState, variant.rememberStyle(), style),
+                // styleable (background/border) must come before padding, not after: the
+                // previous order applied padding as an outer margin shrinking the alert away
+                // from its container, then painted the background on that already-shrunken
+                // box with zero space left for the text inside -- title/description sat flush
+                // against the background's own edge. This order paints the background at full
+                // size first, then insets the content from it.
+                .styleable(styleState, variant.rememberStyle(), style)
+                .padding(horizontal = shadcnTheme.spacing.lg, vertical = shadcnTheme.spacing.md),
         horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
     ) {
         if (icon != null) {

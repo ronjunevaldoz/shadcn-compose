@@ -81,7 +81,14 @@ fun Modifier.shadcnFocusRing(
                     val be = resolvedShape.bottomEnd.toPx(size, this)
                     val bs = resolvedShape.bottomStart.toPx(size, this)
 
-                    fun corner(px: Float) = CornerRadius((px + growth).coerceAtMost(maxRadiusPx))
+                    // A corner that's genuinely square (px == 0, e.g. the flush inner edge
+                    // between two ShadcnButtonGroup items via LocalGroupCorners) must stay
+                    // exactly square even as the ring grows outward -- unconditionally adding
+                    // `growth` here would round it to `growth`, drawing a small curved notch
+                    // where two group items are meant to align perfectly flush. Only corners
+                    // that are already rounded grow outward, to stay concentric with the
+                    // element's own corner underneath.
+                    fun corner(px: Float) = CornerRadius(if (px <= 0f) 0f else (px + growth).coerceAtMost(maxRadiusPx))
 
                     val roundRect =
                         RoundRect(
