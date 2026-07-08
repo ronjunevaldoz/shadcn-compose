@@ -41,4 +41,12 @@ val componentDocsById: Map<String, ComponentDoc> =
         commandDoc,
         menubarDoc,
         navigationMenuDoc,
+        scrollAreaDoc,
+        paginationDoc,
+        tableDoc,
+        resizableDoc,
+        carouselDoc,
+        calendarDoc,
+        chartDoc,
+        sidebarDoc,
     ).associateBy { it.id }

@@ -15,6 +15,7 @@ enum class CatalogCategory(val title: String) {
     FEEDBACK("Feedback"),
     DISCLOSURE("Disclosure & Navigation"),
     OVERLAYS("Overlays & Navigation"),
+    DATA_AND_LAYOUT("Data & Layout"),
 }
 
 data class CatalogEntry(
@@ -76,6 +77,15 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "command", title = "Command", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "menubar", title = "Menubar", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "navigation-menu", title = "Navigation Menu", category = CatalogCategory.OVERLAYS),
+        // Data & Layout
+        CatalogEntry(id = "table", title = "Table", category = CatalogCategory.DATA_AND_LAYOUT),
+        CatalogEntry(id = "pagination", title = "Pagination", category = CatalogCategory.DATA_AND_LAYOUT),
+        CatalogEntry(id = "scroll-area", title = "Scroll Area", category = CatalogCategory.DATA_AND_LAYOUT),
+        CatalogEntry(id = "chart", title = "Chart", category = CatalogCategory.DATA_AND_LAYOUT),
+        CatalogEntry(id = "calendar", title = "Calendar", category = CatalogCategory.DATA_AND_LAYOUT),
+        CatalogEntry(id = "carousel", title = "Carousel", category = CatalogCategory.DATA_AND_LAYOUT),
+        CatalogEntry(id = "resizable", title = "Resizable", category = CatalogCategory.DATA_AND_LAYOUT),
+        CatalogEntry(id = "sidebar", title = "Sidebar", category = CatalogCategory.DATA_AND_LAYOUT),
     )
 
 val catalogEntriesByCategory: Map<CatalogCategory, List<CatalogEntry>> =
