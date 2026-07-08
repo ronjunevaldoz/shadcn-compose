@@ -7,6 +7,15 @@ experimental **Compose Styles API**. No Material dependency — every component 
 library's own design tokens, the same way real shadcn/ui owns its Tailwind-driven CSS instead of
 wrapping a design system it doesn't control.
 
+**No icon-library dependency either.** Every icon inside `:library` is a plain text/Unicode glyph
+(`↓`, `✕`, `⌄`, `☰`, ...) rendered via `ShadcnText` — not a swappable prop in most components, since
+it's inline in the component's own source, except where a component already exposes an icon slot
+(`ShadcnAlert(icon = {...})`, `ShadcnTextField(leadingIcon/trailingIcon = {...})`, etc.), which
+accepts any `@Composable` content. The catalog app (`/app/shared` only, never `/library`) additionally
+depends on the sibling `tailwind-icons-outline` package (full Heroicons-Outline set as Compose
+`ImageVector`s) for real icons in some doc examples, purely to show what a consumer app could layer
+on top — that dependency is never pulled into the published library artifact.
+
 If you're an AI agent working in this repo: the [component catalog](#component-catalog) below is
 written as a keyword index — search it for the UI pattern you need ("modal", "chat bubble", "date
 picker", "toast notification", ...) before assuming a component doesn't exist or reaching for a
