@@ -155,6 +155,20 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
    perceptual gamut mapping applied**. Don't introduce a second "wide-gamut
    approximation" path for the same tokens -- one checked-against-real-source conversion
    method per color, not two competing ones.
+   **`tailwind-compose`'s `tailwind-core` module has a real, tested `Oklch(lightness,
+   chroma, hue).toColor()` utility** (`io.github.ronjunevaldoz.tailwind.core.Oklch`,
+   exported transitively through the `tailwind-compose` facade this project already
+   depends on) implementing this exact same conversion -- prefer it over a fresh
+   hand-verified hex literal for any *new* token going forward: it traces 1:1 to
+   shadcn's real `oklch(L C H)` CSS source values with no separate "trust this hex"
+   step. `ShadcnColors.kt`'s `card`/`onCard`/`popover`/`onPopover`/`sidebar`/`onSidebar`
+   fields use it already (verified pixel-identical to the prior hand-computed hex via
+   the existing screenshot baselines, no new goldens needed). **Not yet migrated:**
+   the rest of `ShadcnColors.kt`'s default palette and all 7 `ShadcnBaseColor` families
+   still use hex literals -- a deliberate, explicitly scoped decision (converting ~150
+   existing values needs fresh real oklch lookups per base-color family, not a
+   mechanical swap) rather than an oversight; don't assume it's "the next obvious step"
+   without asking first.
 10. **`ShadcnColors` has per-container-role tokens** (`card`/`onCard`, `popover`/
     `onPopover`, `sidebar`/`onSidebar`, `sidebarPrimary`/`onSidebarPrimary`,
     `sidebarAccent`/`onSidebarAccent`, `sidebarBorder`, `sidebarRing`), matching real

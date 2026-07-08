@@ -2,6 +2,8 @@ package io.github.ronjunevaldoz.shadcncompose.tokens
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import io.github.ronjunevaldoz.tailwind.core.Oklch
+import io.github.ronjunevaldoz.tailwind.core.toColor
 
 @Immutable
 data class ShadcnColors(
@@ -89,18 +91,19 @@ val ShadcnLightColors =
         // `destructive` above.
         error = Color(0xFFE7000B),
         onStatus = Color(0xFFFFFFFF),
-        // card/popover verified against zinc.json's oklch(1 0 0)/oklch(0.141 0.005
-        // 285.823) -- identical to background/onSurface in this palette (real shadcn's
-        // default zinc theme keeps them equal too; only the dark palette diverges them).
-        card = Color(0xFFFFFFFF),
-        onCard = Color(0xFF09090B),
-        popover = Color(0xFFFFFFFF),
-        onPopover = Color(0xFF09090B),
-        // sidebar verified against oklch(0.985 0 0) -- a hair lighter than onPrimary's
-        // near-white, distinct from the pure-white background so a sidebar rail reads as
-        // a faintly shaded panel rather than blending into the page.
-        sidebar = Color(0xFFFAFAFA),
-        onSidebar = Color(0xFF09090B),
+        // card/popover/sidebar computed directly from zinc.json's real oklch(...) triples
+        // via tailwind-compose's Oklch(...).toColor() -- traces 1:1 to shadcn's actual CSS
+        // source values rather than a separately hand-verified hex literal. card/popover
+        // are identical to background/onSurface in this palette (real shadcn's default
+        // zinc theme keeps them equal too; only the dark palette diverges them). sidebar
+        // is a hair lighter than pure white, distinct from the page background so a
+        // sidebar rail reads as a faintly shaded panel rather than blending into the page.
+        card = Oklch(1f, 0f, 0f).toColor(),
+        onCard = Oklch(0.141f, 0.005f, 285.823f).toColor(),
+        popover = Oklch(1f, 0f, 0f).toColor(),
+        onPopover = Oklch(0.141f, 0.005f, 285.823f).toColor(),
+        sidebar = Oklch(0.985f, 0f, 0f).toColor(),
+        onSidebar = Oklch(0.141f, 0.005f, 285.823f).toColor(),
         sidebarPrimary = Color(0xFF171717),
         onSidebarPrimary = Color(0xFFFAFAFA),
         sidebarAccent = Color(0xFFF4F4F5),
@@ -145,16 +148,17 @@ val ShadcnDarkColors =
         warning = Color(0xFFB45309),
         error = Color(0xFFFF6467),
         onStatus = Color(0xFFFFFFFF),
-        // card/popover/sidebar verified against zinc.json's dark oklch(0.21 0.006
-        // 285.885) -- unlike the light palette, these diverge from `background`
-        // (#09090B): real shadcn's dark theme raises cards/popovers/the sidebar to a
-        // lighter panel tone so they read as distinct surfaces against the near-black page.
-        card = Color(0xFF18181B),
-        onCard = Color(0xFFFAFAFA),
-        popover = Color(0xFF18181B),
-        onPopover = Color(0xFFFAFAFA),
-        sidebar = Color(0xFF18181B),
-        onSidebar = Color(0xFFFAFAFA),
+        // card/popover/sidebar computed from zinc.json's real dark oklch(0.21 0.006
+        // 285.885) via Oklch(...).toColor() -- unlike the light palette, these diverge
+        // from `background` (oklch(0.141 0.005 285.823)): real shadcn's dark theme raises
+        // cards/popovers/the sidebar to a lighter panel tone so they read as distinct
+        // surfaces against the near-black page.
+        card = Oklch(0.21f, 0.006f, 285.885f).toColor(),
+        onCard = Oklch(0.985f, 0f, 0f).toColor(),
+        popover = Oklch(0.21f, 0.006f, 285.885f).toColor(),
+        onPopover = Oklch(0.985f, 0f, 0f).toColor(),
+        sidebar = Oklch(0.21f, 0.006f, 285.885f).toColor(),
+        onSidebar = Oklch(0.985f, 0f, 0f).toColor(),
         // Real shadcn's own zinc.json gives dark `sidebar-primary` a hardcoded blue
         // (oklch(0.488 0.243 264.376)) unrelated to this theme's neutral primary -- an
         // artifact of their theme generator, not a deliberate two-tier design (their own
