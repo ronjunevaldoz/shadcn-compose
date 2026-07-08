@@ -325,6 +325,15 @@ decision**:
   slot API would need extra machinery to hide non-matching children mid-composition.
   This was a deliberate, user-approved API redesign (not additive/backward-compatible --
   nothing is published to Maven Central yet, so no external consumers exist).
+- **`accordion`/`aspect-ratio`/`item`/`input-group`/`toggle`** -- checked against real
+  shadcn, judged as acceptable documented deviations, not gaps: `accordion`'s doc example
+  has 3 items vs real's 1 (arguably more useful documentation, not less correct);
+  `aspect-ratio`'s real demo loads a real image and this project has no image-loading
+  dependency anywhere (a deliberate zero-icon/zero-image-lib stance, not an oversight);
+  `item`'s doc example is richer than real's minimal single-item default (a superset, not
+  a mismatch); `input-group`'s addon pattern differs from real's but is a valid alternate
+  composition; `toggle`'s icon-only `aria-label` pattern vs this library's text-glyph
+  icons is the same icon exemption documented throughout this file.
 
 **shadcn's "AI Elements" family is implemented**, not out of scope: `ShadcnMarker`,
 `ShadcnMessage`/`ShadcnMessageGroup`, `ShadcnBubble`/`ShadcnBubbleGroup`,
