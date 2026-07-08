@@ -67,10 +67,13 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
-            // 0.1.0-SNAPSHOT, resolved from mavenLocal -- see settings.gradle.kts and
-            // .claude/AGENTS.md "Planned dependencies". `implementation`, not `api`,
-            // since we're not yet exposing any tailwind-compose type in our own public
-            // API surface.
+            // Real Maven Central release (verified against repo1.maven.org's own
+            // maven-metadata.xml, not the search index, which lags actual publishes) --
+            // see .claude/AGENTS.md "Planned dependencies". `implementation`, not `api`,
+            // since we're not exposing any tailwind-compose type in our own public API
+            // surface -- component internals may call its Modifier utilities, but no
+            // Shadcn* function signature should ever require a caller to import
+            // `io.github.ronjunevaldoz.tailwind.*`.
             implementation(libs.tailwind.compose)
         }
         commonTest.dependencies {

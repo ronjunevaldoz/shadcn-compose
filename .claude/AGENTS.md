@@ -12,23 +12,33 @@ systems, zero Material dependency. Targets Android, iOS (arm64 + simulator), Des
 
 Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to: Maven Central (dry-run wired, not yet released)
 
-## Planned dependencies
+## Dependencies
 
-- **tailwind-compose** (sibling project at `/Users/ronvaldoz/StudioProjects/tailwind-compose`) —
-  shadcn-compose is planned to depend on this once it exists. Intended as a
-  utility-class/atomic styling layer (Tailwind-style utility modifiers for spacing,
-  layout, etc.) sitting *underneath* or *alongside* shadcn-compose's component-level
-  Style API variants — not a replacement for the sealed variant system. Same
-  relationship as Tailwind CSS + shadcn/ui on the web: utilities handle one-off
-  layout/spacing, the component library handles semantic variants (`ButtonVariant`,
-  `CardVariant`, etc.).
-  - As of now, tailwind-compose is **not implemented** (empty scaffold, no code, unclear
-    whether it will even use the Compose Styles API).
-  - Do not add a real Gradle dependency until tailwind-compose has actual published code
-    to depend on.
-  - When it's ready: add it to `:library`'s `commonMain` dependencies and evaluate using
-    its utility modifiers for internal component layout/spacing — without changing the
-    existing `Shadcn*` component API surface or the `*Variant`/`Style` pattern.
+- **tailwind-compose** (sibling project at `/Users/ronvaldoz/StudioProjects/tailwind-compose`,
+  group `io.github.ronjunevaldoz`) — a real Gradle `implementation` dependency in
+  `:library`'s `commonMain`, resolved from **Maven Central** (verified directly against
+  `repo1.maven.org`'s `maven-metadata.xml`, not the search index, which lags actual
+  publishes by a while) at version `0.1.0`, matching `gradle/libs.versions.toml`.
+  `settings.gradle.kts` no longer needs a `mavenLocal()` fallback for it. It's a
+  utility-class/atomic styling layer (Tailwind-style `Modifier`/`TextStyle` extensions
+  for spacing, color, shadow, filters, etc.) sitting *underneath*/*alongside*
+  shadcn-compose's component-level Style API variants — not a replacement for the sealed
+  variant system. Same relationship as Tailwind CSS + shadcn/ui on the web: utilities
+  handle one-off layout/spacing, the component library handles semantic variants
+  (`ButtonVariant`, `CardVariant`, etc.).
+  - `implementation`, not `api` — no `Shadcn*` function signature should ever require a
+    caller to import `io.github.ronjunevaldoz.tailwind.*`.
+  - Only reach for a `tailwind-compose` utility where shadcn-compose's own `Style`/
+    `StyleScope` DSL has **no equivalent property at all** — don't use it to duplicate
+    something the Style block already handles (e.g. its `twCard()` combinator does its
+    own `.shadow().clip().background()`, which would double-paint on top of a
+    `Style{}` block that already sets `background()`/`shape()`). Confirmed example:
+    `StyleScope` has no shadow/elevation property, so `ShadcnCard`'s `CardVariant.Elevated`
+    applies `Modifier.shadowMd(shape)` on the outer modifier chain, *before*
+    `.styleable(...)` (shadow draws behind the Style block's own background/border, not
+    instead of them) — see `ShadcnCard.kt`'s comment for the full reasoning, including why
+    the same `Shape` must be passed to both to keep the shadow and the card's rounded
+    corners concentric.
 
 ## Skill routing
 

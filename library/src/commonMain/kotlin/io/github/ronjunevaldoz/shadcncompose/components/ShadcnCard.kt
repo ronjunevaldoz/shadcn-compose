@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
@@ -20,6 +21,8 @@ import io.github.ronjunevaldoz.shadcncompose.styles.CardSize
 import io.github.ronjunevaldoz.shadcncompose.styles.CardVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.headerSpacing
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
+import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.tailwind.modifiers.shadowMd
 
 /**
  * Card with header/content/footer slots.
@@ -48,8 +51,27 @@ fun ShadcnCard(
     val styleState = remember { MutableStyleState(MutableInteractionSource()) }
     val headerSpacing = size.headerSpacing()
 
+    // The Compose Styles API's StyleScope has no shadow/elevation property (confirmed
+    // against its real surface -- see .claude/AGENTS.md), so CardVariant.Elevated's own
+    // Style block can only differ from Default by *removing* the border, not by adding
+    // real elevation -- it wasn't actually elevated. tailwind-compose's Modifier.shadowMd()
+    // fills exactly that gap: applied *before* .styleable() (matching tailwind-compose's
+    // own documented shadow-then-clip-then-background ordering rule), it draws behind
+    // Style's own background/border, not instead of them -- unlike tailwind-compose's
+    // twCard() combinator, which would double-paint the background this Style block
+    // already handles. Same shapes.xxl passed to both so the shadow and the card's own
+    // rounded corners stay concentric (a mismatched shape here casts a rectangular halo
+    // past the rounded content -- the exact bug class this project has already hit twice
+    // with mismatched shapes on separate draw calls).
+    val elevationModifier =
+        if (variant == CardVariant.Elevated) {
+            Modifier.shadowMd(shape = RoundedCornerShape(shadcnTheme.shapes.xxl))
+        } else {
+            Modifier
+        }
+
     Column(
-        modifier = modifier.styleable(styleState, variant.rememberStyle(), style),
+        modifier = modifier.then(elevationModifier).styleable(styleState, variant.rememberStyle(), style),
     ) {
         if (header != null) {
             header()

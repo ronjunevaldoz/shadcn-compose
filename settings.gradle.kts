@@ -25,9 +25,6 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
-        // tailwind-compose is only published to mavenLocal for now (0.1.0-SNAPSHOT,
-        // not yet on Maven Central) -- see .claude/AGENTS.md "Planned dependencies".
-        mavenLocal()
     }
 }
 
