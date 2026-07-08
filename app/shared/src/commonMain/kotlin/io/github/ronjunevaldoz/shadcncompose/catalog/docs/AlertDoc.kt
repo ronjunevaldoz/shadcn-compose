@@ -2,7 +2,11 @@
 
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAlert
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.AlertVariant
 
 val alertDoc =
@@ -20,9 +24,30 @@ val alertDoc =
             listOf(
                 ComponentExample(
                     title = "Default",
-                    code = "ShadcnAlert(title = \"Heads up!\", description = \"You can add components to your app.\")",
+                    code =
+                        """
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            ShadcnAlert(
+                                title = "Success! Your changes have been saved.",
+                                icon = { ShadcnText("✓") },
+                            )
+                            ShadcnAlert(
+                                title = "This Alert has a title and no icon.",
+                                description = "No worries though, we've got you covered.",
+                            )
+                        }
+                        """.trimIndent(),
                     preview = {
-                        ShadcnAlert(title = "Heads up!", description = "You can add components to your app.")
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            ShadcnAlert(
+                                title = "Success! Your changes have been saved.",
+                                icon = { ShadcnText("✓") },
+                            )
+                            ShadcnAlert(
+                                title = "This Alert has a title and no icon.",
+                                description = "No worries though, we've got you covered.",
+                            )
+                        }
                     },
                 ),
                 ComponentExample(

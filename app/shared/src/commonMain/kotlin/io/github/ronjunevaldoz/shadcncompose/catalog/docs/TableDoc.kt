@@ -2,18 +2,19 @@ package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
 import androidx.compose.ui.Modifier
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTable
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTableCaption
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTableCell
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTableHeadCell
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTableHeaderRow
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTableRow
 
-private data class InvoiceRow(val id: String, val status: String, val amount: String)
+private data class InvoiceRow(val id: String, val status: String, val method: String, val amount: String)
 
 private val sampleInvoices =
     listOf(
-        InvoiceRow("INV001", "Paid", "$250.00"),
-        InvoiceRow("INV002", "Pending", "$150.00"),
-        InvoiceRow("INV003", "Unpaid", "$350.00"),
+        InvoiceRow("INV001", "Paid", "Credit Card", "$250.00"),
+        InvoiceRow("INV002", "Pending", "PayPal", "$150.00"),
+        InvoiceRow("INV003", "Unpaid", "Bank Transfer", "$350.00"),
     )
 
 val tableDoc =
@@ -43,15 +44,18 @@ val tableDoc =
                     code =
                         """
                         ShadcnTable {
+                            ShadcnTableCaption("A list of your recent invoices.")
                             ShadcnTableHeaderRow {
                                 ShadcnTableHeadCell("Invoice", Modifier.weight(1f))
                                 ShadcnTableHeadCell("Status", Modifier.weight(1f))
+                                ShadcnTableHeadCell("Method", Modifier.weight(1f))
                                 ShadcnTableHeadCell("Amount")
                             }
                             sampleInvoices.forEachIndexed { index, invoice ->
                                 ShadcnTableRow(isLast = index == sampleInvoices.lastIndex) {
                                     ShadcnTableCell(invoice.id, Modifier.weight(1f))
                                     ShadcnTableCell(invoice.status, Modifier.weight(1f), muted = true)
+                                    ShadcnTableCell(invoice.method, Modifier.weight(1f), muted = true)
                                     ShadcnTableCell(invoice.amount)
                                 }
                             }
@@ -59,15 +63,18 @@ val tableDoc =
                         """.trimIndent(),
                     preview = {
                         ShadcnTable {
+                            ShadcnTableCaption("A list of your recent invoices.")
                             ShadcnTableHeaderRow {
                                 ShadcnTableHeadCell("Invoice", Modifier.weight(1f))
                                 ShadcnTableHeadCell("Status", Modifier.weight(1f))
+                                ShadcnTableHeadCell("Method", Modifier.weight(1f))
                                 ShadcnTableHeadCell("Amount")
                             }
                             sampleInvoices.forEachIndexed { index, invoice ->
                                 ShadcnTableRow(isLast = index == sampleInvoices.lastIndex) {
                                     ShadcnTableCell(invoice.id, Modifier.weight(1f))
                                     ShadcnTableCell(invoice.status, Modifier.weight(1f), muted = true)
+                                    ShadcnTableCell(invoice.method, Modifier.weight(1f), muted = true)
                                     ShadcnTableCell(invoice.amount)
                                 }
                             }

@@ -93,3 +93,17 @@ fun RowScope.ShadcnTableCell(
         modifier = modifier.padding(horizontal = shadcnTheme.spacing.sm).padding(end = 4.dp),
     )
 }
+
+/** A caption below a [ShadcnTable], matching real shadcn/ui's `TableCaption`. */
+@Composable
+fun ColumnScope.ShadcnTableCaption(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    ShadcnText(
+        text,
+        style = ShadcnTextStyle.BodySmall,
+        muted = true,
+        modifier = modifier.fillMaxWidth().padding(top = shadcnTheme.spacing.md),
+    )
+}

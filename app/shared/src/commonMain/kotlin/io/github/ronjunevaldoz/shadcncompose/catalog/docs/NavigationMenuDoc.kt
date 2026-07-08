@@ -1,8 +1,34 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnNavigationMenu
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnNavigationMenuItem
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
+import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+
+private data class NavLink(val title: String, val description: String)
+
+private val gettingStartedLinks =
+    listOf(
+        NavLink("Introduction", "Re-usable components built with Radix UI and Tailwind CSS."),
+        NavLink("Installation", "How to install dependencies and structure your app."),
+        NavLink("Typography", "Styles for headings, paragraphs, lists, and more."),
+    )
+
+@Composable
+private fun NavMenuPanel(links: List<NavLink>) {
+    Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
+        links.forEach { link ->
+            Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs)) {
+                ShadcnText(link.title, style = ShadcnTextStyle.LabelSmall)
+                ShadcnText(link.description, style = ShadcnTextStyle.BodySmall, muted = true)
+            }
+        }
+    }
+}
 
 val navigationMenuDoc =
     ComponentDoc(
@@ -17,7 +43,7 @@ val navigationMenuDoc =
             ShadcnNavigationMenu(
                 items = listOf(
                     ShadcnNavigationMenuItem("Home", onClick = {}),
-                    ShadcnNavigationMenuItem("Getting started", panel = { ShadcnText("Docs links here") }),
+                    ShadcnNavigationMenuItem("Getting started", panel = { /* titled list of links */ }),
                 ),
             )
             """.trimIndent(),
@@ -32,7 +58,18 @@ val navigationMenuDoc =
                                 ShadcnNavigationMenuItem("Home", onClick = {}),
                                 ShadcnNavigationMenuItem(
                                     "Getting started",
-                                    panel = { ShadcnText("Re-usable components built with Radix UI.") },
+                                    panel = {
+                                        Column {
+                                            // one titled list item per link, e.g.:
+                                            ShadcnText("Introduction", style = ShadcnTextStyle.LabelSmall)
+                                            ShadcnText(
+                                                "Re-usable components built with Radix UI and Tailwind CSS.",
+                                                style = ShadcnTextStyle.BodySmall,
+                                                muted = true,
+                                            )
+                                            // ...Installation, Typography
+                                        }
+                                    },
                                 ),
                                 ShadcnNavigationMenuItem("Docs", onClick = {}),
                             ),
@@ -45,7 +82,7 @@ val navigationMenuDoc =
                                     ShadcnNavigationMenuItem("Home", onClick = {}),
                                     ShadcnNavigationMenuItem(
                                         "Getting started",
-                                        panel = { ShadcnText("Re-usable components built with Radix UI.") },
+                                        panel = { NavMenuPanel(gettingStartedLinks) },
                                     ),
                                     ShadcnNavigationMenuItem("Docs", onClick = {}),
                                 ),

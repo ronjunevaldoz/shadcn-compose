@@ -17,11 +17,6 @@ val kbdDoc =
         examples =
             listOf(
                 ComponentExample(
-                    title = "Default",
-                    code = "ShadcnKbd(\"⌘K\")",
-                    preview = { ShadcnKbd("⌘K") },
-                ),
-                ComponentExample(
                     title = "Group",
                     code =
                         """
@@ -36,6 +31,11 @@ val kbdDoc =
                             ShadcnKbd("K")
                         }
                     },
+                ),
+                ComponentExample(
+                    title = "Single",
+                    code = "ShadcnKbd(\"⌘K\")",
+                    preview = { ShadcnKbd("⌘K") },
                 ),
             ),
     )

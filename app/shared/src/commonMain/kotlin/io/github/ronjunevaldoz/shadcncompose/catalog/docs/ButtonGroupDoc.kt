@@ -29,8 +29,9 @@ val buttonGroupDoc =
 
             ShadcnButtonGroup(
                 items = listOf(
-                    ButtonGroupItem("Copy", onClick = {}),
-                    ButtonGroupItem("Share", onClick = {}),
+                    ButtonGroupItem("Archive", onClick = {}),
+                    ButtonGroupItem("Report", onClick = {}),
+                    ButtonGroupItem("Snooze", onClick = {}),
                 ),
             )
             """.trimIndent(),
@@ -42,8 +43,9 @@ val buttonGroupDoc =
                         """
                         ShadcnButtonGroup(
                             items = listOf(
-                                ButtonGroupItem("Copy", onClick = {}),
-                                ButtonGroupItem("Share", onClick = {}),
+                                ButtonGroupItem("Archive", onClick = {}),
+                                ButtonGroupItem("Report", onClick = {}),
+                                ButtonGroupItem("Snooze", onClick = {}),
                             ),
                         )
                         """.trimIndent(),
@@ -51,8 +53,9 @@ val buttonGroupDoc =
                         ShadcnButtonGroup(
                             items =
                                 listOf(
-                                    ButtonGroupItem("Copy", onClick = {}),
-                                    ButtonGroupItem("Share", onClick = {}),
+                                    ButtonGroupItem("Archive", onClick = {}),
+                                    ButtonGroupItem("Report", onClick = {}),
+                                    ButtonGroupItem("Snooze", onClick = {}),
                                 ),
                         )
                     },

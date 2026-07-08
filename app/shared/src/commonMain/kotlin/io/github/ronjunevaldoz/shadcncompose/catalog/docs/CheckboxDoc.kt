@@ -2,11 +2,16 @@
 
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCheckbox
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnField
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnFieldDescription
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnFieldLabel
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnFieldOrientation
 
 val checkboxDoc =
     ComponentDoc(
@@ -32,6 +37,34 @@ val checkboxDoc =
                     preview = {
                         var checked by remember { mutableStateOf(false) }
                         ShadcnCheckbox(checked = checked, onCheckedChange = { checked = it })
+                    },
+                ),
+                ComponentExample(
+                    title = "With text",
+                    code =
+                        """
+                        var checked by remember { mutableStateOf(true) }
+                        ShadcnField(orientation = ShadcnFieldOrientation.Horizontal) {
+                            ShadcnCheckbox(checked = checked, onCheckedChange = { checked = it })
+                            Column {
+                                ShadcnFieldLabel("Accept terms and conditions")
+                                ShadcnFieldDescription(
+                                    "By clicking this checkbox, you agree to the terms and conditions.",
+                                )
+                            }
+                        }
+                        """.trimIndent(),
+                    preview = {
+                        var checked by remember { mutableStateOf(true) }
+                        ShadcnField(orientation = ShadcnFieldOrientation.Horizontal) {
+                            ShadcnCheckbox(checked = checked, onCheckedChange = { checked = it })
+                            Column {
+                                ShadcnFieldLabel("Accept terms and conditions")
+                                ShadcnFieldDescription(
+                                    "By clicking this checkbox, you agree to the terms and conditions.",
+                                )
+                            }
+                        }
                     },
                 ),
                 ComponentExample(
