@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -62,7 +63,13 @@ fun ShadcnMessage(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Row(
-        modifier = modifier,
+        // Real shadcn's `.message` is `w-full` -- without this, the row sizes to its
+        // own content (avatar + however wide the bubble happens to be) and the parent
+        // Column's default Alignment.Start then places that whole undersized row flush
+        // left, regardless of [align]. ShadcnBubble's own end-alignment only resolves
+        // *within* this row, so a narrower-than-full row left an End-aligned bubble
+        // looking stranded short of the real right edge, with dead space after it.
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
     ) {
         CompositionLocalProvider(LocalMessageAlign provides align) {
@@ -92,8 +99,13 @@ fun ShadcnMessageAvatar(
 
 @Composable
 private fun RowScope.ShadcnMessageContent(content: @Composable ColumnScope.() -> Unit) {
+    // fill = true (the default): real shadcn's MessageContent is `w-full`, occupying
+    // its full flex-1 share -- with fill = false a shrunk column (e.g. a short bubble)
+    // would be positioned right after the previous sibling instead of at its slot's
+    // true edge, leaving the avatar stranded short of the row's real end for
+    // ShadcnMessageAlign.End, even with the outer Row now correctly filling its width.
     Column(
-        modifier = Modifier.weight(1f, fill = false),
+        modifier = Modifier.weight(1f),
         verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs),
         content = content,
     )
