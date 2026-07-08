@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -42,19 +43,26 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * A real tailwind-icons-outline glyph, tinted to match surrounding text -- catalog
- * *examples* only, same as [DatePickerDoc]'s calendar icon. Never added to :library.
+ * A real tailwind-icons-outline glyph -- catalog *examples* only, same as
+ * [DatePickerDoc]'s calendar icon. Never added to :library.
+ *
+ * [tint] defaults to `onSurface` (correct for Ghost/Outline buttons, which render on a
+ * light/transparent background) but MUST be passed explicitly as the surrounding
+ * button's own content color for anything with a colored background (e.g.
+ * `ButtonVariant.Default`'s `onPrimary`) -- otherwise the icon renders in the wrong
+ * color for its background and can end up nearly invisible.
  */
 @Composable
 private fun DocIcon(
     icon: ImageVector,
     modifier: Modifier = Modifier,
+    tint: Color = shadcnTheme.colors.onSurface,
 ) {
     Image(
         imageVector = icon,
         contentDescription = null,
         modifier = modifier.size(16.dp),
-        colorFilter = ColorFilter.tint(shadcnTheme.colors.onSurface),
+        colorFilter = ColorFilter.tint(tint),
     )
 }
 
@@ -165,7 +173,7 @@ val messageScrollerDoc =
                                 ShadcnInputGroup(
                                     trailing = {
                                         ShadcnButton(onClick = ::send, enabled = composerText.isNotBlank() && !isStreaming) {
-                                            DocIcon(PaperAirplane)
+                                            DocIcon(PaperAirplane, tint = shadcnTheme.colors.onPrimary)
                                         }
                                     },
                                 ) {
@@ -275,7 +283,7 @@ private fun InteractiveChatPanel() {
                         size = ButtonSize.Icon,
                         enabled = composerText.isNotBlank() && !isStreaming,
                     ) {
-                        DocIcon(PaperAirplane)
+                        DocIcon(PaperAirplane, tint = shadcnTheme.colors.onPrimary)
                     }
                 },
             ) {
