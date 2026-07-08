@@ -91,7 +91,13 @@ fun <T> ShadcnSelect(
             Column(
                 modifier =
                     Modifier
-                        .widthIn(min = 140.dp)
+                        // A max is required, not just min -- Popup's incoming constraints
+                        // aren't bounded to the trigger's own size, so an option Row's
+                        // fillMaxWidth() below would otherwise resolve against whatever
+                        // unbounded/window-sized constraint the popup layer receives,
+                        // blowing the panel out to the full viewport width instead of
+                        // wrapping the option labels.
+                        .widthIn(min = 140.dp, max = 280.dp)
                         .styleable(panelStyleState, variant.rememberPanelStyle())
                         .padding(shadcnTheme.spacing.xxs)
                         .verticalScroll(rememberScrollState()),

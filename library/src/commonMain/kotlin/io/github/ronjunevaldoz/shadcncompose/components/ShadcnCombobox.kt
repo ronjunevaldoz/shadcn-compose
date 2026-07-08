@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.rememberUpdatedStyleState
+import androidx.compose.foundation.style.styleable
+import androidx.compose.foundation.style.then
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,10 +25,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
+import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.shadcnFocusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -57,16 +65,43 @@ fun <T> ShadcnCombobox(
     val filtered = remember(options, query) { options.filter { label(it).contains(query, ignoreCase = true) } }
 
     Box(modifier = modifier) {
-        ShadcnButton(
-            onClick = { expanded = true },
-            variant = ButtonVariant.Outline,
-            modifier = Modifier.width(200.dp),
+        val triggerInteractionSource = remember { MutableInteractionSource() }
+        val triggerIsFocused by triggerInteractionSource.collectIsFocusedAsState()
+        val triggerStyleState = rememberUpdatedStyleState(triggerInteractionSource) { it.isEnabled = true }
+
+        // Not ShadcnButton: its content Row centers children as a tight group
+        // (Arrangement.spacedBy(Alignment.CenterHorizontally)), which leaves the
+        // chevron floating next to the label instead of pinned to the trigger's
+        // right edge like real shadcn's `justify-between` combobox trigger. A custom
+        // Row with Arrangement.SpaceBetween (same fix already applied to
+        // ShadcnSelect's trigger) gets the chevron to the correct spot.
+        Box(
+            modifier =
+                Modifier
+                    .width(200.dp)
+                    .shadcnFocusRing(isFocused = triggerIsFocused)
+                    .clickable(
+                        interactionSource = triggerInteractionSource,
+                        indication = null,
+                        role = Role.Button,
+                    ) { expanded = true }
+                    .styleable(
+                        triggerStyleState,
+                        ButtonVariant.Outline.rememberStyle() then ButtonSize.Md.rememberStyle(),
+                    ),
+            contentAlignment = Alignment.CenterStart,
         ) {
-            ShadcnText(
-                value?.let(label) ?: placeholder,
-                muted = value == null,
-            )
-            ShadcnText("⌄", style = ShadcnTextStyle.LabelSmall, muted = true)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ShadcnText(
+                    value?.let(label) ?: placeholder,
+                    muted = value == null,
+                )
+                ShadcnText("⌄", style = ShadcnTextStyle.LabelSmall, muted = true)
+            }
         }
 
         ShadcnAnchoredPopup(expanded = expanded, onDismissRequest = { expanded = false }) {
