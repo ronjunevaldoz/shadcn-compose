@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.styles.shadcnScrollFade
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import kotlinx.coroutines.launch
 
@@ -162,7 +163,7 @@ fun ShadcnMessageScroller(
 
     Box(modifier = modifier) {
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(scrollState),
+            modifier = Modifier.fillMaxSize().verticalScroll(scrollState).shadcnScrollFade(scrollState),
             content = content,
         )
         val nearBottom = isMessageScrollerNearBottom(scrollState.value, scrollState.maxValue, autoScrollThresholdPx)

@@ -34,6 +34,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextField
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.shadcnShimmer
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -57,6 +58,7 @@ private val demoReplies =
     )
 
 private const val STREAM_TICK_MILLIS = 18L
+private const val THINKING_DELAY_MILLIS = 500L
 
 val messageScrollerDoc =
     ComponentDoc(
@@ -163,7 +165,14 @@ val messageScrollerDoc =
                                         ShadcnBubble(align = if (message.isUser) ShadcnMessageAlign.End else ShadcnMessageAlign.Start) {
                                             ShadcnBubbleContent(
                                                 variant = if (message.isUser) ShadcnBubbleVariant.Default else ShadcnBubbleVariant.Muted,
-                                            ) { ShadcnText(message.text) }
+                                            ) {
+                                                // Shimmers a "Thinking…" placeholder until the reply's first character lands.
+                                                if (message.text.isEmpty() && !message.isUser) {
+                                                    ShadcnText("Thinking…", muted = true, modifier = Modifier.shadcnShimmer())
+                                                } else {
+                                                    ShadcnText(message.text)
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -197,6 +206,7 @@ private fun InteractiveChatPanel() {
         messages = messages + ScrollerDemoMessage(replyId, "", isUser = false)
         isStreaming = true
         coroutineScope.launch {
+            delay(THINKING_DELAY_MILLIS) // lets the shimmering "Thinking…" placeholder actually be seen.
             for (charCount in 1..reply.length) {
                 delay(STREAM_TICK_MILLIS)
                 messages = messages.map { if (it.id == replyId) it.copy(text = reply.take(charCount)) else it }
@@ -264,7 +274,11 @@ private fun InteractiveChatPanel() {
                         ShadcnBubbleContent(
                             variant = if (message.isUser) ShadcnBubbleVariant.Default else ShadcnBubbleVariant.Muted,
                         ) {
-                            ShadcnText(message.text)
+                            if (message.text.isEmpty() && !message.isUser) {
+                                ShadcnText("Thinking…", muted = true, modifier = Modifier.shadcnShimmer())
+                            } else {
+                                ShadcnText(message.text)
+                            }
                         }
                     }
                 }

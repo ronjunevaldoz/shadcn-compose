@@ -17,6 +17,7 @@ enum class CatalogCategory(val title: String) {
     OVERLAYS("Overlays & Navigation"),
     DATA_AND_LAYOUT("Data & Layout"),
     AI_ELEMENTS("AI Elements"),
+    UTILS("Utils"),
 }
 
 data class CatalogEntry(
@@ -102,6 +103,9 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "attachment", title = "Attachment", category = CatalogCategory.AI_ELEMENTS),
         CatalogEntry(id = "marker", title = "Marker", category = CatalogCategory.AI_ELEMENTS),
         CatalogEntry(id = "message-scroller", title = "Message Scroller", category = CatalogCategory.AI_ELEMENTS),
+        // Utils
+        CatalogEntry(id = "shimmer", title = "Shimmer", category = CatalogCategory.UTILS),
+        CatalogEntry(id = "scroll-fade", title = "Scroll Fade", category = CatalogCategory.UTILS),
     )
 
 val catalogEntriesByCategory: Map<CatalogCategory, List<CatalogEntry>> =

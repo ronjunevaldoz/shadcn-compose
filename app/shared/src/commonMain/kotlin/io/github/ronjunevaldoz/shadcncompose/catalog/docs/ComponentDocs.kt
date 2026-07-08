@@ -63,4 +63,6 @@ val componentDocsById: Map<String, ComponentDoc> =
         bubbleDoc,
         attachmentDoc,
         messageScrollerDoc,
+        shimmerDoc,
+        scrollFadeDoc,
     ).associateBy { it.id }

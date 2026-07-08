@@ -351,6 +351,21 @@ and read it first.
 If a new component lands in the real registry, re-check this list before assuming it's
 missing.
 
+**shadcn/ui also ships `docs/utils/*` pages, separate from `docs/components/base/*`** --
+these are CSS/Tailwind utilities (modifiers, in Compose terms), not components, so they
+don't show up when only checking the components registry. `shimmer` and `scroll-fade`
+were missed for exactly this reason (only found once the user pointed at
+`ui.shadcn.com/docs/utils/shimmer` and `.../scroll-fade` directly) -- implemented as
+`Modifier.shadcnShimmer()`/`Modifier.shadcnScrollFade()` in
+`library/src/commonMain/kotlin/.../styles/`, cataloged under a new `UTILS`
+`CatalogCategory`. `shadcnScrollFade` is wired directly into `ShadcnMessageScroller`'s
+internal scroll container (real shadcn's own message-scroller demo uses it), and
+`shadcnShimmer` powers a "Thinking…" placeholder in the message-scroller catalog demo
+while a reply is queued but hasn't started streaming yet. **Lesson generalized**: when
+auditing registry parity, also check `ui.shadcn.com/docs/utils/*` for utility pages, not
+just `docs/components/base/*` for components -- they're a separate nav section on the
+real site and easy to miss entirely.
+
 ## Notes for future sessions
 
 - **The Compose Styles API does not match what the `kotlin-multiplatform-design-system`

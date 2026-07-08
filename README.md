@@ -154,6 +154,15 @@ Chat/AI-assistant UI primitives (mirrors real shadcn's "AI Elements" family).
 | `ShadcnMarker` | Labeled divider in a chat transcript (date separator, pinned-messages banner) | date separator, chat divider, section marker |
 | `ShadcnMessageScroller` | Auto-follows new messages to the bottom, releases on manual scroll, floating jump-to-bottom button | chat scroll view, auto-scroll chat, AI streaming scroll, jump to bottom, sticky scroll |
 
+### Utils
+
+Modifiers, not standalone components (mirrors real shadcn's `docs/utils/*` pages).
+
+| Utility | Use case | Keywords |
+|---|---|---|
+| `Modifier.shadcnShimmer()` | Sweeping highlight over text for "generating response"/"thinking" states | shimmer, loading text animation, generating response, thinking indicator |
+| `Modifier.shadcnScrollFade()` | Fades a scrollable container's edges based on scroll position, hinting overflow | scroll fade, edge fade, overflow hint, fade mask, scroll shadow |
+
 ## Registry parity
 
 Every component in real shadcn/ui's `base/*` registry is implemented here, with a small set of
