@@ -10,9 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
@@ -47,17 +49,23 @@ fun Modifier.shadcnShimmer(
             label = "shadcn-shimmer-progress",
         )
 
-        drawWithContent {
-            drawContent()
-            val bandWidth = size.width * 0.6f
-            val travel = size.width + bandWidth
-            val center = -bandWidth + progress * travel
-            val brush =
-                Brush.linearGradient(
-                    colors = listOf(Color.Transparent, highlightColor, Color.Transparent),
-                    start = Offset(center - bandWidth / 2f, 0f),
-                    end = Offset(center + bandWidth / 2f, 0f),
-                )
-            drawRect(brush = brush, blendMode = BlendMode.SrcAtop)
-        }
+        // BlendMode.SrcAtop needs an offscreen compositing layer to composite only
+        // against this modifier's own drawContent() output -- without it, the blend
+        // reads whatever's already on the shared canvas (background/siblings drawn
+        // earlier), so the sweep visibly tints/punches through the surrounding
+        // background instead of stopping exactly at the text's own glyph shapes.
+        graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+            .drawWithContent {
+                drawContent()
+                val bandWidth = size.width * 0.6f
+                val travel = size.width + bandWidth
+                val center = -bandWidth + progress * travel
+                val brush =
+                    Brush.linearGradient(
+                        colors = listOf(Color.Transparent, highlightColor, Color.Transparent),
+                        start = Offset(center - bandWidth / 2f, 0f),
+                        end = Offset(center + bandWidth / 2f, 0f),
+                    )
+                drawRect(brush = brush, blendMode = BlendMode.SrcAtop)
+            }
     }
