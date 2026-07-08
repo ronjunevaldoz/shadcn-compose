@@ -2,8 +2,10 @@
 
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -23,6 +25,12 @@ class CarouselScreenshotTest : ShadcnScreenshotTest() {
             Column(modifier = Modifier.width(200.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 ShadcnCarousel(state = state, modifier = Modifier.fillMaxWidth().height(100.dp)) { page ->
                     Box(Modifier, contentAlignment = Alignment.Center) { ShadcnText("Slide ${page + 1}") }
+                }
+                // Previous/Next must render circular (real shadcn: rounded-full) -- covers
+                // the shape fix, never previously exercised by this golden.
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ShadcnCarouselPrevious(state = state)
+                    ShadcnCarouselNext(state = state)
                 }
                 ShadcnCarouselDots(state = state)
             }

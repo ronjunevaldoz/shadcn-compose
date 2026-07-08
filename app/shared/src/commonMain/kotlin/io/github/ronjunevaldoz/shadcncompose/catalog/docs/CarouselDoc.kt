@@ -3,12 +3,11 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.rememberPagerState
@@ -16,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCard
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCarousel
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCarouselDots
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCarouselNext
@@ -43,35 +43,82 @@ val carouselDoc =
                     title = "Default",
                     code =
                         """
+                        // Matches real shadcn's own default demo: a Card per slide, roughly
+                        // square (real shadcn: `aspect-square`), a big bold slide number, and
+                        // circular Previous/Next buttons overlaid on the carousel's edges
+                        // (real shadcn: `absolute -left-12`/`-right-12`) rather than a row
+                        // below it.
                         val state = rememberPagerState { 5 }
-                        // Fixed width: HorizontalPager needs a bounded main-axis size to know
-                        // its own page width -- without one it silently expands to fill
-                        // whatever ambient width it's given, which is rarely what you want.
-                        Column(
-                            modifier = Modifier.width(280.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                        Box(
+                            modifier = Modifier.width(200.dp).height(200.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
-                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxWidth().height(120.dp)) { page ->
-                                Box(Modifier.padding(8.dp), contentAlignment = Alignment.Center) {
-                                    ShadcnText("Slide ${'$'}{page + 1}", style = ShadcnTextStyle.TitleLarge)
+                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
+                                ShadcnCard(modifier = Modifier.fillMaxSize()) {
+                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                        ShadcnText("${'$'}{page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                                    }
                                 }
                             }
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                ShadcnCarouselPrevious(state = state)
-                                ShadcnCarouselNext(state = state)
-                            }
-                            ShadcnCarouselDots(state = state)
+                            ShadcnCarouselPrevious(
+                                state = state,
+                                modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
+                            )
+                            ShadcnCarouselNext(
+                                state = state,
+                                modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
+                            )
                         }
                         """.trimIndent(),
                     preview = {
                         val state = rememberPagerState { 5 }
-                        Column(
-                            modifier = Modifier.width(280.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                        Box(
+                            modifier = Modifier.width(200.dp).height(200.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
+                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
+                                ShadcnCard(modifier = Modifier.fillMaxSize()) {
+                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                        ShadcnText("${page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                                    }
+                                }
+                            }
+                            ShadcnCarouselPrevious(
+                                state = state,
+                                modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
+                            )
+                            ShadcnCarouselNext(
+                                state = state,
+                                modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
+                            )
+                        }
+                    },
+                ),
+                ComponentExample(
+                    title = "With dot indicators",
+                    code =
+                        """
+                        // ShadcnCarouselDots has no real shadcn/ui equivalent -- real
+                        // carousel.tsx ships only Previous/Next, no pagination dots. This is
+                        // a deliberate addition, not a parity gap: a common carousel pattern
+                        // worth having, shown separately so the "Default" example above stays
+                        // a faithful match to the real demo.
+                        val state = rememberPagerState { 5 }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            ShadcnCarousel(state = state, modifier = Modifier.width(280.dp).height(120.dp)) { page ->
+                                Box(Modifier.padding(8.dp), contentAlignment = Alignment.Center) {
+                                    ShadcnText("Slide ${'$'}{page + 1}", style = ShadcnTextStyle.TitleLarge)
+                                }
+                            }
+                            ShadcnCarouselDots(state = state, modifier = Modifier.padding(top = 8.dp))
+                        }
+                        """.trimIndent(),
+                    preview = {
+                        val state = rememberPagerState { 5 }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             ShadcnCarousel(
                                 state = state,
-                                modifier = Modifier.fillMaxWidth().height(120.dp),
+                                modifier = Modifier.width(280.dp).height(120.dp),
                             ) { page ->
                                 Box(
                                     Modifier
@@ -85,14 +132,10 @@ val carouselDoc =
                                     ShadcnText("Slide ${page + 1}", style = ShadcnTextStyle.TitleLarge)
                                 }
                             }
-                            Row(
+                            ShadcnCarouselDots(
+                                state = state,
                                 modifier = Modifier.padding(top = shadcnTheme.spacing.sm),
-                                horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
-                            ) {
-                                ShadcnCarouselPrevious(state = state)
-                                ShadcnCarouselNext(state = state)
-                            }
-                            ShadcnCarouselDots(state = state, modifier = Modifier.padding(top = shadcnTheme.spacing.sm))
+                            )
                         }
                     },
                 ),

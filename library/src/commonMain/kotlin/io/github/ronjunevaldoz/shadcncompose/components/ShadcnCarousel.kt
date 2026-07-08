@@ -15,6 +15,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -72,6 +73,9 @@ fun ShadcnCarouselPrevious(
         enabled = state.currentPage > 0,
         variant = ButtonVariant.Outline,
         size = ButtonSize.Icon,
+        // Real shadcn's CarouselPrevious/CarouselNext are `rounded-full`, not the
+        // standard button corner radius -- ButtonVariant.Outline alone gives shapes.lg.
+        style = Style { shape(CircleShape) },
     ) {
         ShadcnText("‹", style = ShadcnTextStyle.TitleMedium)
     }
@@ -93,6 +97,7 @@ fun ShadcnCarouselNext(
         enabled = canScrollNext,
         variant = ButtonVariant.Outline,
         size = ButtonSize.Icon,
+        style = Style { shape(CircleShape) },
     ) {
         ShadcnText("›", style = ShadcnTextStyle.TitleMedium)
     }
