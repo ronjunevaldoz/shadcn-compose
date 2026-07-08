@@ -37,7 +37,10 @@ CompositionLocal snapshot (see `.claude/AGENTS.md`'s notes on this anti-pattern)
 the one it's frozen at. This exact bug shipped undetected in `ShadcnInputGroup`/
 `ShadcnTextField`'s error state until a live dark-mode toggle in the running catalog app
 revealed it. This suite catches wrong colors; it cannot catch colors that are right once
-and then never update.
+and then never update. Since a screenshot diff structurally can't catch this, the fix
+was to prevent the anti-pattern instead: `scripts/check_style_block_theme_reads.sh`
+statically checks every `Style { }` block for a direct `shadcnTheme.` read and is wired
+into CI, so this bug class can no longer land silently the way it did here.
 
 ## Running it
 
