@@ -83,6 +83,22 @@ abstract class ShadcnScreenshotTest {
         captureCompositeRoot().captureRoboImage("$snapshotDir/$name${themeSuffix(darkTheme)}.png")
     }
 
+    /**
+     * Like [snapshot], but doesn't capture immediately -- for tests that need to drive
+     * some interaction (e.g. `performMouseInput { moveTo(...) }` to trigger a hover
+     * state) between composing and capturing. Call [captureNamed] once the interaction
+     * has settled.
+     */
+    fun setThemedContent(
+        darkTheme: Boolean = false,
+        stylePreset: ShadcnStylePreset = ShadcnStylePreset.Vega,
+        content: @Composable () -> Unit,
+    ) {
+        composeRule.setContent {
+            ShadcnSnapshotSurface(darkTheme, stylePreset, content)
+        }
+    }
+
     /** Captures the *already-composed* current tree -- for tests that drive multiple sequential captures off one `setContent` call. */
     fun captureNamed(
         name: String,
@@ -100,6 +116,18 @@ abstract class ShadcnScreenshotTest {
      * window -- base content plus every open overlay layered on top, exactly what a
      * real screenshot should show -- so always capturing the last root is correct
      * whether zero, one, or several Popups are open.
+     *
+     * Known cosmetic side effect (test-harness only, not a product bug): that
+     * composite root reports the *real* platform window's full bounds (e.g.
+     * 1024x768), not [ShadcnSnapshotSurface]'s own wrap-content size -- so any capture
+     * involving a Popup shows extra unthemed canvas margin around the actual UI,
+     * invisible in light mode (the unfilled margin happens to be white already) but
+     * visible as a white border in dark-mode popup goldens. The themed UI elements
+     * themselves render with fully correct colors in every case -- confirmed by
+     * inspecting the actual pixels, not assumed. Not worth fixing by making
+     * [ShadcnSnapshotSurface] `fillMaxSize()`: that would blow up every one of the
+     * 100+ already-tight, already-reviewed non-popup goldens into mostly-blank
+     * full-window images for a purely cosmetic gain on the handful of popup tests.
      */
     private fun captureCompositeRoot(): SemanticsNodeInteraction {
         val roots = composeRule.onAllNodes(isRoot())

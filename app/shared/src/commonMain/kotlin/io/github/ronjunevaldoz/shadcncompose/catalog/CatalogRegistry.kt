@@ -14,6 +14,7 @@ enum class CatalogCategory(val title: String) {
     DATA_DISPLAY("Data Display"),
     FEEDBACK("Feedback"),
     DISCLOSURE("Disclosure & Navigation"),
+    OVERLAYS("Overlays & Navigation"),
 }
 
 data class CatalogEntry(
@@ -62,6 +63,19 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "collapsible", title = "Collapsible", category = CatalogCategory.DISCLOSURE),
         CatalogEntry(id = "accordion", title = "Accordion", category = CatalogCategory.DISCLOSURE),
         CatalogEntry(id = "tabs", title = "Tabs", category = CatalogCategory.DISCLOSURE),
+        // Overlays & Navigation
+        CatalogEntry(id = "tooltip", title = "Tooltip", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "popover", title = "Popover", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "hover-card", title = "Hover Card", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "dropdown-menu", title = "Dropdown Menu", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "context-menu", title = "Context Menu", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "dialog", title = "Dialog", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "alert-dialog", title = "Alert Dialog", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "sheet", title = "Sheet", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "combobox", title = "Combobox", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "command", title = "Command", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "menubar", title = "Menubar", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "navigation-menu", title = "Navigation Menu", category = CatalogCategory.OVERLAYS),
     )
 
 val catalogEntriesByCategory: Map<CatalogCategory, List<CatalogEntry>> =

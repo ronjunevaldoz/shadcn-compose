@@ -80,3 +80,26 @@ class ShadcnPopupPositionProvider(
         return IntOffset(x, y)
     }
 }
+
+/**
+ * Positions a popup's top-left corner at a fixed point relative to the anchor's own
+ * top-left (e.g. wherever a right-click landed) -- used by [ShadcnContextMenu], which
+ * opens at the cursor rather than snapped to one side of a trigger element. Still
+ * clamps within the window so a context menu opened near an edge doesn't render
+ * off-screen.
+ */
+class ShadcnPointPositionProvider(private val pointInAnchor: IntOffset) : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize,
+    ): IntOffset {
+        val x = anchorBounds.left + pointInAnchor.x
+        val y = anchorBounds.top + pointInAnchor.y
+        return IntOffset(
+            x.coerceIn(0, (windowSize.width - popupContentSize.width).coerceAtLeast(0)),
+            y.coerceIn(0, (windowSize.height - popupContentSize.height).coerceAtLeast(0)),
+        )
+    }
+}

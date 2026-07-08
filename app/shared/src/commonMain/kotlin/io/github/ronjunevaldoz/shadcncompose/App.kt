@@ -34,10 +34,14 @@ fun App() {
 //    }
     CompositionLocalProvider(LocalShadcnDarkTheme provides darkModeOverride) {
         ShadcnTheme(
-            preset = stylePreset, // Snappy animations, tight padding metrics
-            baseColor = baseColor, // Subtle cool zinc grays
-            accent = accent, // Electric blue primary buttons and rings
-            baseRadius = ShadcnRadius(4.dp), // Sleek, tighter corner shapes
+            // Snappy animations, tight padding metrics
+            preset = stylePreset,
+            // Subtle cool zinc grays
+            baseColor = baseColor,
+            // Electric blue primary buttons and rings
+            accent = accent,
+            // Sleek, tighter corner shapes
+            baseRadius = ShadcnRadius(4.dp),
             isDark = isDarkMode,
         ) {
             CatalogNavHost(

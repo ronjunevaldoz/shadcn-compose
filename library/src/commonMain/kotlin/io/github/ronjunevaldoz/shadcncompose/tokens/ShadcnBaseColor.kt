@@ -94,9 +94,12 @@ enum class ShadcnBaseColor(
                 onPrimary = 0xFF18181B,
                 secondary = 0xFF27272A,
                 onSecondary = 0xFFFAFAFA,
-                onSurfaceVariant = 0xFF71717B, // Harmonised with the true theme scale
-                border = 0xFF27272A, // High contrast Dark Border token
-                ring = 0xFF71717B, // Crisp Focus indicator
+                // Harmonised with the true theme scale
+                onSurfaceVariant = 0xFF71717B,
+                // High contrast Dark Border token
+                border = 0xFF27272A,
+                // Crisp Focus indicator
+                ring = 0xFF71717B,
             ),
     ),
 
@@ -265,7 +268,8 @@ private fun baseDark(
     secondary: Long,
     onSecondary: Long,
     onSurfaceVariant: Long,
-    border: Long, // Added as a proper parameter so your enum tokens aren't ignored!
+    // Added as a proper parameter so your enum tokens aren't ignored!
+    border: Long,
     ring: Long,
 ) = ShadcnColors(
     primary = Color(primary),
@@ -285,7 +289,8 @@ private fun baseDark(
     surfaceVariant = Color(secondary),
     onSurface = Color(foreground),
     onSurfaceVariant = Color(onSurfaceVariant),
-    border = Color(border), // Correctly maps your high-contrast dark border tokens!
+    // Correctly maps your high-contrast dark border tokens!
+    border = Color(border),
     borderFocus = Color(ring),
     muted = Color(secondary),
     onMuted = Color(onSurfaceVariant),
