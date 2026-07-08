@@ -1,9 +1,16 @@
+@file:OptIn(androidx.compose.foundation.style.ExperimentalFoundationStyleApi::class)
+
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
+import io.github.ronjunevaldoz.shadcncompose.styles.CardSize
 import kotlin.test.Test
 
 class SidebarScreenshotTest : ShadcnScreenshotTest() {
@@ -34,6 +41,35 @@ class SidebarScreenshotTest : ShadcnScreenshotTest() {
         }
     }
 
+    private fun appShell(darkTheme: Boolean) {
+        snapshot("sidebar_app_shell", darkTheme = darkTheme) {
+            ShadcnSidebarProvider(expanded = true, onExpandedChange = {}, modifier = Modifier.height(260.dp)) {
+                ShadcnSidebar {
+                    ShadcnSidebarGroup(label = "Application") {
+                        ShadcnSidebarMenu(items = items, activeId = "home", onItemClick = {})
+                    }
+                }
+                ShadcnSidebarInset {
+                    Row(
+                        modifier = Modifier.padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        ShadcnSidebarTrigger()
+                        ShadcnBreadcrumb {
+                            ShadcnBreadcrumbLink("Building Your App", onClick = {})
+                            ShadcnBreadcrumbSeparator()
+                            ShadcnBreadcrumbPage("Data Fetching")
+                        }
+                    }
+                    ShadcnCard(size = CardSize.Sm, modifier = Modifier.padding(horizontal = 8.dp)) {
+                        ShadcnText("Page content goes here.")
+                    }
+                }
+            }
+        }
+    }
+
     @Test fun expanded_light() = states(darkTheme = false, expanded = true)
 
     @Test fun expanded_dark() = states(darkTheme = true, expanded = true)
@@ -41,4 +77,8 @@ class SidebarScreenshotTest : ShadcnScreenshotTest() {
     @Test fun collapsed_light() = states(darkTheme = false, expanded = false)
 
     @Test fun collapsed_dark() = states(darkTheme = true, expanded = false)
+
+    @Test fun app_shell_light() = appShell(darkTheme = false)
+
+    @Test fun app_shell_dark() = appShell(darkTheme = true)
 }
