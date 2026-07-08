@@ -69,6 +69,7 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "collapsible", title = "Collapsible", category = CatalogCategory.DISCLOSURE),
         CatalogEntry(id = "accordion", title = "Accordion", category = CatalogCategory.DISCLOSURE),
         CatalogEntry(id = "tabs", title = "Tabs", category = CatalogCategory.DISCLOSURE),
+        CatalogEntry(id = "breadcrumb", title = "Breadcrumb", category = CatalogCategory.DISCLOSURE),
         // Overlays & Navigation
         CatalogEntry(id = "tooltip", title = "Tooltip", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "popover", title = "Popover", category = CatalogCategory.OVERLAYS),
@@ -78,6 +79,7 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "dialog", title = "Dialog", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "alert-dialog", title = "Alert Dialog", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "sheet", title = "Sheet", category = CatalogCategory.OVERLAYS),
+        CatalogEntry(id = "drawer", title = "Drawer", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "combobox", title = "Combobox", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "command", title = "Command", category = CatalogCategory.OVERLAYS),
         CatalogEntry(id = "menubar", title = "Menubar", category = CatalogCategory.OVERLAYS),

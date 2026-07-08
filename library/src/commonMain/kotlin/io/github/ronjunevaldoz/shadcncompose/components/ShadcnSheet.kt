@@ -26,10 +26,9 @@ enum class ShadcnSheetSide { Top, Bottom, Start, End }
  * A modal panel that slides in from a screen edge. Matches real shadcn/ui's
  * `sheet.tsx`: full-height + fixed-width for [ShadcnSheetSide.Start]/[ShadcnSheetSide.End]
  * (`w-3/4 sm:max-w-sm`), full-width + auto-height for [ShadcnSheetSide.Top]/
- * [ShadcnSheetSide.Bottom]. Real shadcn's mobile `Drawer` (the `vaul`-based
- * bottom-sheet-with-drag-handle) is the same shape as `side = Bottom` here minus the
- * drag gesture -- use [ShadcnSheetSide.Bottom] for that case instead of a separate
- * component.
+ * [ShadcnSheetSide.Bottom]. For the `vaul`-based mobile bottom-sheet-with-drag-handle
+ * *with* swipe-to-dismiss, see [ShadcnDrawer] instead -- that's now a separate
+ * component with real drag physics, not an approximation via this one.
  *
  * Slide-in only animates on the way in, not the way out -- [ShadcnModalOverlay] removes
  * the whole Popup as soon as `visible` goes false, so there's no window left to animate

@@ -37,6 +37,7 @@ val componentDocsById: Map<String, ComponentDoc> =
         dialogDoc,
         alertDialogDoc,
         sheetDoc,
+        drawerDoc,
         comboboxDoc,
         commandDoc,
         menubarDoc,
@@ -54,4 +55,5 @@ val componentDocsById: Map<String, ComponentDoc> =
         itemDoc,
         inputOTPDoc,
         toastDoc,
+        breadcrumbDoc,
     ).associateBy { it.id }
