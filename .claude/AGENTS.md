@@ -232,9 +232,21 @@ decision**:
 - **`input`**/**`sonner`** -- implemented as `ShadcnTextField`/`ShadcnToast` (naming
   choices, not gaps).
 
+**shadcn's "AI Elements" family is implemented**, not out of scope: `ShadcnMarker`,
+`ShadcnMessage`/`ShadcnMessageGroup`, `ShadcnBubble`/`ShadcnBubbleGroup`,
+`ShadcnAttachment`/`ShadcnAttachmentGroup`, `ShadcnMessageScroller` (`attachment.tsx`,
+`bubble.tsx`, `marker.tsx`, `message.tsx`, `message-scroller.tsx` in the real registry).
+An earlier pass in this project excluded them by guessing their purpose from the
+filename alone, without fetching real source -- fetching and reading the actual `.tsx`
+confirmed they're general chat/AI-assistant UI primitives, not narrowly AI-chat-specific
+in a way that would exclude them from a general-purpose component library, and the user
+explicitly asked for them to be added. **Lesson generalized**: never classify a shadcn
+component as out-of-scope from its filename -- always fetch
+`raw.githubusercontent.com/shadcn-ui/ui/main/apps/v4/registry/new-york-v4/ui/<name>.tsx`
+and read it first.
+
 If a new component lands in the real registry, re-check this list before assuming it's
-missing -- `attachment`/`bubble`/`marker`/`message`/`message-scroller` are AI-chat-specific
-and out of scope for a general-purpose component library.
+missing.
 
 ## Notes for future sessions
 

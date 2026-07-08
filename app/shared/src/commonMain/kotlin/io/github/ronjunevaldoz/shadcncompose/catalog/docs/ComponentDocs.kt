@@ -56,4 +56,9 @@ val componentDocsById: Map<String, ComponentDoc> =
         inputOTPDoc,
         toastDoc,
         breadcrumbDoc,
+        markerDoc,
+        messageDoc,
+        bubbleDoc,
+        attachmentDoc,
+        messageScrollerDoc,
     ).associateBy { it.id }
