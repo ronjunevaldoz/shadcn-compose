@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.MutableStyleState
@@ -101,11 +102,19 @@ private fun ShadcnBubbleVariant.rememberStyle(): Style {
  * `ColumnScope`-only modifier, and [ShadcnBubble] is always used inside one (directly
  * inside [ShadcnBubbleGroup], or inside [ShadcnMessage]'s content column).
  *
+ * [content] receives [BoxScope], not `ColumnScope` -- real shadcn's `BubbleReactions` is
+ * an absolutely-positioned *sibling* of `BubbleContent` inside `Bubble` (CSS
+ * `position: relative` on the bubble, `position: absolute` on the reactions pill), not
+ * nested inside the content box. [ShadcnBubbleReactions] is itself a `BoxScope`
+ * extension for exactly this reason -- it needs to render layered on top of
+ * [ShadcnBubbleContent], not stacked below it in normal flow.
+ *
  * Usage:
  * ```
  * ShadcnBubbleGroup {
  *     ShadcnBubble(align = ShadcnMessageAlign.End) {
  *         ShadcnBubbleContent { ShadcnText("Hey, how's it going?") }
+ *         ShadcnBubbleReactions { ShadcnText("👍") }
  *     }
  * }
  * ```
@@ -114,15 +123,14 @@ private fun ShadcnBubbleVariant.rememberStyle(): Style {
 fun ColumnScope.ShadcnBubble(
     modifier: Modifier = Modifier,
     align: ShadcnMessageAlign = ShadcnMessageAlign.Start,
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable BoxScope.() -> Unit,
 ) {
-    Column(
+    Box(
         modifier =
             modifier
                 .align(if (align == ShadcnMessageAlign.End) Alignment.End else Alignment.Start)
                 .fillMaxWidth(0.8f),
-        verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xxs),
-        horizontalAlignment = if (align == ShadcnMessageAlign.End) Alignment.End else Alignment.Start,
+        contentAlignment = if (align == ShadcnMessageAlign.End) Alignment.TopEnd else Alignment.TopStart,
         content = content,
     )
 }
@@ -155,7 +163,11 @@ fun ShadcnBubbleContent(
     }
 }
 
-/** A small pill of reaction icons/counts overlaid on a [ShadcnBubbleContent]'s edge. */
+/**
+ * A small pill of reaction icons/counts, overlaid so it peeks out past a [ShadcnBubble]'s
+ * bottom edge -- matches real shadcn's `BubbleReactions`, which sits outside the normal
+ * flex flow (`translate-y-3/4`) rather than nested inside the bubble's own padding.
+ */
 @Composable
 fun BoxScope.ShadcnBubbleReactions(
     modifier: Modifier = Modifier,
@@ -166,6 +178,7 @@ fun BoxScope.ShadcnBubbleReactions(
         modifier =
             modifier
                 .align(alignment)
+                .offset(y = shadcnTheme.spacing.sm)
                 .background(shadcnTheme.colors.muted, RoundedCornerShape(shadcnTheme.shapes.full))
                 .padding(horizontal = shadcnTheme.spacing.xs, vertical = shadcnTheme.spacing.xxs),
         horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xxs),
