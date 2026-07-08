@@ -105,7 +105,7 @@ class ShadcnColorContrastTest {
     }
 
     @Test
-    fun `every ShadcnAccent overrides primary with sufficient contrast on every base, light and dark`() {
+    fun `every ShadcnAccent overrides primary with sufficient contrast on every base in both light and dark`() {
         for (accent in ShadcnAccent.entries) {
             for (base in ShadcnBaseColor.entries) {
                 val light = accent.applyTo(base.light, dark = false)
