@@ -103,16 +103,22 @@ dependencies {
 }
 
 mavenPublishing {
-    // Registers Central Portal as the publish target; this is dry-run wiring only --
-    // no Sonatype credentials exist yet, so `publish` will fail until they're added
-    // (via ORG_GRADLE_PROJECT_mavenCentralUsername/Password). `publishToMavenLocal`
-    // works today and is the intended way to verify this configuration for now.
-    publishToMavenCentral()
+    // Central Portal publish target, with automatic release: once uploaded and
+    // validated, the deployment publishes on its own with no manual "release" click
+    // in the Central Portal UI. Needs real Sonatype Central Portal credentials --
+    // ORG_GRADLE_PROJECT_mavenCentralUsername/mavenCentralPassword (env vars or
+    // ~/.gradle/gradle.properties, never committed here) -- `publish` fails without
+    // them. `publishToMavenLocal` works with no credentials and is the way to verify
+    // this wiring locally.
+    publishToMavenCentral(automaticRelease = true)
 
-    // Signing is left disabled until a real GPG key is available -- signAllPublications()
-    // would make even publishToMavenLocal fail with no key configured. Enable this
-    // before the first real Maven Central release:
-    // signAllPublications()
+    // Maven Central rejects unsigned artifacts. Resolves a signing key the same way
+    // tailwind-compose/heroicons-compose do -- either the standard `signing.keyId` /
+    // `signing.password` / `signing.secretKeyRingFile` Gradle properties (keyring
+    // file) or the in-memory equivalents (ORG_GRADLE_PROJECT_signingInMemoryKey /
+    // signingInMemoryKeyPassword / signingInMemoryKeyId, preferred for CI since no
+    // keyring file needs to exist on disk). No key material lives in this repo.
+    signAllPublications()
 
     coordinates(artifactId = "shadcn-compose")
 
