@@ -116,7 +116,7 @@ fun ShadcnInputGroup(
             borderWidth(1.dp)
             borderColor(if (hasFocusWithin) colors.borderFocus else colors.border)
             shape(RoundedCornerShape(shapes.lg))
-            if (hasFocusWithin) dropShadow(theme.focusRingShadow())
+            if (hasFocusWithin && theme.ring.enabled) dropShadow(theme.focusRingShadow())
         }
 
     Column(

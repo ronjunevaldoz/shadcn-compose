@@ -28,6 +28,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnRing
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 import kotlin.test.Test
 
@@ -57,6 +58,31 @@ class StylePresetMatrixTest : ShadcnScreenshotTest() {
 
     @Test
     fun button_focused_dark() = buttonFocusedPerPreset(darkTheme = true)
+
+    @Test
+    fun ring_toggle_light() = ringToggle(darkTheme = false)
+
+    @Test
+    fun ring_toggle_dark() = ringToggle(darkTheme = true)
+
+    /**
+     * [ShadcnRing.enabled] = false must silence the ring on a focused component while
+     * leaving its shape untouched. Focus is a single tree-wide concept in Compose UI
+     * testing, not scoped per composable, so this captures one theme's focused button
+     * per composition rather than two side by side in the same tree.
+     */
+    private fun ringToggle(darkTheme: Boolean) {
+        snapshotFocused("style_matrix_ring_enabled", focusTag = "ring_on", darkTheme = darkTheme) {
+            ShadcnTheme(isDark = darkTheme) {
+                ShadcnButton(onClick = {}, modifier = Modifier.testTag("ring_on")) { ShadcnText("On") }
+            }
+        }
+        snapshotFocused("style_matrix_ring_disabled", focusTag = "ring_off", darkTheme = darkTheme) {
+            ShadcnTheme(isDark = darkTheme, ring = ShadcnStylePreset.Vega.ring.copy(enabled = false)) {
+                ShadcnButton(onClick = {}, modifier = Modifier.testTag("ring_off")) { ShadcnText("Off") }
+            }
+        }
+    }
 
     private fun ringSwatch(darkTheme: Boolean) {
         snapshot("style_matrix_ring_swatch", darkTheme = darkTheme) {

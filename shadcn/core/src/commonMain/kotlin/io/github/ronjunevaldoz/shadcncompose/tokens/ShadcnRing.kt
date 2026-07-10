@@ -41,4 +41,9 @@ data class ShadcnRing(
     val width: Dp = 3.dp,
     val opacity: Float = 0.5f,
     val offset: Dp = 0.dp,
+    // Global kill switch for `focusRing()`, checked by every focusable component in the
+    // library. `focusRing()` still calls `shape(shape)` unconditionally when this is false,
+    // so the shape-pairing fix (see FocusRing.kt's doc comment) stays intact either way --
+    // only the ring itself is skipped.
+    val enabled: Boolean = true,
 )
