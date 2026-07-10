@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.selected
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -28,15 +27,11 @@ fun rememberRadioButtonStyle(): Style {
             background(Color.Transparent)
             borderWidth(1.dp)
             borderColor(colors.border)
-            shape(RoundedCornerShape(shapes.full))
             selected {
                 background(colors.primary)
                 borderColor(colors.primary)
             }
-            focused {
-                borderColor(colors.borderFocus)
-                dropShadow(theme.focusRingShadow())
-            }
+            focusRing(RoundedCornerShape(shapes.full))
             disabled { alpha(0.5f) }
         }
     }

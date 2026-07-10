@@ -7,7 +7,6 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.checked
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.focused
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -24,14 +23,10 @@ fun rememberSwitchTrackStyle(): Style {
     return remember(theme, theme.colors, theme.shapes) {
         Style {
             background(theme.colors.border)
-            shape(RoundedCornerShape(theme.shapes.full))
             borderWidth(1.dp)
             borderColor(Color.Transparent)
             checked { background(theme.colors.primary) }
-            focused {
-                borderColor(theme.colors.borderFocus)
-                dropShadow(theme.focusRingShadow())
-            }
+            focusRing(RoundedCornerShape(theme.shapes.full))
             disabled { alpha(0.5f) }
         }
     }

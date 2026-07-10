@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.focused
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -16,7 +15,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 // Matches shadcn/ui's real input.tsx: border border-input (1.dp, always visible),
 // focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 --
-// border width never changes, so focusing never reflows layout.
+// `focusRing(...)` grows the border to `theme.ring.width` on focus.
 sealed interface TextFieldVariant {
     data object Default : TextFieldVariant
 
@@ -40,13 +39,9 @@ fun TextFieldVariant.rememberStyle(): Style {
                     contentColor(colors.onSurface)
                     borderWidth(1.dp)
                     borderColor(colors.border)
-                    shape(RoundedCornerShape(shapes.lg))
                     contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                     fontSize(14.sp)
-                    focused {
-                        borderColor(colors.borderFocus)
-                        dropShadow(theme.focusRingShadow())
-                    }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
                 }
 
@@ -56,13 +51,9 @@ fun TextFieldVariant.rememberStyle(): Style {
                     contentColor(colors.onSurface)
                     borderWidth(1.dp)
                     borderColor(Color.Transparent)
-                    shape(RoundedCornerShape(shapes.lg))
                     contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                     fontSize(14.sp)
-                    focused {
-                        borderColor(colors.borderFocus)
-                        dropShadow(theme.focusRingShadow())
-                    }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
                 }
 
@@ -71,13 +62,9 @@ fun TextFieldVariant.rememberStyle(): Style {
                     contentColor(colors.onSurface)
                     borderWidth(1.dp)
                     borderColor(Color.Transparent)
-                    shape(RoundedCornerShape(shapes.lg))
                     contentPadding(horizontal = spacing.xs, vertical = spacing.xs)
                     fontSize(14.sp)
-                    focused {
-                        borderColor(colors.borderFocus)
-                        dropShadow(theme.focusRingShadow())
-                    }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
                 }
         }

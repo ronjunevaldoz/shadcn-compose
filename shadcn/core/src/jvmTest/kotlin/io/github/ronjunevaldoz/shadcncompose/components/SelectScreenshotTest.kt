@@ -2,6 +2,8 @@
 
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 import kotlin.test.Test
@@ -37,4 +39,18 @@ class SelectScreenshotTest : ShadcnScreenshotTest() {
     @Test fun placeholder_light() = placeholder(darkTheme = false)
 
     @Test fun placeholder_dark() = placeholder(darkTheme = true)
+
+    private fun triggerFocused(darkTheme: Boolean) {
+        snapshotFocused("select_trigger_focused", focusTag = "select-trigger", darkTheme = darkTheme) {
+            ShadcnSelect(
+                modifier = Modifier.testTag("select-trigger"),
+                value = ShadcnStylePreset.Vega,
+                options = ShadcnStylePreset.entries,
+                onValueChange = {},
+                label = { it.label },
+            )
+        }
+    }
+
+    @Test fun trigger_focused_light() = triggerFocused(darkTheme = false)
 }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.triStateToggleIndeterminate
 import androidx.compose.foundation.style.triStateToggleOn
 import androidx.compose.runtime.Composable
@@ -29,7 +28,6 @@ fun rememberCheckboxStyle(): Style {
             background(Color.Transparent)
             borderWidth(1.dp)
             borderColor(colors.border)
-            shape(RoundedCornerShape(shapes.sm))
             triStateToggleOn {
                 background(colors.primary)
                 borderColor(colors.primary)
@@ -38,10 +36,7 @@ fun rememberCheckboxStyle(): Style {
                 background(colors.primary)
                 borderColor(colors.primary)
             }
-            focused {
-                borderColor(colors.borderFocus)
-                dropShadow(theme.focusRingShadow())
-            }
+            focusRing(RoundedCornerShape(shapes.sm))
             disabled { alpha(0.5f) }
         }
     }
