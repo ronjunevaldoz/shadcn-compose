@@ -50,8 +50,6 @@ private val COMPACT_BREAKPOINT = 720.dp
  */
 @Composable
 fun CatalogNavHost(
-    isDarkMode: Boolean,
-    onToggleDarkMode: (Boolean) -> Unit,
     stylePreset: ShadcnStylePreset,
     onStylePresetChange: (ShadcnStylePreset) -> Unit,
     baseColor: ShadcnBaseColor,
@@ -94,8 +92,6 @@ fun CatalogNavHost(
 
         Column(modifier = Modifier.fillMaxSize()) {
             CatalogTopBar(
-                isDarkMode = isDarkMode,
-                onToggleDarkMode = onToggleDarkMode,
                 stylePreset = stylePreset,
                 onStylePresetChange = onStylePresetChange,
                 baseColor = baseColor,

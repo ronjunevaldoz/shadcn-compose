@@ -74,13 +74,29 @@ fun ShadcnCarouselPrevious(
     val scope = rememberCoroutineScope()
     ShadcnButton(
         onClick = { scope.launch { state.animateScrollToPage((state.currentPage - 1).coerceAtLeast(0)) } },
-        modifier = modifier.size(32.dp),
+        modifier = modifier,
         enabled = state.currentPage > 0,
         variant = ButtonVariant.Outline,
         size = ButtonSize.Icon,
-        // Real shadcn's CarouselPrevious/CarouselNext are `rounded-full`, not the
-        // standard button corner radius -- ButtonVariant.Outline alone gives shapes.lg.
-        style = Style { shape(CircleShape) },
+        // Real shadcn's CarouselPrevious/CarouselNext are `rounded-full` (not the
+        // standard button corner radius) AND smaller than the default icon-button size
+        // (`size-7`/`size-8` vs. ButtonSize.Icon's 36dp). width/height here -- not a
+        // separate `Modifier.size(32.dp)` on the button -- is the single source of
+        // truth for the button's size: this `style` param is applied last (see
+        // ShadcnButton's `variant.rememberStyle() then size.rememberStyle(), style`
+        // chain, where a later style overrides a property an earlier one already set),
+        // so it cleanly overrides ButtonSize.Icon's 36dp rather than fighting an outer
+        // Modifier.size() for the final rendered size -- a real bug this component
+        // shipped with: the two competing sizing mechanisms let the button render at
+        // 36dp despite the (ignored) 32dp Modifier.size(), overflowing past its
+        // allocated slot and overlapping the carousel content it's offset right up
+        // against (see CarouselDoc.kt's `.offset(x = (-40).dp)`/`.offset(x = 40.dp)`).
+        style =
+            Style {
+                shape(CircleShape)
+                width(32.dp)
+                height(32.dp)
+            },
     ) {
         icon()
     }
@@ -103,11 +119,18 @@ fun ShadcnCarouselNext(
         onClick = {
             scope.launch { state.animateScrollToPage((state.currentPage + 1).coerceAtMost(state.pageCount - 1)) }
         },
-        modifier = modifier.size(32.dp),
+        modifier = modifier,
         enabled = canScrollNext,
         variant = ButtonVariant.Outline,
         size = ButtonSize.Icon,
-        style = Style { shape(CircleShape) },
+        // See ShadcnCarouselPrevious's matching comment -- width/height here (not a
+        // separate Modifier.size(32.dp)) is the single source of truth for size.
+        style =
+            Style {
+                shape(CircleShape)
+                width(32.dp)
+                height(32.dp)
+            },
     ) {
         icon()
     }

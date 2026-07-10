@@ -15,7 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.heroicons.outline.ChevronDown
 import io.github.ronjunevaldoz.shadcncompose.catalog.docs.CodeBlock
+import io.github.ronjunevaldoz.shadcncompose.catalog.docs.DocIcon
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBadge
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCard
@@ -88,18 +90,21 @@ fun CreatePage(
                 options = ShadcnStylePreset.entries,
                 onValueChange = onStylePresetChange,
                 label = { it.label },
+                icon = { DocIcon(ChevronDown) },
             )
             ShadcnSelect(
                 value = baseColor,
                 options = ShadcnBaseColor.entries,
                 onValueChange = onBaseColorChange,
                 label = { it.label },
+                icon = { DocIcon(ChevronDown) },
             )
             ShadcnSelect(
                 value = accent,
                 options = ShadcnAccent.entries,
                 onValueChange = onAccentChange,
                 label = { it.label },
+                icon = { DocIcon(ChevronDown) },
             )
         }
 

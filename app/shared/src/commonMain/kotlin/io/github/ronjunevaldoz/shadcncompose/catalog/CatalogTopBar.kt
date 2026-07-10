@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.heroicons.outline.Bars3
+import io.github.ronjunevaldoz.heroicons.outline.ChevronDown
 import io.github.ronjunevaldoz.shadcncompose.catalog.docs.DocIcon
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSelect
-import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSwitch
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
@@ -34,11 +34,18 @@ private const val GITHUB_URL = "https://github.com/ronjunevaldoz/shadcn-compose"
 
 /**
  * App-wide top bar: brand mark + "Components"/"Create" nav on the left; Style/Base/Accent
- * dropdown pickers + GitHub link + dark mode toggle on the right -- mirroring
- * ui.shadcn.com/create's three independent theming axes. Sits above
+ * dropdown pickers + GitHub link on the right -- mirroring ui.shadcn.com/create's three
+ * independent theming axes. Sits above
  * [io.github.ronjunevaldoz.shadcncompose.navigation.CatalogNavHost]'s sidebar/content
  * row so it stays visible across every screen -- switching any picker here re-themes
  * every component on every page instantly.
+ *
+ * No manual dark-mode toggle -- the catalog always follows the system's own light/dark
+ * setting (see [io.github.ronjunevaldoz.shadcncompose.App]'s plain `isSystemInDarkTheme()`
+ * read). A consumer app that *does* want a manual override still can, via
+ * [io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnDarkTheme] -- see
+ * [io.github.ronjunevaldoz.shadcncompose.catalog.docs.DarkModePage] for that pattern; the
+ * catalog just doesn't demonstrate it as a live top-bar control anymore.
  *
  * Plain [ButtonVariant.Ghost]/[ButtonVariant.Secondary] buttons for the nav pair, not
  * [ShadcnTabsList] -- that component's pill-track styling is built for in-page content
@@ -47,8 +54,6 @@ private const val GITHUB_URL = "https://github.com/ronjunevaldoz/shadcn-compose"
  */
 @Composable
 fun CatalogTopBar(
-    isDarkMode: Boolean,
-    onToggleDarkMode: (Boolean) -> Unit,
     stylePreset: ShadcnStylePreset,
     onStylePresetChange: (ShadcnStylePreset) -> Unit,
     baseColor: ShadcnBaseColor,
@@ -108,18 +113,21 @@ fun CatalogTopBar(
                 options = ShadcnStylePreset.entries,
                 onValueChange = onStylePresetChange,
                 label = { it.label },
+                icon = { DocIcon(ChevronDown) },
             )
             ShadcnSelect(
                 value = baseColor,
                 options = ShadcnBaseColor.entries,
                 onValueChange = onBaseColorChange,
                 label = { it.label },
+                icon = { DocIcon(ChevronDown) },
             )
             ShadcnSelect(
                 value = accent,
                 options = ShadcnAccent.entries,
                 onValueChange = onAccentChange,
                 label = { it.label },
+                icon = { DocIcon(ChevronDown) },
             )
             ShadcnButton(
                 onClick = { uriHandler.openUri(GITHUB_URL) },
@@ -127,7 +135,6 @@ fun CatalogTopBar(
             ) {
                 ShadcnText("GitHub")
             }
-            ShadcnSwitch(checked = isDarkMode, onCheckedChange = onToggleDarkMode)
         }
     }
 
