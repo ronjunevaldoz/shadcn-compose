@@ -12,6 +12,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
@@ -161,6 +166,34 @@ class MessageScrollerScreenshotTest : ShadcnScreenshotTest() {
     @Test fun overflowing_content_settles_at_bottom_dark() = overflowingContentSettlesAtBottom(darkTheme = true)
 
     @Test fun jump_to_bottom_button_light() = jumpToBottomButton(darkTheme = false)
+
+    /**
+     * [ShadcnMessageScroller]'s own `icon` parameter forwards to the default [button]
+     * slot's `ShadcnMessageScrollerButton.icon` -- proves the wiring through a real swipe
+     * away from the auto-settled bottom (not a forced `visible = true`, which only tests
+     * [ShadcnMessageScrollerButton] in isolation, not the forwarding).
+     */
+    @Test
+    fun icon_override_light() {
+        setThemedContent(darkTheme = false) {
+            ShadcnMessageScroller(
+                modifier = Modifier.width(280.dp).height(160.dp).testTag("scroller"),
+                icon = { rotationDegrees ->
+                    ShadcnText("X", modifier = Modifier.graphicsLayer(rotationZ = rotationDegrees))
+                },
+            ) {
+                repeat(10) { index ->
+                    ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("AI") } }) {
+                        ShadcnText("Message number $index")
+                    }
+                }
+            }
+        }
+        composeRule.waitForIdle()
+        composeRule.onNodeWithTag("scroller").performTouchInput { swipeDown() }
+        composeRule.waitForIdle()
+        captureNamed("message_scroller_icon_override", darkTheme = false)
+    }
 
     @Test fun chat_panel_light() = chatPanel(darkTheme = false)
 
