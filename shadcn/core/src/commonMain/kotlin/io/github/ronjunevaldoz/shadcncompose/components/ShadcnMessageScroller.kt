@@ -126,11 +126,11 @@ internal fun shouldReleaseFollowing(
 fun ShadcnMessageScroller(
     modifier: Modifier = Modifier,
     autoScrollThresholdPx: Int = DEFAULT_AUTO_SCROLL_THRESHOLD_PX,
-    button: (@Composable BoxScope.(isVisible: Boolean, onClick: ()-> Unit) -> Unit)? = { isVisible, onClick->
+    button: (@Composable BoxScope.(isVisible: Boolean, onClick: () -> Unit) -> Unit)? = { isVisible, onClick ->
         ShadcnMessageScrollerButton(
             visible = isVisible,
             onClick = { onClick() },
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = shadcnTheme.spacing.md)
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = shadcnTheme.spacing.md),
         )
     },
     content: @Composable ColumnScope.() -> Unit,
