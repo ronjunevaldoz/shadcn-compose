@@ -15,14 +15,15 @@ import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnBaseColor
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnRadius
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 
-// No manual dark-mode override here -- the catalog always follows the system's own
-// light/dark setting. A consumer app that wants a manual toggle can still provide
-// io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnDarkTheme above ShadcnTheme (see
-// catalog/docs/DarkModePage.kt for that pattern); the catalog itself just doesn't wire one
-// up as a live control anymore.
+// The dark-mode toggle's effect is scoped to the detail content pane only -- chrome
+// (top bar + sidebar) always follows the system's own light/dark setting and never
+// reacts to it. This outer ShadcnTheme (isDark = isSystemInDarkTheme(), no override)
+// governs the chrome; CatalogNavHost nests a second ShadcnTheme around just its content
+// pane using darkModeOverride, so toggling only re-themes what's inside that pane.
 @Composable
 @Preview
 fun App() {
+    var darkModeOverride by remember { mutableStateOf<Boolean?>(null) }
     var stylePreset by remember { mutableStateOf(ShadcnStylePreset.Vega) }
     var baseColor by remember { mutableStateOf(ShadcnBaseColor.Zinc) }
     var accent by remember { mutableStateOf(ShadcnAccent.Base) }
@@ -45,6 +46,8 @@ fun App() {
             onBaseColorChange = { baseColor = it },
             accent = accent,
             onAccentChange = { accent = it },
+            isDarkMode = darkModeOverride ?: isSystemInDarkTheme(),
+            onToggleDarkMode = { darkModeOverride = it },
         )
     }
 }

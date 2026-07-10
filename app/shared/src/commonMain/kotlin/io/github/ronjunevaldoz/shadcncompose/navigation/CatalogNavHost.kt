@@ -27,9 +27,11 @@ import io.github.ronjunevaldoz.shadcncompose.catalog.CatalogSidebar
 import io.github.ronjunevaldoz.shadcncompose.catalog.CatalogTopBar
 import io.github.ronjunevaldoz.shadcncompose.catalog.ComponentDetailScreen
 import io.github.ronjunevaldoz.shadcncompose.catalog.CreatePage
+import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnAccent
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnBaseColor
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnRadius
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 
 /**
@@ -40,6 +42,11 @@ import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
  */
 private val COMPACT_BREAKPOINT = 720.dp
 
+// Matches App.kt's own outer ShadcnTheme's baseRadius -- the nested content-pane
+// ShadcnTheme below needs the same value so the content pane's shapes stay visually
+// consistent with the chrome around it; only isDark differs between the two scopes.
+private val CATALOG_BASE_RADIUS = ShadcnRadius(4.dp)
+
 /**
  * Sidebar + content-pane shell -- only the content pane swaps via [NavHost]. Matches
  * the shadcn/ui docs-site layout rather than a phone-app push/pop list. Above
@@ -47,6 +54,12 @@ private val COMPACT_BREAKPOINT = 720.dp
  * sidebar becomes a dismissible drawer opened from a menu button in the top bar,
  * so narrow/phone-width screens get a full-width content pane instead of a
  * squeezed-down sidebar-plus-content split.
+ *
+ * [isDarkMode]/[onToggleDarkMode] only affect the content pane, not the chrome
+ * (top bar + sidebar) -- see the nested [ShadcnTheme] wrapping just the `NavHost`
+ * below. The chrome always follows the system's own light/dark setting instead (its
+ * `isDark` comes from the *outer* ShadcnTheme in [io.github.ronjunevaldoz.shadcncompose.App],
+ * which never reads [isDarkMode]).
  */
 @Composable
 fun CatalogNavHost(
@@ -56,6 +69,8 @@ fun CatalogNavHost(
     onBaseColorChange: (ShadcnBaseColor) -> Unit,
     accent: ShadcnAccent,
     onAccentChange: (ShadcnAccent) -> Unit,
+    isDarkMode: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit,
     navController: NavHostController = rememberNavController(),
 ) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -98,6 +113,8 @@ fun CatalogNavHost(
                 onBaseColorChange = onBaseColorChange,
                 accent = accent,
                 onAccentChange = onAccentChange,
+                isDarkMode = isDarkMode,
+                onToggleDarkMode = onToggleDarkMode,
                 onMenuClick = if (isCompact && !isOnCreateRoute) ({ drawerOpen = true }) else null,
                 isOnCreateRoute = isOnCreateRoute,
                 onNavigateToComponents = { navigateTo(selectedId ?: "introduction") },
@@ -123,29 +140,42 @@ fun CatalogNavHost(
                                 .background(shadcnTheme.colors.border),
                     )
                 }
-                Box(
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .background(shadcnTheme.colors.background),
+                // Nested ShadcnTheme, scoped to just this content pane -- isDarkMode
+                // (the manual toggle) only applies here, not to the chrome around it
+                // (which uses the outer, system-only theme in App.kt). Same
+                // preset/baseColor/accent/baseRadius as the outer theme so shapes and
+                // color axes stay consistent; only isDark differs.
+                ShadcnTheme(
+                    preset = stylePreset,
+                    baseColor = baseColor,
+                    accent = accent,
+                    baseRadius = CATALOG_BASE_RADIUS,
+                    isDark = isDarkMode,
                 ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = ComponentDetailRoute("introduction"),
+                    Box(
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .background(shadcnTheme.colors.background),
                     ) {
-                        composable<ComponentDetailRoute> { backStackEntry ->
-                            val route: ComponentDetailRoute = backStackEntry.toRoute()
-                            ComponentDetailScreen(componentId = route.componentId)
-                        }
-                        composable<CreateRoute> {
-                            CreatePage(
-                                stylePreset = stylePreset,
-                                onStylePresetChange = onStylePresetChange,
-                                baseColor = baseColor,
-                                onBaseColorChange = onBaseColorChange,
-                                accent = accent,
-                                onAccentChange = onAccentChange,
-                            )
+                        NavHost(
+                            navController = navController,
+                            startDestination = ComponentDetailRoute("introduction"),
+                        ) {
+                            composable<ComponentDetailRoute> { backStackEntry ->
+                                val route: ComponentDetailRoute = backStackEntry.toRoute()
+                                ComponentDetailScreen(componentId = route.componentId)
+                            }
+                            composable<CreateRoute> {
+                                CreatePage(
+                                    stylePreset = stylePreset,
+                                    onStylePresetChange = onStylePresetChange,
+                                    baseColor = baseColor,
+                                    onBaseColorChange = onBaseColorChange,
+                                    accent = accent,
+                                    onAccentChange = onAccentChange,
+                                )
+                            }
                         }
                     }
                 }

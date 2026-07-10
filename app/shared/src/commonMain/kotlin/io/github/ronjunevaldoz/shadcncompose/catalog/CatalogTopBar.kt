@@ -21,6 +21,7 @@ import io.github.ronjunevaldoz.heroicons.outline.ChevronDown
 import io.github.ronjunevaldoz.shadcncompose.catalog.docs.DocIcon
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSelect
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSwitch
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
@@ -40,12 +41,10 @@ private const val GITHUB_URL = "https://github.com/ronjunevaldoz/shadcn-compose"
  * row so it stays visible across every screen -- switching any picker here re-themes
  * every component on every page instantly.
  *
- * No manual dark-mode toggle -- the catalog always follows the system's own light/dark
- * setting (see [io.github.ronjunevaldoz.shadcncompose.App]'s plain `isSystemInDarkTheme()`
- * read). A consumer app that *does* want a manual override still can, via
- * [io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnDarkTheme] -- see
- * [io.github.ronjunevaldoz.shadcncompose.catalog.docs.DarkModePage] for that pattern; the
- * catalog just doesn't demonstrate it as a live top-bar control anymore.
+ * The dark-mode toggle here only affects the detail content pane, not this top bar or
+ * the sidebar -- both stay on the outer, system-only theme regardless of [isDarkMode].
+ * See [io.github.ronjunevaldoz.shadcncompose.navigation.CatalogNavHost]'s doc comment for
+ * where that scoping actually happens (a nested `ShadcnTheme` around just the content).
  *
  * Plain [ButtonVariant.Ghost]/[ButtonVariant.Secondary] buttons for the nav pair, not
  * [ShadcnTabsList] -- that component's pill-track styling is built for in-page content
@@ -60,6 +59,8 @@ fun CatalogTopBar(
     onBaseColorChange: (ShadcnBaseColor) -> Unit,
     accent: ShadcnAccent,
     onAccentChange: (ShadcnAccent) -> Unit,
+    isDarkMode: Boolean,
+    onToggleDarkMode: (Boolean) -> Unit,
     isOnCreateRoute: Boolean = false,
     onNavigateToComponents: () -> Unit = {},
     onNavigateToCreate: () -> Unit = {},
@@ -135,6 +136,7 @@ fun CatalogTopBar(
             ) {
                 ShadcnText("GitHub")
             }
+            ShadcnSwitch(checked = isDarkMode, onCheckedChange = onToggleDarkMode)
         }
     }
 
