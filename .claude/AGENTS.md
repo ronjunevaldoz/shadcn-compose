@@ -16,7 +16,7 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
 
 - **tailwind-compose** (sibling project at `/Users/ronvaldoz/StudioProjects/tailwind-compose`,
   group `io.github.ronjunevaldoz`) — a real Gradle `implementation` dependency in
-  `:library`'s `commonMain`, resolved from **Maven Central** (verified directly against
+  `:shadcn:core`'s `commonMain`, resolved from **Maven Central** (verified directly against
   `repo1.maven.org`'s `maven-metadata.xml`, not the search index, which lags actual
   publishes by a while) at version `0.1.0`, matching `gradle/libs.versions.toml`.
   `settings.gradle.kts` no longer needs a `mavenLocal()` fallback for it. It's a
@@ -42,8 +42,8 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
   README alone). Kotlin package is `io.github.ronjunevaldoz.heroicons.outline`, not
   `io.github.ronjunevaldoz.tailwind.icons.outline` -- update both the Gradle coordinate
   and every import if you see the old path anywhere. **`:app:shared`-only, never
-  `:library`** — the catalog app's examples (e.g. Date Picker's trigger icon) may use
-  it, but every `:library` component still uses plain text glyphs for icons (`"☰"`,
+  `:shadcn:core`** — the catalog app's examples (e.g. Date Picker's trigger icon) may use
+  it, but every `:shadcn:core` component still uses plain text glyphs for icons (`"☰"`,
   `"✕"`, `"↓"`, ...), matching this library's zero-icon-set-dependency stance. Render an
   `ImageVector` with `androidx.compose.foundation.Image(imageVector = ...,
   colorFilter = ColorFilter.tint(...))` — not `androidx.compose.material.Icon`, which
@@ -80,7 +80,7 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
 
 | Module | Purpose |
 |---|---|
-| `:library` | Published artifact (`io.github.ronjunevaldoz:shadcn-compose`) -- tokens, `ShadcnTheme`, components, styles |
+| `:shadcn:core` | Published artifact (`io.github.ronjunevaldoz:shadcn-compose`) -- tokens, `ShadcnTheme`, every component (including the AI Elements family: Message/Bubble/Attachment/Marker/MessageScroller), styles |
 | `:core` | Small shared utility module (currently minimal, stock demo code) |
 | `:app:shared` | Catalog/docs app shared code -- navigation, sidebar, per-component doc pages (not published) |
 | `:app:androidApp` / `:app:desktopApp` / `:app:webApp` | Catalog app platform entry points (not published) |
@@ -90,7 +90,7 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
 
 | Artifact | Module |
 |---|---|
-| `io.github.ronjunevaldoz:shadcn-compose` | `:library` |
+| `io.github.ronjunevaldoz:shadcn-compose` | `:shadcn:core` |
 
 ## API surface rules
 
@@ -102,6 +102,21 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
 
 ## Component styling rules
 
+0. **Every `Dp` token in this library uses the same numeral as real shadcn's CSS `px`
+   value** (`ring-[3px]` -> `3.dp`, `size-4`/16px -> `16.dp`, etc.) -- a deliberate,
+   project-wide convention (see every "Ndp = real Npx ✅" row in `docs/shadcn-parity.md`),
+   **not** a physically-accurate unit conversion. CSS `px` (~1/96in) and Android `dp`
+   (~1/160in) are different physical units; a literal conversion would multiply every
+   value by ~1.667. This project doesn't do that, on purpose: it preserves *relative
+   proportion* between controls, spacing, and text within the app (all ported the same
+   "same numeral" way), which is what visual parity with real shadcn actually requires --
+   not inch-for-inch physical matching against a web page rendered at an unrelated
+   viewing distance/zoom level. Standard practice for porting a web design system to a
+   native toolkit (Material's own guidance does the same). Don't "fix" an individual
+   token to a physically-precise dp value -- that breaks its proportion against every
+   sibling token that still uses the numeral convention. If describing this in a comment,
+   say "same numeral as real shadcn's Npx," not "matches Npx" -- the latter reads as a
+   physical-unit claim that isn't true.
 1. **Variants are flat, stateless sealed interfaces** (`data object` per variant, e.g.
    `ButtonVariant`, `ChipVariant`) -- no hardcoded theme values baked into the object.
 2. **Variant -> `Style` mapping is a `@Composable fun <Variant>.rememberStyle(): Style`**
@@ -152,30 +167,39 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
    cursorBrush = ...)` -- never rely on ambient Style-color inheritance for text.
    **Known regression:** `ShadcnChip.kt` dropped its `color = variant.contentColor`
    pass-through when `ChipVariant.rememberStyle()` was introduced -- needs re-adding.
-5. Context-aware modifiers may default *derivable, non-per-instance* values (color,
-   shape, corner radius) from `CompositionLocal` when the caller omits them -- e.g.
-   `shadcnFocusRing(isFocused, shape = null, color = null)` resolving `shape`/`color`
-   internally. **Per-instance interaction state (`isFocused`, `checked`, `pressed`) must
-   stay an explicit required parameter** -- there is no single global "the currently
-   focused node," so it can never come from a `CompositionLocal`. "Parameter-free call
-   sites" applies only to the derivable subset, not to per-instance state.
-6. `shadcnFocusRing`'s ring **must be drawn before `drawContent()`**, not after -- see the
-   doc comment on `styles/FocusRing.kt` explaining why (a centered `Stroke` at `offset =
-   0` relies on the component's own opaque background painting over the stroke's inward
-   half; drawing the ring after content leaves that half visible as a translucent
-   overlay, roughly doubling the ring's apparent thickness). Fixed -- draw order is now
-   ring-then-`drawContent()`, matching the doc comment.
-   Also fixed in the same pass: `shadcnFocusRing`'s corner-radius growth math
-   unconditionally added the ring's outward `growth` to *every* corner, including
-   corners that are legitimately square (`px == 0`, e.g. the flush inner edge between
-   two `ShadcnButtonGroup` items via `LocalGroupCorners`) -- rounding a corner that
-   should stay perfectly square. Now `corner(px) = if (px <= 0f) 0f else px + growth`.
-   `ShadcnChip` was also the one of 7 `shadcnFocusRing` call sites missing an explicit
-   `shape` -- it fell back to the default `shapes.lg` instead of its own pill shape
-   (`shapes.full`), visibly mismatching the ring to the pill underneath. `ShadcnButton`/
-   `ShadcnToggle` are correctly exempt from needing an explicit shape: they rely on the
-   null-shape default specifically to auto-inherit `LocalGroupCorners` inside a
-   `ButtonGroup`/`ToggleGroup`, so forcing a shape there would break grouping instead.
+5. **The focus ring is drawn via the Style API's own `dropShadow()`, called directly
+   inside each component's `focused { }` block** (`styles/FocusRing.kt`'s
+   `ShadcnThemeData.focusRingShadow()` builds the `Shadow` value: `radius = 0.dp`,
+   `spread = ring.width + ring.offset`, color from `colors.borderFocus` at
+   `ring.opacity`) -- **not** a separate `Modifier`. A prior version used a hand-rolled
+   `Modifier.drawWithContent` + manual per-corner `RoundRect` reimplementation (~90
+   lines), justified by an unverified claim that `dropShadow` "blurs at `radius = 0.dp`."
+   That claim was checked directly (a screenshot test of `dropShadow(radius = 0.dp,
+   spread = 3.dp)`) and was false: perfectly crisp, only ordinary single-pixel edge
+   anti-aliasing, zero effect on measured layout size -- exactly matching real CSS
+   `box-shadow`. Removed entirely (2026-07-09); see `docs/shadcn-parity.md` §6 for the
+   full writeup.
+   `dropShadow` always follows the **final resolved** `shape()` -- including a later
+   `style`-parameter override from `ShadcnButtonGroup`/`ShadcnToggleGroup` (their own
+   per-position corner-stripped shape, passed as the `style` param to `ShadcnButton`/
+   `ShadcnToggle` and merged in via `.styleable(...)`'s override-not-additive cascade) --
+   not just whatever `shape()` the *same* `Style{}` block itself declares. Verified via
+   `ButtonGroupScreenshotTest.with_label_focused`: the ring correctly appears only at the
+   outer rounded ends, never at the internal flush seam between grouped items. This means
+   `LocalGroupCorners` (still provided by `ShadcnButtonGroup`/`ShadcnToggleGroup` via
+   `CompositionLocalProvider`) has **no remaining reader** -- only the old ring modifier
+   ever consumed it. Candidate for a follow-up cleanup pass, not yet done.
+   A component whose "active"/"focused" state is a *computed* boolean rather than a real
+   per-node focus event (`ShadcnInputOTP`'s `OtpSlot`, `ShadcnInputGroup`'s
+   `hasFocusWithin`, `StylePresetMatrixTest`'s ring swatch) can't use the `focused { }`
+   state predicate at all (there's no real `InteractionSource` driving it) -- call
+   `dropShadow(theme.focusRingShadow())` inside a plain `if (isActive) { ... }` in the
+   `Style { }` body instead.
+6. Context-aware Style blocks may default *derivable, non-per-instance* values (color,
+   shape) from theme/`CompositionLocal` state. **Per-instance interaction state
+   (`isFocused`, `checked`, `pressed`) must stay driven by a real `InteractionSource`
+   passed to `rememberUpdatedStyleState`/`focused { }`** -- there is no single global
+   "the currently focused node."
 7. Model compound-component spacing/density (icon+label pairs, group item corners,
    leading/trailing addons) as **explicit per-position parameters passed down the
    composition** (see `ButtonGroupCorners` / `ToggleCorners`), not a `CompositionLocal`.
@@ -206,13 +230,20 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
    hand-verified hex literal for any *new* token going forward: it traces 1:1 to
    shadcn's real `oklch(L C H)` CSS source values with no separate "trust this hex"
    step. `ShadcnColors.kt`'s `card`/`onCard`/`popover`/`onPopover`/`sidebar`/`onSidebar`
-   fields use it already (verified pixel-identical to the prior hand-computed hex via
-   the existing screenshot baselines, no new goldens needed). **Not yet migrated:**
-   the rest of `ShadcnColors.kt`'s default palette and all 7 `ShadcnBaseColor` families
-   still use hex literals -- a deliberate, explicitly scoped decision (converting ~150
-   existing values needs fresh real oklch lookups per base-color family, not a
-   mechanical swap) rather than an oversight; don't assume it's "the next obvious step"
-   without asking first.
+   fields use it already.
+   **Migrated (2026-07-08):** the rest of `ShadcnColors.kt`'s default palette and all 7
+   `ShadcnBaseColor` families now reference **named `TwColors` shades**
+   (`io.github.ronjunevaldoz.tailwind.core.TwColors`, e.g. `TwColors.zinc900`) instead of
+   hex literals, verified field-by-field via a scratch JVM test comparing every value
+   against the full 26-hue/11-shade `TwColors` table before switching (exact match for
+   ~90% of fields, 1-9-unit rounding snaps for a handful explicitly documented as
+   "~zinc-400"-style approximations already) -- confirmed zero Roborazzi diffs after.
+   A few fields (`success`/`warning`/`destructiveHover` in both files) are **intentionally
+   still hex literals**: the same scratch test found they're hand-tuned, not exact/near
+   matches to any named shade -- snapping them would silently shift the actual color, not
+   just rename it. Same reasoning applies to **all of `ShadcnAccent.kt`**, left entirely
+   unmigrated -- none of its 17 colors match any named shade (its own doc comment already
+   says "corrected for ideal dark background contrast").
 10. **`ShadcnColors` has per-container-role tokens** (`card`/`onCard`, `popover`/
     `onPopover`, `sidebar`/`onSidebar`, `sidebarPrimary`/`onSidebarPrimary`,
     `sidebarAccent`/`onSidebarAccent`, `sidebarBorder`, `sidebarRing`), matching real
@@ -329,7 +360,7 @@ decision**:
 - **`date-picker`** -- N/A as a standalone component in real shadcn either (their docs:
   *"built using a composition of the `<Popover />` and the `<Calendar />`
   components"*) -- added as a catalog doc example (`DatePickerDoc.kt`) composing this
-  library's own `ShadcnPopover` + `ShadcnCalendar`, not a new `:library` component.
+  library's own `ShadcnPopover` + `ShadcnCalendar`, not a new `:shadcn:core` component.
 - **`select`** -- **was a real gap**, fixed. `ShadcnSelect` previously existed only as
   an internal utility (this catalog app's own theme/base-color/accent pickers in
   `CatalogTopBar`), never exposed as a documented public component, and its trigger
@@ -407,12 +438,18 @@ real site and easy to miss entirely.
   (`~/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.foundation/`) with a
   compile spike before writing component code, the same way `library/build.gradle.kts`'s
   history did -- don't trust the skill's code samples verbatim for this API surface.
-- **Focus rings are drawn directly with `Stroke`, not `dropShadow`.** shadcn's real focus
-  indicator (`focus-visible:ring-[3px] ring-ring/50`) is a crisp, hard-edged ring; the
-  Style API's `dropShadow` always rasterizes through an offscreen bitmap and visibly
-  blurs a ring this thin. Every interactive component composes the shared
-  `styles/FocusRing.kt` (`Modifier.shadcnFocusRing`) for this -- do not reintroduce
-  `dropShadow` or a border-width-reservation hack to fix focus-related resizing bugs.
+- **Focus rings are drawn with the Style API's own `dropShadow()`, not a hand-rolled
+  `Stroke` modifier.** An earlier version of this file claimed the opposite -- that
+  `dropShadow` "always rasterizes through an offscreen bitmap and visibly blurs a ring
+  this thin," even at `radius = 0.dp` -- and used that to justify a ~90-line custom
+  `Modifier.drawWithContent` reimplementation (`Modifier.shadcnFocusRing`, since
+  removed). That claim was never actually tested and was false: verified directly
+  (2026-07-09) via a screenshot test of `dropShadow(radius = 0.dp, spread = 3.dp)` --
+  perfectly crisp, only ordinary single-pixel anti-aliasing, zero layout-size effect,
+  exactly matching real CSS `box-shadow`. Every component now calls
+  `dropShadow(theme.focusRingShadow())` directly inside its own `focused { }` block (see
+  `styles/FocusRing.kt`'s `ShadcnThemeData.focusRingShadow()`). Do not resurrect the
+  custom modifier or re-add this blur claim without re-testing it first.
 - **Colors and hover semantics are checked against real shadcn/ui source**, not memory --
   see `ui.shadcn.com/docs/theming` for token values and
   `github.com/shadcn-ui/ui/blob/main/apps/v4/registry/new-york-v4/ui/*.tsx` for exact
@@ -423,11 +460,11 @@ real site and easy to miss entirely.
   actually-real set of custom base colors got documented as "official" when it isn't.
 - Roborazzi screenshot tests are wired (`library/src/jvmTest/`, Robolectric-less
   JVM/Desktop capture, see `docs/visual-testing.md`) and compile/pass cleanly (verified
-  2026-07-08 via `./gradlew :library:verifyRoborazziJvm`). Plain `:library:jvmTest` does
+  2026-07-08 via `./gradlew :shadcn:core:verifyRoborazziJvm`). Plain `:shadcn:core:jvmTest` does
   *not* pixel-compare against the committed goldens (`captureRoboImage` is a no-op writer
   without the record/verify system properties the wrapper tasks set) -- after any
-  component visual change, run `./gradlew :library:recordRoborazziJvm` to update the
-  affected goldens, then `./gradlew :library:verifyRoborazziJvm` to confirm a clean diff
+  component visual change, run `./gradlew :shadcn:core:recordRoborazziJvm` to update the
+  affected goldens, then `./gradlew :shadcn:core:verifyRoborazziJvm` to confirm a clean diff
   before committing.
 
 ## Commands installed

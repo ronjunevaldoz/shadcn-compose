@@ -1,6 +1,6 @@
 # Visual regression testing
 
-`:library` has a Roborazzi screenshot-test suite under `library/src/jvmTest/`, running
+`:shadcn:core` has a Roborazzi screenshot-test suite under `shadcn/core/src/jvmTest/`, running
 Robolectric-less on the JVM/Desktop target (`roborazzi-compose-desktop`) -- no Android
 or Robolectric dependency anywhere in this module.
 
@@ -13,7 +13,7 @@ suite makes every component's visual states a committed, diffable artifact.
 
 ## What's covered
 
-- **Per-component state matrices** (`library/src/jvmTest/kotlin/.../components/*ScreenshotTest.kt`):
+- **Per-component state matrices** (`shadcn/core/src/jvmTest/kotlin/.../components/*ScreenshotTest.kt`):
   every component's variants/enabled/disabled/checked-selected states, each captured in
   both light and dark, plus a real keyboard-`requestFocus()` capture for interactive
   leaf controls (proves the focus ring actually renders, not just that the modifier
@@ -46,13 +46,13 @@ into CI, so this bug class can no longer land silently the way it did here.
 
 ```bash
 # Record goldens (first run, or after an intentional visual change)
-./gradlew :library:recordRoborazziJvm
+./gradlew :shadcn:core:recordRoborazziJvm
 
-# Verify against committed goldens (what CI runs, via :library:jvmTest)
-./gradlew :library:verifyRoborazziJvm
+# Verify against committed goldens (what CI runs, via :shadcn:core:jvmTest)
+./gradlew :shadcn:core:verifyRoborazziJvm
 ```
 
-Goldens live in `library/src/jvmTest/snapshots/` and are committed to git. On a
+Goldens live in `shadcn/core/src/jvmTest/snapshots/` and are committed to git. On a
 mismatch, Roborazzi writes a `*_compare.png` beside the golden with
 expected/actual/diff side by side; CI uploads these as the `screenshot-diffs` artifact
 on failure.

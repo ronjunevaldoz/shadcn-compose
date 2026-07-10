@@ -21,6 +21,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnFieldLabel
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextField
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.heroicons.outline.XMark
 
 val dialogDoc =
     ComponentDoc(
@@ -102,6 +103,41 @@ val dialogDoc =
                                     ShadcnText("Cancel")
                                 }
                                 ShadcnButton(onClick = { open = false }) { ShadcnText("Save changes") }
+                            }
+                        }
+                    },
+                ),
+                ComponentExample(
+                    title = "Custom close icon",
+                    code =
+                        """
+                        // ShadcnDialog's close button is a plain glyph by default (this
+                        // library takes no icon-library dependency) -- override the closeIcon
+                        // slot with a real vector from any icon set, e.g. heroicons-outline.
+                        var open by remember { mutableStateOf(false) }
+                        ShadcnButton(onClick = { open = true }) { ShadcnText("Open dialog") }
+                        ShadcnDialog(
+                            visible = open,
+                            onDismissRequest = { open = false },
+                            closeIcon = { DocIcon(XMark) },
+                        ) {
+                            ShadcnDialogHeader {
+                                ShadcnDialogTitle("Edit profile")
+                                ShadcnDialogDescription("Make changes to your profile here.")
+                            }
+                        }
+                        """.trimIndent(),
+                    preview = {
+                        var open by remember { mutableStateOf(false) }
+                        ShadcnButton(onClick = { open = true }) { ShadcnText("Open dialog") }
+                        ShadcnDialog(
+                            visible = open,
+                            onDismissRequest = { open = false },
+                            closeIcon = { DocIcon(XMark) },
+                        ) {
+                            ShadcnDialogHeader {
+                                ShadcnDialogTitle("Edit profile")
+                                ShadcnDialogDescription("Make changes to your profile here.")
                             }
                         }
                     },

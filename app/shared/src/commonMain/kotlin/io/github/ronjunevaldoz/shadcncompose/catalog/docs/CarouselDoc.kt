@@ -23,6 +23,8 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCarouselPrevious
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.heroicons.outline.ChevronLeft
+import io.github.ronjunevaldoz.heroicons.outline.ChevronRight
 
 val carouselDoc =
     ComponentDoc(
@@ -135,6 +137,63 @@ val carouselDoc =
                             ShadcnCarouselDots(
                                 state = state,
                                 modifier = Modifier.padding(top = shadcnTheme.spacing.sm),
+                            )
+                        }
+                    },
+                ),
+                ComponentExample(
+                    title = "Custom icons",
+                    code =
+                        """
+                        // ShadcnCarouselPrevious/Next's arrows are plain glyphs by default
+                        // (this library takes no icon-library dependency) -- override each
+                        // icon slot with a real vector from any icon set, e.g. heroicons-outline.
+                        val state = rememberPagerState { 5 }
+                        Box(
+                            modifier = Modifier.width(200.dp).height(200.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
+                                ShadcnCard(modifier = Modifier.fillMaxSize()) {
+                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                        ShadcnText("${'$'}{page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                                    }
+                                }
+                            }
+                            ShadcnCarouselPrevious(
+                                state = state,
+                                modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
+                                icon = { DocIcon(ChevronLeft) },
+                            )
+                            ShadcnCarouselNext(
+                                state = state,
+                                modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
+                                icon = { DocIcon(ChevronRight) },
+                            )
+                        }
+                        """.trimIndent(),
+                    preview = {
+                        val state = rememberPagerState { 5 }
+                        Box(
+                            modifier = Modifier.width(200.dp).height(200.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
+                                ShadcnCard(modifier = Modifier.fillMaxSize()) {
+                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                        ShadcnText("${page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                                    }
+                                }
+                            }
+                            ShadcnCarouselPrevious(
+                                state = state,
+                                modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
+                                icon = { DocIcon(ChevronLeft) },
+                            )
+                            ShadcnCarouselNext(
+                                state = state,
+                                modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
+                                icon = { DocIcon(ChevronRight) },
                             )
                         }
                     },

@@ -25,7 +25,7 @@ cd "$(dirname "$0")/.."
 violations=0
 
 # Scans every Style { ... } block (brace-depth matched, so it correctly spans
-# multi-line blocks) in every .kt file under library/src and app/shared/src, and
+# multi-line blocks) in every .kt file under shadcn/core/src and app/shared/src, and
 # flags any block whose body contains a `shadcnTheme.` read. Comments (both // and
 # /* */, including multi-line KDoc) are blanked out first, line-for-line, so a
 # comment merely *mentioning* Style{} or shadcnTheme.-- like this script's own
@@ -98,7 +98,7 @@ while IFS= read -r -d '' file; do
     echo "$result"
     violations=$((violations + 1))
   fi
-done < <(find library/src app/shared/src -name "*.kt" -print0)
+done < <(find shadcn/core/src app/shared/src -name "*.kt" -print0)
 
 if [ "$violations" -gt 0 ]; then
   echo

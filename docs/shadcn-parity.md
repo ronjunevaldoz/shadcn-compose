@@ -123,8 +123,9 @@ approximated from memory.
 | **Slider** | single style, thumb `size-4` (16px), track `h-1.5` (6px), ring on both hover and focus | single style | hover + focus ring (crisp, matches real `hover:ring-4`/`focus-visible:ring-4`), disabled | ✅ thumb 16dp = real 16px; ✅ track height 6dp = real 6px | thumb background is intentionally theme-aware (`colors.background`) vs. real's hardcoded `bg-white`, which is arguably a real shadcn quirk we improved on rather than a gap |
 | **ToggleGroup** | Radix `ToggleGroup` primitive; real CSS strips per-item corners/borders (`first:rounded-l-md`, `last:rounded-r-md`, middle items get none) and raises the focused item's `z-index` (`focus-visible:z-10`) so its ring isn't clipped by a neighbor | `ShadcnToggleGroup` computes per-item asymmetric `ToggleCorners` (first/middle/last) and passes them to both the item's own shape *and* its ring corners | inherits Toggle's states | ✅ **re-verified 2026-07-07** against `toggle-group.tsx` — our per-corner logic matches real shadcn's corner-stripping intent | z-index/ring-clipping-by-sibling on focus not verified live (couldn't reliably force a keyboard-focus repro in this pass) — worth a follow-up check |
 | **ButtonGroup** | Now an official shadcn/ui registry component (`button-group.tsx`), not a bespoke pattern. Real CSS strips *each child's own* corners/left-border per position (`[&>*:not(:first-child)]:rounded-l-none`, `[&>*:not(:last-child)]:rounded-r-none`, `:not(:first-child)]:border-l-0`) — the container itself has **no** border or radius of its own; `[&>*]:focus-visible:z-10` for the same ring-clipping reason as ToggleGroup | New `ShadcnButtonGroup(items: List<ButtonGroupItem>)` overload computes per-position `ButtonGroupCorners` (first/middle/last, orientation-aware) and passes them to both the button's own `style { shape(...) }` *and* its new `ring*Corner` params (mirroring `ShadcnButton`'s existing pattern from `ShadcnToggle`). The original flexible-children overload (mixed Input/separator compositions) is kept as-is, still drawing one shared border | inherits Button's states | ✅ **fixed 2026-07-07** for the `items` overload — verified live: two `Secondary` items render as one seamless pill with a flat inner seam, not two overlapping rounded corners. The flexible-children overload still has the original limitation (documented in its own doc comment) since arbitrary child content can't be corner-stripped generically. Per-side border stripping (only `Ghost` has no border to strip) and `focus-visible:z-10` ring-clipping-by-sibling are still not implemented — same caveats as ToggleGroup |
-| **InputGroup** | Now an official shadcn/ui registry component. Real CSS: the container owns the single border (`InputGroupInput` is `border-0 focus-visible:ring-0 flex-1`), and a `has-[:focus-visible]` selector swaps the *container's* border color and draws the ring around the whole group when the inner input is focused | `ShadcnInputGroup` owns the single border/shape (its own container style, no contentPadding — the field keeps its variant padding); tracks focus-within via `onFocusEvent { it.hasFocus }` to swap border color and draw `shadcnFocusRing` on the container; sets an internal `LocalInsideInputGroup` so a nested `ShadcnTextField`/`ShadcnTextarea` automatically drops its own border/background/ring (no more `variant = Ghost` juggling); field slot wrapped in `weight(1f)` so trailing addons keep intrinsic width | focus-within on container ✅ | ✅ **fixed 2026-07-07** — three real bugs found via catalog screenshots and fixed: (1) inner field drew its own border+ring on focus (double border), (2) trailing addon got squeezed into one-character-per-line vertical text because the field's hardcoded `fillMaxWidth()` ate the row, (3) `BasicTextField` value text/cursor weren't themed (near-invisible in dark mode) — now passed explicitly via `textStyle`/`cursorBrush`, same lesson as `ChipVariant.contentColor`. Verified via `input_group_*` goldens | remaining gap: no `variant` parameter (container hardcoded to the Default look) — not yet requested |
+| **InputGroup** | Now an official shadcn/ui registry component. Real CSS: the container owns the single border (`InputGroupInput` is `border-0 focus-visible:ring-0 flex-1`), and a `has-[:focus-visible]` selector swaps the *container's* border color and draws the ring around the whole group when the inner input is focused | `ShadcnInputGroup` owns the single border/shape (its own container style, no contentPadding — the field keeps its variant padding); tracks focus-within via `onFocusEvent { it.hasFocus }` to swap border color and draw a ring (`dropShadow(theme.focusRingShadow())`) on the container; sets an internal `LocalInsideInputGroup` so a nested `ShadcnTextField`/`ShadcnTextarea` automatically drops its own border/background/ring (no more `variant = Ghost` juggling); field slot wrapped in `weight(1f)` so trailing addons keep intrinsic width | focus-within on container ✅ | ✅ **fixed 2026-07-07** — three real bugs found via catalog screenshots and fixed: (1) inner field drew its own border+ring on focus (double border), (2) trailing addon got squeezed into one-character-per-line vertical text because the field's hardcoded `fillMaxWidth()` ate the row, (3) `BasicTextField` value text/cursor weren't themed (near-invisible in dark mode) — now passed explicitly via `textStyle`/`cursorBrush`, same lesson as `ChipVariant.contentColor`. Verified via `input_group_*` goldens | remaining gap: no `variant` parameter (container hardcoded to the Default look) — not yet requested |
 | **Textarea** | Not a distinct shadcn/ui primitive — a plain `<textarea>` sharing Input's classes | composition wrapper around `ShadcnTextField`-equivalent styling | inherits TextField's states | — | not re-verified against real source this pass |
+| **InputOTP** | Active slot is `data-[active=true]:border-ring data-[active=true]:ring-[3px] data-[active=true]:ring-ring/50` (verified against real `input-otp.tsx`) — border *color* swaps to `--ring`, width stays 1px, plus the same shared `ring-[3px] ring-ring/50` every other focusable component draws | `ShadcnInputOTP`'s active `OtpSlot` | idle, active (crisp shared ring via `dropShadow`) | 36dp slot size, no real counterpart found (real registry doesn't fix a slot size) | ✅ **fixed 2026-07-09** — the active slot previously grew its own border to a hardcoded 2dp and skipped `shadcnFocusRing` entirely: a real parity gap (real shadcn keeps border width at 1px and layers the shared offset ring on top) *and* a real inconsistency (the only component with its own bespoke ring value instead of the shared one). Border width now stays 1dp; `dropShadow(theme.focusRingShadow())` added to a plain conditional in its Style block (no real per-slot focus event to hook a `focused { }` predicate to). Zero screenshot coverage of the active state before this fix (`focused_light`/`focused_dark` added, verified pixel-level: 3px ring at `(208,208,208)` outside a solid `borderFocus`-colored 1dp border, matching every other component) |
 
 ---
 
@@ -168,10 +169,82 @@ Real shadcn/ui's `npx shadcn create` replaced the old two-style choice (`default
 - Legacy `default`/`new-york`/`new-york-v4` values now resolve to `radix-vega` in real
   shadcn for backward compatibility.
 
-**Implication for `ShadcnRing`:** the `Default`/`NewYork` ring presets added this
-session (2dp+2dp-offset vs. 1dp+no-offset) map conceptually to Vega and Nova
-respectively, given Nova's lineage from `new-york`. They are **not** currently wired
-into `ShadcnStylePreset` automatically — picking "Nova" in the style dropdown does not
-yet also switch the ring to `ShadcnRing.NewYork`. Doing so would mean adding a
-`ring: ShadcnRing` field to `ShadcnStylePreset` the same way `shapes`/`spacing`/
-`typography` already work.
+**`ShadcnRing` genuinely does vary per preset -- two separate findings, two corrections.**
+
+*Finding 1 (2026-07-08):* an earlier session wired `Vega -> ShadcnRing.Default` and
+`Nova -> ShadcnRing.NewYork`, analogized from real shadcn's *retired* two-style
+`shadcn init` picker (`Default`/`New York`), which real shadcn now collapses to
+`radix-vega` for back-compat -- not something the current 8-style system exposes at
+all, and only applied to 2 of 8 presets besides. Reverted: `ring` became a flat,
+preset-independent `ShadcnTheme(ring = ...)` parameter, and `ShadcnRing.Default`/
+`.NewYork` were deleted outright (zero real callers anywhere in the codebase, no
+catalog UI path to reach them either).
+
+*Finding 2 (2026-07-09):* that revert was **also wrong**, just in the opposite
+direction -- it assumed ring doesn't vary by style at all, without ever checking the
+*current* 8-style system's own real CSS. It does vary. Verified directly against
+`shadcn-ui/ui`'s `apps/v4/registry/styles/style-<name>.css` files (not the retired
+axis, not an analogy -- each style's own `.cn-button` rule, checked file by file):
+
+| Style | ring width | ring opacity |
+|---|---|---|
+| Vega | 3px | 50% |
+| Nova | 3px | 50% |
+| Maia | 3px | 50% |
+| Lyra | 1px | 50% |
+| Mira | 2px | 30% |
+| Luma | 3px | 30% |
+| Sera | 2px | 30% |
+| Rhea | 3px | 30% |
+
+`ring-offset-*` appears in none of the 8 files -- offset stays 0 for every style, real
+and ours. `ShadcnStylePreset` now carries these real per-style values via a `ring:
+ShadcnRing` field again (same shape as the Finding-1 revert undid, but populated from
+verified source this time, not a cross-axis analogy). `ShadcnTheme(ring = preset.ring)`
+by default -- still independently overridable, same pattern as `baseRadius`.
+**Lesson generalized:** "we checked and it doesn't vary" is only trustworthy if the
+check was against the *actual axis in question* -- Finding 1's revert checked the
+retired two-style system (irrelevant) and concluded the current system was flat without
+ever looking at the current system's own files.
+
+---
+
+## 7. Focus ring implementation: `Modifier.shadcnFocusRing` retired in favor of `dropShadow`
+
+Removed entirely (2026-07-09). The custom `Modifier.drawWithContent` + manual per-corner
+`RoundRect` reimplementation (~90 lines, `styles/FocusRing.kt`) was justified by a claim
+that the Style API's `dropShadow` "always rasterizes through an offscreen bitmap...
+visibly blurs a ring this thin," even at `radius = 0.dp`. That claim was never actually
+tested — checked directly this session via a screenshot test of
+`dropShadow(radius = 0.dp, spread = 3.dp)`: perfectly crisp (only ordinary single-pixel
+edge anti-aliasing, the same any vector draw call has), zero effect on the element's
+measured layout size, exactly matching real CSS `box-shadow`. The custom modifier was
+solving a problem that didn't exist.
+
+Every focusable component now calls `dropShadow(theme.focusRingShadow())` directly
+inside its own `focused { }` block (`ShadcnThemeData.focusRingShadow()` in
+`styles/FocusRing.kt` builds the `Shadow` value: `radius = 0.dp`,
+`spread = ring.width + ring.offset`, color = `colors.borderFocus` at `ring.opacity`).
+Components whose "active" state is a *computed* boolean rather than a real per-node
+focus event (`ShadcnInputOTP`'s `OtpSlot`, `ShadcnInputGroup`'s `hasFocusWithin`,
+`StylePresetMatrixTest`'s ring swatch) use a plain `if (isActive) dropShadow(...)`
+inside the `Style { }` body instead, since there's no real `InteractionSource` to drive
+a `focused { }` predicate.
+
+`dropShadow` always follows the Style's own **final resolved** `shape()` — including a
+later `style`-parameter override from `ShadcnButtonGroup`/`ShadcnToggleGroup` (their
+per-position corner-stripped shape, merged in via `.styleable(...)`'s
+override-not-additive cascade) — so `ShadcnButton`/`ShadcnToggle` need no special-case
+shape handling at all; the group's own corner-stripping "just works" for the ring too.
+Verified via `ButtonGroupScreenshotTest.with_label_focused`: the ring appears only at
+the outer rounded ends, never at the internal flush seam between grouped items —
+pixel-checked directly (`(229,229,229)` ring band at the outer edge, no separate band at
+the seam). This also means `LocalGroupCorners` (still provided by
+`ShadcnButtonGroup`/`ShadcnToggleGroup`) has **no remaining reader** — only the old ring
+modifier ever consumed it. Candidate for a follow-up cleanup, not yet done.
+
+**Lesson generalized:** the same failure mode as §6 — a specific, falsifiable technical
+claim ("dropShadow blurs at radius=0") was carried forward across sessions and cited as
+justification for real code complexity, without ever being tested. Confirmed with a
+one-off screenshot test, in under a minute, once someone actually asked "why not just
+use dropShadow?"

@@ -143,7 +143,7 @@ jobs:
           path: '**/build/reports/tests/'
           retention-days: 14
 
-      # :library:jvmTest includes the Roborazzi screenshot suite (component state
+      # :shadcn:core:jvmTest includes the Roborazzi screenshot suite (component state
       # matrix + style preset matrix, src/jvmTest/snapshots/) -- on a golden mismatch
       # Roborazzi writes a `*_compare.png` beside the golden showing expected/actual/diff.
       - name: Upload screenshot diffs

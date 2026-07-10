@@ -53,7 +53,7 @@ kotlin {
         }
         commonMain.dependencies {
             api(projects.core)
-            api(projects.library)
+            api(projects.shadcn.core)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.ui)
@@ -63,9 +63,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.serialization.core)
             implementation(libs.navigation.compose)
-            // Catalog *examples* only (e.g. Date Picker's trigger icon) -- :library
+            // Catalog *examples* only (e.g. Date Picker's trigger icon) -- :shadcn:core
             // itself takes no icon-set dependency, matching every other icon spot
-            // there (plain text glyphs). Never add this to :library's dependencies.
+            // there (plain text glyphs). Never add this to :shadcn:core's dependencies.
             // heroicons-compose (github.com/ronjunevaldoz/heroicons-compose), split out
             // of tailwind-compose since Heroicons is a separate upstream product from
             // Tailwind CSS itself -- was tailwind-icons-outline before the split.

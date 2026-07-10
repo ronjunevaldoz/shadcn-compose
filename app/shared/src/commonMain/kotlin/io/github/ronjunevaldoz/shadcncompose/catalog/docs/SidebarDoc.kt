@@ -27,6 +27,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSidebarProvider
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSidebarTrigger
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.CardSize
+import io.github.ronjunevaldoz.heroicons.outline.Bars3
 
 private val sidebarItems =
     listOf(
@@ -85,7 +86,7 @@ val sidebarDoc =
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 ) {
-                                    ShadcnSidebarTrigger()
+                                    ShadcnSidebarTrigger(icon = { DocIcon(Bars3) })
                                     ShadcnBreadcrumb {
                                         ShadcnBreadcrumbLink("Building Your App", onClick = {})
                                         ShadcnBreadcrumbSeparator()
@@ -124,7 +125,7 @@ val sidebarDoc =
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 ) {
-                                    ShadcnSidebarTrigger()
+                                    ShadcnSidebarTrigger(icon = { DocIcon(Bars3) })
                                     ShadcnBreadcrumb {
                                         ShadcnBreadcrumbLink("Building Your App", onClick = {})
                                         ShadcnBreadcrumbSeparator()

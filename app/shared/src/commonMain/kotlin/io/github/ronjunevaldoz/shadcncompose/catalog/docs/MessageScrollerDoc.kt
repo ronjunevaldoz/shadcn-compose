@@ -2,9 +2,7 @@
 
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,9 +14,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.KeyEventType
@@ -51,30 +46,6 @@ import io.github.ronjunevaldoz.heroicons.outline.PaperAirplane
 import io.github.ronjunevaldoz.heroicons.outline.Plus
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-/**
- * A real tailwind-icons-outline glyph -- catalog *examples* only, same as
- * [DatePickerDoc]'s calendar icon. Never added to :library.
- *
- * [tint] defaults to `onSurface` (correct for Ghost/Outline buttons, which render on a
- * light/transparent background) but MUST be passed explicitly as the surrounding
- * button's own content color for anything with a colored background (e.g.
- * `ButtonVariant.Default`'s `onPrimary`) -- otherwise the icon renders in the wrong
- * color for its background and can end up nearly invisible.
- */
-@Composable
-private fun DocIcon(
-    icon: ImageVector,
-    modifier: Modifier = Modifier,
-    tint: Color = shadcnTheme.colors.onSurface,
-) {
-    Image(
-        imageVector = icon,
-        contentDescription = null,
-        modifier = modifier.size(16.dp),
-        colorFilter = ColorFilter.tint(tint),
-    )
-}
 
 /**
  * Chat-composer key handling, matching every real chat app's convention: plain Enter
