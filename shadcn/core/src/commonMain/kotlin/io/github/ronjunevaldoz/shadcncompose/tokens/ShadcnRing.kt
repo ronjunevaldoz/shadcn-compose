@@ -44,6 +44,11 @@ data class ShadcnRing(
     // Global kill switch for `focusRing()`, checked by every focusable component in the
     // library. `focusRing()` still calls `shape(shape)` unconditionally when this is false,
     // so the shape-pairing fix (see FocusRing.kt's doc comment) stays intact either way --
-    // only the ring itself is skipped.
-    val enabled: Boolean = true,
+    // only the ring itself is skipped. Defaults to off: the ring reads as visual noise on
+    // most non-input controls (buttons, switches, tabs, ...) outside of active keyboard
+    // navigation, and a consumer can opt back in with `ring = theme.ring.copy(enabled =
+    // true)`. Text inputs are unaffected either way -- `focusRingAlways()`
+    // (`ShadcnTextField`/`ShadcnInputGroup`/`ShadcnInputOTP`) never reads this flag, since
+    // the ring is the primary cue that a field is receiving keystrokes.
+    val enabled: Boolean = false,
 )

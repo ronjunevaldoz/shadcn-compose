@@ -15,11 +15,15 @@ import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnBaseColor
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnRadius
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 
-// The dark-mode toggle's effect is scoped to the detail content pane only -- chrome
-// (top bar + sidebar) always follows the system's own light/dark setting and never
-// reacts to it. This outer ShadcnTheme (isDark = isSystemInDarkTheme(), no override)
-// governs the chrome; CatalogNavHost nests a second ShadcnTheme around just its content
-// pane using darkModeOverride, so toggling only re-themes what's inside that pane.
+// Two axes, two different scopes:
+// - isDark (light/light-with-manual-override) applies everywhere -- top bar, sidebar,
+//   and content pane all share the same isDarkMode below, since dark/light is a real
+//   accessibility preference, not a "preview" setting.
+// - Style/Base Color/Accent apply to the detail content pane ONLY. This outer
+//   ShadcnTheme deliberately uses fixed constants (not the live stylePreset/baseColor/
+//   accent state), so the top bar keeps a stable brand identity regardless of what a
+//   reader is previewing; CatalogNavHost nests a second ShadcnTheme (same isDarkMode,
+//   but the live picker values) around the sidebar + content pane.
 @Composable
 @Preview
 fun App() {
@@ -27,17 +31,15 @@ fun App() {
     var stylePreset by remember { mutableStateOf(ShadcnStylePreset.Vega) }
     var baseColor by remember { mutableStateOf(ShadcnBaseColor.Zinc) }
     var accent by remember { mutableStateOf(ShadcnAccent.Base) }
+    val isDarkMode = darkModeOverride ?: isSystemInDarkTheme()
 
     ShadcnTheme(
-        // Snappy animations, tight padding metrics
-        preset = stylePreset,
-        // Subtle cool zinc grays
-        baseColor = baseColor,
-        // Electric blue primary buttons and rings
-        accent = accent,
-        // Sleek, tighter corner shapes
+        // Fixed chrome identity -- not stylePreset/baseColor/accent, see doc comment above.
+        preset = ShadcnStylePreset.Vega,
+        baseColor = ShadcnBaseColor.Zinc,
+        accent = ShadcnAccent.Base,
         baseRadius = ShadcnRadius(4.dp),
-        isDark = isSystemInDarkTheme(),
+        isDark = isDarkMode,
     ) {
         CatalogNavHost(
             stylePreset = stylePreset,
@@ -46,7 +48,7 @@ fun App() {
             onBaseColorChange = { baseColor = it },
             accent = accent,
             onAccentChange = { accent = it },
-            isDarkMode = darkModeOverride ?: isSystemInDarkTheme(),
+            isDarkMode = isDarkMode,
             onToggleDarkMode = { darkModeOverride = it },
         )
     }

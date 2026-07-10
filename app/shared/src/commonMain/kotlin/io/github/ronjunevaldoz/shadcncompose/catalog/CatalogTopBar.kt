@@ -35,16 +35,18 @@ private const val GITHUB_URL = "https://github.com/ronjunevaldoz/shadcn-compose"
 
 /**
  * App-wide top bar: brand mark + "Components"/"Create" nav on the left; Style/Base/Accent
- * dropdown pickers + GitHub link on the right -- mirroring ui.shadcn.com/create's three
- * independent theming axes. Sits above
+ * dropdown pickers + GitHub link + dark-mode toggle on the right -- mirroring
+ * ui.shadcn.com/create's three independent theming axes. Sits above
  * [io.github.ronjunevaldoz.shadcncompose.navigation.CatalogNavHost]'s sidebar/content
- * row so it stays visible across every screen -- switching any picker here re-themes
- * every component on every page instantly.
+ * row so it stays visible across every screen.
  *
- * The dark-mode toggle here only affects the detail content pane, not this top bar or
- * the sidebar -- both stay on the outer, system-only theme regardless of [isDarkMode].
- * See [io.github.ronjunevaldoz.shadcncompose.navigation.CatalogNavHost]'s doc comment for
- * where that scoping actually happens (a nested `ShadcnTheme` around just the content).
+ * The [stylePreset]/[baseColor]/[accent] pickers here only re-theme the sidebar and
+ * detail content pane, not this top bar itself -- it keeps a fixed brand identity
+ * regardless of what a reader is previewing (see
+ * [io.github.ronjunevaldoz.shadcncompose.App]'s doc comment). [isDarkMode] is the one
+ * axis this top bar *does* react to, shared with the sidebar/content pane below it --
+ * see [io.github.ronjunevaldoz.shadcncompose.navigation.CatalogNavHost]'s doc comment
+ * for where that scoping split actually happens.
  *
  * Plain [ButtonVariant.Ghost]/[ButtonVariant.Secondary] buttons for the nav pair, not
  * [ShadcnTabsList] -- that component's pill-track styling is built for in-page content

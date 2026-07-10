@@ -44,7 +44,7 @@ private val COMPACT_BREAKPOINT = 720.dp
 
 // Matches App.kt's own outer ShadcnTheme's baseRadius -- the nested content-pane
 // ShadcnTheme below needs the same value so the content pane's shapes stay visually
-// consistent with the chrome around it; only isDark differs between the two scopes.
+// consistent with the chrome around it.
 private val CATALOG_BASE_RADIUS = ShadcnRadius(4.dp)
 
 /**
@@ -55,11 +55,16 @@ private val CATALOG_BASE_RADIUS = ShadcnRadius(4.dp)
  * so narrow/phone-width screens get a full-width content pane instead of a
  * squeezed-down sidebar-plus-content split.
  *
- * [isDarkMode]/[onToggleDarkMode] affect the sidebar and content pane, but not the top
- * bar -- see [CatalogContentTheme], nested around everything below the top bar. The top
- * bar alone stays on the outer, system-only theme instead (its `isDark` comes from the
- * *outer* ShadcnTheme in [io.github.ronjunevaldoz.shadcncompose.App], which never reads
- * [isDarkMode]).
+ * Two theming axes, two different scopes -- see [CatalogContentTheme], nested around
+ * everything below the top bar:
+ * - [isDarkMode]/[onToggleDarkMode] apply everywhere, top bar included -- both this
+ *   nested theme and the *outer* ShadcnTheme in
+ *   [io.github.ronjunevaldoz.shadcncompose.App] read the same shared `isDarkMode` value,
+ *   since dark/light is a real accessibility preference, not a preview-only setting.
+ * - [stylePreset]/[baseColor]/[accent] (the picker values) apply to the sidebar and
+ *   content pane only -- the outer theme wrapping the top bar uses fixed constants
+ *   instead, so the top bar keeps a stable brand identity regardless of what a reader
+ *   is previewing.
  */
 @Composable
 fun CatalogNavHost(
