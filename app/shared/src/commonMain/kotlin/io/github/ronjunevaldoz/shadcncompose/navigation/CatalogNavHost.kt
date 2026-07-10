@@ -55,11 +55,11 @@ private val CATALOG_BASE_RADIUS = ShadcnRadius(4.dp)
  * so narrow/phone-width screens get a full-width content pane instead of a
  * squeezed-down sidebar-plus-content split.
  *
- * [isDarkMode]/[onToggleDarkMode] only affect the content pane, not the chrome
- * (top bar + sidebar) -- see the nested [ShadcnTheme] wrapping just the `NavHost`
- * below. The chrome always follows the system's own light/dark setting instead (its
- * `isDark` comes from the *outer* ShadcnTheme in [io.github.ronjunevaldoz.shadcncompose.App],
- * which never reads [isDarkMode]).
+ * [isDarkMode]/[onToggleDarkMode] affect the sidebar and content pane, but not the top
+ * bar -- see [CatalogContentTheme], nested around everything below the top bar. The top
+ * bar alone stays on the outer, system-only theme instead (its `isDark` comes from the
+ * *outer* ShadcnTheme in [io.github.ronjunevaldoz.shadcncompose.App], which never reads
+ * [isDarkMode]).
  */
 @Composable
 fun CatalogNavHost(
@@ -124,34 +124,28 @@ fun CatalogNavHost(
                 },
             )
 
-            Row(modifier = Modifier.weight(1f)) {
-                if (!isCompact && !isOnCreateRoute) {
-                    CatalogSidebar(
-                        selectedId = selectedId ?: "introduction",
-                        onEntryClick = ::navigateTo,
-                        query = searchQuery,
-                        onQueryChange = { searchQuery = it },
-                    )
-                    Box(
-                        modifier =
-                            Modifier
-                                .width(1.dp)
-                                .fillMaxHeight()
-                                .background(shadcnTheme.colors.border),
-                    )
-                }
-                // Nested ShadcnTheme, scoped to just this content pane -- isDarkMode
-                // (the manual toggle) only applies here, not to the chrome around it
-                // (which uses the outer, system-only theme in App.kt). Same
-                // preset/baseColor/accent/baseRadius as the outer theme so shapes and
-                // color axes stay consistent; only isDark differs.
-                ShadcnTheme(
-                    preset = stylePreset,
-                    baseColor = baseColor,
-                    accent = accent,
-                    baseRadius = CATALOG_BASE_RADIUS,
-                    isDark = isDarkMode,
-                ) {
+            // Nested ShadcnTheme, scoped to everything below the top bar -- isDarkMode
+            // (the manual toggle) applies to the sidebar and content pane, but not the
+            // top bar above (which stays on the outer, system-only theme in App.kt).
+            // Same preset/baseColor/accent/baseRadius as the outer theme so shapes and
+            // color axes stay consistent; only isDark differs.
+            CatalogContentTheme(stylePreset, baseColor, accent, isDarkMode) {
+                Row(modifier = Modifier.weight(1f)) {
+                    if (!isCompact && !isOnCreateRoute) {
+                        CatalogSidebar(
+                            selectedId = selectedId ?: "introduction",
+                            onEntryClick = ::navigateTo,
+                            query = searchQuery,
+                            onQueryChange = { searchQuery = it },
+                        )
+                        Box(
+                            modifier =
+                                Modifier
+                                    .width(1.dp)
+                                    .fillMaxHeight()
+                                    .background(shadcnTheme.colors.border),
+                        )
+                    }
                     Box(
                         modifier =
                             Modifier
@@ -193,13 +187,39 @@ fun CatalogNavHost(
                             searchQuery = ""
                         },
             )
-            CatalogSidebar(
-                selectedId = selectedId ?: "introduction",
-                onEntryClick = ::navigateTo,
-                query = searchQuery,
-                onQueryChange = { searchQuery = it },
-                modifier = Modifier.fillMaxHeight(),
-            )
+            CatalogContentTheme(stylePreset, baseColor, accent, isDarkMode) {
+                CatalogSidebar(
+                    selectedId = selectedId ?: "introduction",
+                    onEntryClick = ::navigateTo,
+                    query = searchQuery,
+                    onQueryChange = { searchQuery = it },
+                    modifier = Modifier.fillMaxHeight(),
+                )
+            }
         }
     }
+}
+
+/**
+ * The dark-mode-toggle-aware theme scope shared by the sidebar (both the persistent
+ * desktop instance and the mobile drawer instance) and the content pane -- factored out
+ * so both [CatalogNavHost] call sites stay in sync rather than risking the two nested
+ * `ShadcnTheme` calls drifting out of sync with each other over time.
+ */
+@Composable
+private fun CatalogContentTheme(
+    stylePreset: ShadcnStylePreset,
+    baseColor: ShadcnBaseColor,
+    accent: ShadcnAccent,
+    isDarkMode: Boolean,
+    content: @Composable () -> Unit,
+) {
+    ShadcnTheme(
+        preset = stylePreset,
+        baseColor = baseColor,
+        accent = accent,
+        baseRadius = CATALOG_BASE_RADIUS,
+        isDark = isDarkMode,
+        content = content,
+    )
 }
