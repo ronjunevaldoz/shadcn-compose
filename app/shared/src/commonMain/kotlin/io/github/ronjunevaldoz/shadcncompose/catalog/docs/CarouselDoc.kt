@@ -51,48 +51,56 @@ val carouselDoc =
                         // (real shadcn: `absolute -left-12`/`-right-12`) rather than a row
                         // below it.
                         val state = rememberPagerState { 5 }
-                        Box(
-                            modifier = Modifier.width(200.dp).height(200.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
-                                ShadcnCard(modifier = Modifier.fillMaxSize()) {
-                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                        ShadcnText("${'$'}{page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                        // The buttons overlay outside the carousel's own bounds by design (40dp
+                        // offset + half the 32dp button width = 56dp clearance needed on each
+                        // side) -- this margin gives them room so they don't get clipped by
+                        // whatever container this demo is placed in.
+                        Box(modifier = Modifier.padding(horizontal = 56.dp)) {
+                            Box(
+                                modifier = Modifier.width(200.dp).height(200.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
+                                    ShadcnCard(modifier = Modifier.fillMaxSize()) {
+                                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                            ShadcnText("${'$'}{page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                                        }
                                     }
                                 }
+                                ShadcnCarouselPrevious(
+                                    state = state,
+                                    modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
+                                )
+                                ShadcnCarouselNext(
+                                    state = state,
+                                    modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
+                                )
                             }
-                            ShadcnCarouselPrevious(
-                                state = state,
-                                modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
-                            )
-                            ShadcnCarouselNext(
-                                state = state,
-                                modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
-                            )
                         }
                         """.trimIndent(),
                     preview = {
                         val state = rememberPagerState { 5 }
-                        Box(
-                            modifier = Modifier.width(200.dp).height(200.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
-                                ShadcnCard(modifier = Modifier.fillMaxSize()) {
-                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                        ShadcnText("${page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                        Box(modifier = Modifier.padding(horizontal = 56.dp)) {
+                            Box(
+                                modifier = Modifier.width(200.dp).height(200.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
+                                    ShadcnCard(modifier = Modifier.fillMaxSize()) {
+                                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                            ShadcnText("${page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                                        }
                                     }
                                 }
+                                ShadcnCarouselPrevious(
+                                    state = state,
+                                    modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
+                                )
+                                ShadcnCarouselNext(
+                                    state = state,
+                                    modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
+                                )
                             }
-                            ShadcnCarouselPrevious(
-                                state = state,
-                                modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
-                            )
-                            ShadcnCarouselNext(
-                                state = state,
-                                modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
-                            )
                         }
                     },
                 ),
@@ -149,52 +157,57 @@ val carouselDoc =
                         // (this library takes no icon-library dependency) -- override each
                         // icon slot with a real vector from any icon set, e.g. heroicons-outline.
                         val state = rememberPagerState { 5 }
-                        Box(
-                            modifier = Modifier.width(200.dp).height(200.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
-                                ShadcnCard(modifier = Modifier.fillMaxSize()) {
-                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                        ShadcnText("${'$'}{page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                        // See the "Default" example above for why this outer margin exists.
+                        Box(modifier = Modifier.padding(horizontal = 56.dp)) {
+                            Box(
+                                modifier = Modifier.width(200.dp).height(200.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
+                                    ShadcnCard(modifier = Modifier.fillMaxSize()) {
+                                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                            ShadcnText("${'$'}{page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                                        }
                                     }
                                 }
+                                ShadcnCarouselPrevious(
+                                    state = state,
+                                    modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
+                                    icon = { DocIcon(ChevronLeft) },
+                                )
+                                ShadcnCarouselNext(
+                                    state = state,
+                                    modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
+                                    icon = { DocIcon(ChevronRight) },
+                                )
                             }
-                            ShadcnCarouselPrevious(
-                                state = state,
-                                modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
-                                icon = { DocIcon(ChevronLeft) },
-                            )
-                            ShadcnCarouselNext(
-                                state = state,
-                                modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
-                                icon = { DocIcon(ChevronRight) },
-                            )
                         }
                         """.trimIndent(),
                     preview = {
                         val state = rememberPagerState { 5 }
-                        Box(
-                            modifier = Modifier.width(200.dp).height(200.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
-                                ShadcnCard(modifier = Modifier.fillMaxSize()) {
-                                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                        ShadcnText("${page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                        Box(modifier = Modifier.padding(horizontal = 56.dp)) {
+                            Box(
+                                modifier = Modifier.width(200.dp).height(200.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                ShadcnCarousel(state = state, modifier = Modifier.fillMaxSize()) { page ->
+                                    ShadcnCard(modifier = Modifier.fillMaxSize()) {
+                                        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                            ShadcnText("${page + 1}", style = ShadcnTextStyle.DisplayMedium)
+                                        }
                                     }
                                 }
+                                ShadcnCarouselPrevious(
+                                    state = state,
+                                    modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
+                                    icon = { DocIcon(ChevronLeft) },
+                                )
+                                ShadcnCarouselNext(
+                                    state = state,
+                                    modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
+                                    icon = { DocIcon(ChevronRight) },
+                                )
                             }
-                            ShadcnCarouselPrevious(
-                                state = state,
-                                modifier = Modifier.align(Alignment.CenterStart).offset(x = (-40).dp),
-                                icon = { DocIcon(ChevronLeft) },
-                            )
-                            ShadcnCarouselNext(
-                                state = state,
-                                modifier = Modifier.align(Alignment.CenterEnd).offset(x = 40.dp),
-                                icon = { DocIcon(ChevronRight) },
-                            )
                         }
                     },
                 ),
