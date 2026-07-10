@@ -107,14 +107,15 @@ fun ShadcnInputGroup(
     // This component tracks focus manually via onFocusEvent (not the Style API's own
     // `focused { }` state block, since it's focus-*within*, not the container's own
     // focus), so the ring is applied the same way -- an inline conditional, not a
-    // state predicate.
+    // state predicate. Ignores `theme.ring.enabled` -- like `focusRingAlways`, this is
+    // a text-input container, so the ring stays load-bearing regardless of the toggle.
     val containerStyle =
         Style {
             background(colors.background)
             borderWidth(1.dp)
             borderColor(if (hasFocusWithin) colors.borderFocus else colors.border)
             shape(RoundedCornerShape(shapes.lg))
-            if (hasFocusWithin && theme.ring.enabled) dropShadow(theme.focusRingShadow())
+            if (hasFocusWithin) dropShadow(theme.focusRingShadow())
         }
 
     Column(

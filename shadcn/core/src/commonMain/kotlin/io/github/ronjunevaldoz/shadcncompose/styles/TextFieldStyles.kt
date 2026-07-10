@@ -15,7 +15,9 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 // Matches shadcn/ui's real input.tsx: border border-input (1.dp, always visible),
 // focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 --
-// `focusRing(...)` grows the border to `theme.ring.width` on focus.
+// `focusRingAlways(...)` grows the border to `theme.ring.width` on focus. Uses the
+// "always" variant, not the ring-toggle-respecting `focusRing`, since the ring is the
+// primary visual cue that a field is the one currently receiving keystrokes.
 sealed interface TextFieldVariant {
     data object Default : TextFieldVariant
 
@@ -41,7 +43,7 @@ fun TextFieldVariant.rememberStyle(): Style {
                     borderColor(colors.border)
                     contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                     fontSize(14.sp)
-                    focusRing(RoundedCornerShape(shapes.lg))
+                    focusRingAlways(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
                 }
 
@@ -53,7 +55,7 @@ fun TextFieldVariant.rememberStyle(): Style {
                     borderColor(Color.Transparent)
                     contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                     fontSize(14.sp)
-                    focusRing(RoundedCornerShape(shapes.lg))
+                    focusRingAlways(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
                 }
 
@@ -64,7 +66,7 @@ fun TextFieldVariant.rememberStyle(): Style {
                     borderColor(Color.Transparent)
                     contentPadding(horizontal = spacing.xs, vertical = spacing.xs)
                     fontSize(14.sp)
-                    focusRing(RoundedCornerShape(shapes.lg))
+                    focusRingAlways(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
                 }
         }

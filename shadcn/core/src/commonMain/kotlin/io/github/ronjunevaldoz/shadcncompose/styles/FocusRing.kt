@@ -80,14 +80,34 @@ fun ShadcnThemeData.focusRingShadow(color: Color = colors.borderFocus): Shadow =
  * ```
  *
  * `theme.ring.enabled` gates the ring itself, not `shape(shape)` -- flipping it off in a
- * `ShadcnThemeData` copy silences the ring on every focusable component at once without
- * reopening the shape-pairing bug this function exists to prevent.
+ * `ShadcnThemeData` copy silences the ring on every focusable component that calls this
+ * function without reopening the shape-pairing bug this function exists to prevent. Text
+ * inputs deliberately don't call this -- see [focusRingAlways].
  */
 @OptIn(ExperimentalFoundationStyleApi::class)
 fun StyleScope.focusRing(shape: Shape) {
     val theme = ShadcnTheme.LocalShadcnTheme.currentValue
     shape(shape)
-    if (!theme.ring.enabled) return
+    if (theme.ring.enabled) applyFocusRing(theme)
+}
+
+/**
+ * Same as [focusRing], but ignores `theme.ring.enabled` -- the ring is the primary visual
+ * cue that a text field is the one currently receiving keystrokes, so `ShadcnTextField`,
+ * `ShadcnTextarea`, `ShadcnCombobox`, and `ShadcnCommand` (all styled via
+ * `TextFieldStyles.kt`) always show it. `ShadcnRing.enabled` exists for everything else --
+ * buttons, switches, tabs, and the rest of the ~15 non-input components that call
+ * [focusRing] -- to opt out of the ring without silencing the one place it's load-bearing.
+ */
+@OptIn(ExperimentalFoundationStyleApi::class)
+fun StyleScope.focusRingAlways(shape: Shape) {
+    val theme = ShadcnTheme.LocalShadcnTheme.currentValue
+    shape(shape)
+    applyFocusRing(theme)
+}
+
+@OptIn(ExperimentalFoundationStyleApi::class)
+private fun StyleScope.applyFocusRing(theme: ShadcnThemeData) {
     focused {
         borderColor(theme.colors.borderFocus)
         dropShadow(theme.focusRingShadow())
