@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
@@ -84,4 +85,22 @@ class CardScreenshotTest : ShadcnScreenshotTest() {
     @Test fun create_account_light() = createAccount(darkTheme = false)
 
     @Test fun create_account_dark() = createAccount(darkTheme = true)
+
+    /**
+     * Regression coverage for a bug where nesting a `muted`/explicitly-`color`-ed [ShadcnText]
+     * inside [ShadcnCard] rendered it at full contrast instead: [CardVariant]'s Style sets an
+     * ambient `contentColor`, which the Compose Foundation Style API force-applies to every
+     * descendant [ShadcnText] that doesn't declare its own nearer override -- see
+     * [ShadcnText]'s own doc comment on `hasColorOverride` for the fix.
+     */
+    @Test
+    fun mutedTextSurvivesCardNesting() {
+        snapshot("card_muted_text_isolation", darkTheme = false) {
+            ShadcnCard {
+                ShadcnText("BODY")
+                ShadcnText("MUTED IN CARD", muted = true)
+                ShadcnText("EXPLICIT COLOR IN CARD", color = Color.Red)
+            }
+        }
+    }
 }

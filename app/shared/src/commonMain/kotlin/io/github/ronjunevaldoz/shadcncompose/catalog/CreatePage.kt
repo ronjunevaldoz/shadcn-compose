@@ -117,6 +117,14 @@ fun CreatePage(
                                 .background(shadcnTheme.colors.onSurface, RoundedCornerShape(stylePreset.shapes.md)),
                     )
                 },
+                optionSwatch = { option ->
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(16.dp)
+                                .background(shadcnTheme.colors.onSurface, RoundedCornerShape(option.shapes.md)),
+                    )
+                },
             )
             PresetSelectorRow(
                 label = "Base Color",
@@ -126,6 +134,9 @@ fun CreatePage(
                 optionLabel = { it.label },
                 swatch = {
                     Box(modifier = Modifier.size(24.dp).background(baseColor.light.primary, CircleShape))
+                },
+                optionSwatch = { option ->
+                    Box(modifier = Modifier.size(16.dp).background(option.light.primary, CircleShape))
                 },
             )
             PresetSelectorRow(
@@ -138,6 +149,11 @@ fun CreatePage(
                     val swatchColor =
                         remember(accent, baseColor) { accent.applyTo(baseColor.light, dark = false).primary }
                     Box(modifier = Modifier.size(24.dp).background(swatchColor, CircleShape))
+                },
+                optionSwatch = { option ->
+                    val swatchColor =
+                        remember(option, baseColor) { option.applyTo(baseColor.light, dark = false).primary }
+                    Box(modifier = Modifier.size(16.dp).background(swatchColor, CircleShape))
                 },
             )
             ShadcnButton(
@@ -222,6 +238,7 @@ private fun <T> PresetSelectorRow(
     optionLabel: (T) -> String,
     modifier: Modifier = Modifier,
     swatch: @Composable () -> Unit,
+    optionSwatch: (@Composable (T) -> Unit)? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -269,7 +286,12 @@ private fun <T> PresetSelectorRow(
                                 }
                                 .styleable(itemStyleState, rememberSelectItemStyle(isSelected))
                                 .padding(horizontal = shadcnTheme.spacing.sm, vertical = shadcnTheme.spacing.xs),
+                        horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
+                        if (optionSwatch != null) {
+                            optionSwatch(option)
+                        }
                         ShadcnText(optionLabel(option), style = ShadcnTextStyle.BodyMedium)
                     }
                 }
