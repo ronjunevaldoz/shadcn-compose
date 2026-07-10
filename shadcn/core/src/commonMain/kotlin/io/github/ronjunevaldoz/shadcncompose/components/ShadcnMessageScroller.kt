@@ -56,6 +56,19 @@ internal const val DEFAULT_AUTO_SCROLL_THRESHOLD_PX = 64
 /** Which edge of the scroller a [ShadcnMessageScrollerButton] jumps to, matching real shadcn's `direction` prop. */
 enum class ShadcnMessageScrollerDirection { Start, End }
 
+// A plain glyph placeholder that rotates 180deg for [ShadcnMessageScrollerDirection.Start]
+// -- this library has no icon-library dependency (see README), so it doesn't ship a real
+// arrow vector. Shared between [ShadcnMessageScroller]'s own `icon` parameter and
+// [ShadcnMessageScrollerButton]'s so overriding it once, at whichever level a caller is
+// already customizing, doesn't require redeclaring shadcn's own default glyph.
+private val DefaultMessageScrollerIcon: @Composable (rotationDegrees: Float) -> Unit = { rotationDegrees ->
+    ShadcnText(
+        "↓",
+        style = ShadcnTextStyle.TitleMedium,
+        modifier = Modifier.graphicsLayer(rotationZ = rotationDegrees),
+    )
+}
+
 /**
  * Whether the scroll position is within [thresholdPx] of the bottom of the content, as a
  * plain function with no Compose dependency -- drives [ShadcnMessageScrollerButton]'s
@@ -126,11 +139,17 @@ internal fun shouldReleaseFollowing(
 fun ShadcnMessageScroller(
     modifier: Modifier = Modifier,
     autoScrollThresholdPx: Int = DEFAULT_AUTO_SCROLL_THRESHOLD_PX,
+    // Forwarded to the default [button]'s own `icon` slot -- lets a caller swap just the
+    // glyph (e.g. a real heroicons-outline ArrowDown) without reimplementing the button's
+    // positioning/animation/chrome via a full [button] override. Ignored if [button] is
+    // itself overridden, since that override owns its own icon.
+    icon: @Composable (rotationDegrees: Float) -> Unit = DefaultMessageScrollerIcon,
     button: (@Composable BoxScope.(isVisible: Boolean, onClick: () -> Unit) -> Unit)? = { isVisible, onClick ->
         ShadcnMessageScrollerButton(
             visible = isVisible,
             onClick = { onClick() },
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = shadcnTheme.spacing.md),
+            icon = icon,
         )
     },
     content: @Composable ColumnScope.() -> Unit,
@@ -203,18 +222,10 @@ fun ShadcnMessageScrollerButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     direction: ShadcnMessageScrollerDirection = ShadcnMessageScrollerDirection.End,
-    // A plain glyph placeholder that rotates 180deg for [ShadcnMessageScrollerDirection.Start]
-    // -- this library has no icon-library dependency (see README), so it doesn't ship a real
-    // arrow vector. Receives the resolved rotation so an override can apply it too (e.g. this
-    // repo's own demo app passes a real heroicons-outline ArrowDown here -- see
-    // MessageScrollerDoc.kt).
-    icon: @Composable (rotationDegrees: Float) -> Unit = { rotationDegrees ->
-        ShadcnText(
-            "↓",
-            style = ShadcnTextStyle.TitleMedium,
-            modifier = Modifier.graphicsLayer(rotationZ = rotationDegrees),
-        )
-    },
+    // See [DefaultMessageScrollerIcon]. Receives the resolved rotation so an override can
+    // apply it too (e.g. this repo's own demo app passes a real heroicons-outline
+    // ArrowDown here -- see MessageScrollerDoc.kt).
+    icon: @Composable (rotationDegrees: Float) -> Unit = DefaultMessageScrollerIcon,
 ) {
     val showEasing = remember { CubicBezierEasing(0.23f, 1f, 0.32f, 1f) }
     val hideEasing = remember { CubicBezierEasing(0.7f, 0f, 0.84f, 0f) }
