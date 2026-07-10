@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import kotlin.test.Test
 
@@ -46,6 +47,58 @@ class InputGroupScreenshotTest : ShadcnScreenshotTest() {
     @Test fun states_light() = states(darkTheme = false)
 
     @Test fun states_dark() = states(darkTheme = true)
+
+    // Preview matching the user's screenshots exactly: Ghost leading "+" icon button,
+    // filled circular send button, focused state -- one two-line value, one single-line
+    // value, to compare the ring/border directly against the reported screenshots.
+    @androidx.compose.runtime.Composable
+    private fun previewComposer(
+        darkTheme: Boolean,
+        value: String,
+    ) {
+        ShadcnInputGroup(
+            modifier = Modifier.width(250.dp).testTag("preview-composer"),
+            leading = {
+                ShadcnButton(onClick = {}, variant = ButtonVariant.Ghost, size = ButtonSize.Icon) {
+                    ShadcnText("+")
+                }
+            },
+            trailing = {
+                ShadcnButton(
+                    onClick = {},
+                    variant = ButtonVariant.Default,
+                    size = ButtonSize.Icon,
+                    style = Style { shape(CircleShape) },
+                ) {
+                    ShadcnText("➤", color = shadcnTheme.colors.onPrimary)
+                }
+            },
+        ) {
+            ShadcnTextField(
+                modifier = Modifier.testTag("preview-field"),
+                value = value,
+                onValueChange = {},
+                variant = TextFieldVariant.Ghost,
+                singleLine = false,
+            )
+        }
+    }
+
+    private fun previewTwoLineFocused(darkTheme: Boolean) {
+        snapshotFocused("preview_composer_two_line_focused", focusTag = "preview-field", darkTheme = darkTheme) {
+            previewComposer(darkTheme, "this is two line of words")
+        }
+    }
+
+    @Test fun preview_composer_two_line_focused_light() = previewTwoLineFocused(darkTheme = false)
+
+    private fun previewSingleLineFocused(darkTheme: Boolean) {
+        snapshotFocused("preview_composer_single_line_focused", focusTag = "preview-field", darkTheme = darkTheme) {
+            previewComposer(darkTheme, "this is single line")
+        }
+    }
+
+    @Test fun preview_composer_single_line_focused_light() = previewSingleLineFocused(darkTheme = false)
 
     /**
      * Regression guard for a real bug: the leading/trailing addon gap used to come
