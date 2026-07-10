@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /** A plain Gregorian calendar date -- the library has no `kotlinx-datetime` dependency, so this stays a minimal value type. */
@@ -247,8 +248,9 @@ private fun CalendarDayCell(
                 borderColor(theme.colors.border)
             }
             if (isFocused) {
-                borderWidth(theme.ring.width)
+                borderWidth(1.dp)
                 borderColor(theme.colors.borderFocus)
+                dropShadow(theme.focusRingShadow())
             }
         }
     Box(

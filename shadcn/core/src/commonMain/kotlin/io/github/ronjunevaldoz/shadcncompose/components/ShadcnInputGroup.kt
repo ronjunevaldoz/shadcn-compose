@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -110,9 +111,10 @@ fun ShadcnInputGroup(
     val containerStyle =
         Style {
             background(colors.background)
-            borderWidth(if (hasFocusWithin) theme.ring.width else 1.dp)
+            borderWidth(1.dp)
             borderColor(if (hasFocusWithin) colors.borderFocus else colors.border)
             shape(RoundedCornerShape(shapes.lg))
+            if (hasFocusWithin) dropShadow(theme.focusRingShadow())
         }
 
     Column(
