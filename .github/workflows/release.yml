@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+
+  # ─── Publish to Maven Central ───────────────────────────────────────────────
+  publish:
+    name: Publish shadcn-compose
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'zulu'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+
+      # macos-latest runner (needed for the iosArm64/iosSimulatorArm64 targets this
+      # module publishes) -- ORG_GRADLE_PROJECT_* env vars are how the vanniktech
+      # maven-publish plugin's mavenPublishing {} block (shadcn/core/build.gradle.kts)
+      # picks up credentials/signing with zero extra Gradle config: mavenCentralUsername/
+      # mavenCentralPassword feed publishToMavenCentral(), and the signingInMemory* trio
+      # feeds signAllPublications() without ever writing a keyring file to disk.
+      - name: Publish to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
+        run: ./gradlew :shadcn:core:publishToMavenCentral --no-configuration-cache
+
+      - name: Upload publish logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-logs
+          path: '**/build/reports/**'
+          retention-days: 14
