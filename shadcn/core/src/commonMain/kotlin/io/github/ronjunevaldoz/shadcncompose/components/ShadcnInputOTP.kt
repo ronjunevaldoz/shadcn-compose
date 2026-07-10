@@ -82,6 +82,9 @@ private fun OtpSlot(
     // `isActive` is a computed boolean from the parent, not a real per-slot focus
     // event, so this uses a plain conditional inside Style { } rather than a
     // focused { } predicate -- same pattern as ShadcnInputGroup's hasFocusWithin.
+    // Deliberately ignores `theme.ring.enabled` -- like ShadcnInputGroup and
+    // TextFieldStyles.kt's `focusRingAlways`, this is a text-entry component (a PIN/OTP
+    // digit slot), so the ring stays load-bearing regardless of the toggle.
     val slotStyle =
         Style {
             background(theme.colors.background)
