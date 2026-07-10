@@ -5,6 +5,7 @@ package io.github.ronjunevaldoz.shadcncompose.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.style.Style
@@ -47,6 +48,63 @@ class InputGroupScreenshotTest : ShadcnScreenshotTest() {
     @Test fun states_light() = states(darkTheme = false)
 
     @Test fun states_dark() = states(darkTheme = true)
+
+    // Exact reproduction of MessageScrollerDoc.kt's InteractiveChatPanel: ShadcnCard
+    // 320dp x 420dp, header with title/description/reset button, footer with the real
+    // ShadcnInputGroup (Ghost leading "+" button, Default trailing send button),
+    // unfocused (matching a static @Preview render, no cursor visible).
+    private fun chatPanelLayout(darkTheme: Boolean) {
+        snapshot("chat_panel_layout", darkTheme = darkTheme) {
+            ShadcnCard(
+                modifier = Modifier.width(320.dp).height(420.dp),
+                header = {
+                    ShadcnCardHeader(
+                        title = "New Chat",
+                        description = "How can I help you today?",
+                        action = {
+                            ShadcnButton(onClick = {}, variant = ButtonVariant.Outline, size = ButtonSize.Icon) {
+                                ShadcnText("↻")
+                            }
+                        },
+                    )
+                },
+                footer = {
+                    ShadcnInputGroup(
+                        leading = {
+                            ShadcnButton(onClick = {}, variant = ButtonVariant.Ghost, size = ButtonSize.Icon) {
+                                ShadcnText("+")
+                            }
+                        },
+                        trailing = {
+                            ShadcnButton(
+                                onClick = {},
+                                variant = ButtonVariant.Default,
+                                size = ButtonSize.Icon,
+                            ) {
+                                ShadcnText("➤", color = shadcnTheme.colors.onPrimary)
+                            }
+                        },
+                    ) {
+                        ShadcnTextField(
+                            value = "this is single",
+                            onValueChange = {},
+                            placeholder = "Message MessageScroller…",
+                            variant = TextFieldVariant.Ghost,
+                            singleLine = false,
+                        )
+                    }
+                },
+            ) {
+                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("AI") } }) {
+                    ShadcnText("Hi! Ask me anything about MessageScroller.")
+                }
+            }
+        }
+    }
+
+    @Test fun chat_panel_layout_light() = chatPanelLayout(darkTheme = false)
+
+    @Test fun chat_panel_layout_dark() = chatPanelLayout(darkTheme = true)
 
     // Preview matching the user's screenshots exactly: Ghost leading "+" icon button,
     // filled circular send button, focused state -- one two-line value, one single-line

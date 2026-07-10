@@ -78,11 +78,16 @@ fun ShadcnThemeData.focusRingShadow(color: Color = colors.borderFocus): Shadow =
  *     focusRing(RoundedCornerShape(theme.shapes.md))
  * }
  * ```
+ *
+ * `theme.ring.enabled` gates the ring itself, not `shape(shape)` -- flipping it off in a
+ * `ShadcnThemeData` copy silences the ring on every focusable component at once without
+ * reopening the shape-pairing bug this function exists to prevent.
  */
 @OptIn(ExperimentalFoundationStyleApi::class)
 fun StyleScope.focusRing(shape: Shape) {
     val theme = ShadcnTheme.LocalShadcnTheme.currentValue
     shape(shape)
+    if (!theme.ring.enabled) return
     focused {
         borderColor(theme.colors.borderFocus)
         dropShadow(theme.focusRingShadow())
