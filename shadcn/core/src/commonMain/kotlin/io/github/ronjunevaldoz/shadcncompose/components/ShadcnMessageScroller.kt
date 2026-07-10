@@ -16,6 +16,7 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -125,6 +126,13 @@ internal fun shouldReleaseFollowing(
 fun ShadcnMessageScroller(
     modifier: Modifier = Modifier,
     autoScrollThresholdPx: Int = DEFAULT_AUTO_SCROLL_THRESHOLD_PX,
+    button: (@Composable BoxScope.(isVisible: Boolean, onClick: ()-> Unit) -> Unit)? = { isVisible, onClick->
+        ShadcnMessageScrollerButton(
+            visible = isVisible,
+            onClick = { onClick() },
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = shadcnTheme.spacing.md)
+        )
+    },
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val scrollState = rememberScrollState()
@@ -172,11 +180,7 @@ fun ShadcnMessageScroller(
             content = content,
         )
         val nearBottom = isMessageScrollerNearBottom(scrollState.value, scrollState.maxValue, autoScrollThresholdPx)
-        ShadcnMessageScrollerButton(
-            visible = scrollState.maxValue > 0 && !nearBottom,
-            onClick = ::jumpToEnd,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = shadcnTheme.spacing.md),
-        )
+        button?.invoke(this, scrollState.maxValue > 0 && !nearBottom, ::jumpToEnd)
     }
 }
 
