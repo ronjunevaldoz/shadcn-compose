@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.KeyEventType
@@ -43,6 +44,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnShimmer
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.heroicons.outline.ArrowDown
 import io.github.ronjunevaldoz.heroicons.outline.ArrowPath
 import io.github.ronjunevaldoz.heroicons.outline.PaperAirplane
 import io.github.ronjunevaldoz.heroicons.outline.Plus
@@ -88,6 +90,14 @@ private fun composerKeyHandler(
         }
     }
 
+// Overrides ShadcnMessageScroller's own text-glyph "↓" default with a real heroicons-outline
+// vector -- this library ships with no icon dependency of its own (see README), but the
+// catalog app already depends on heroicons-compose for every other icon, so its own demos
+// shouldn't fall back to the library's placeholder glyph.
+private val DocMessageScrollerIcon: @Composable (rotationDegrees: Float) -> Unit = { rotationDegrees ->
+    DocIcon(ArrowDown, modifier = Modifier.graphicsLayer(rotationZ = rotationDegrees))
+}
+
 /** One row in the interactive demo's transcript -- [text] grows in place while [isUser] is false and streaming. */
 private data class ScrollerDemoMessage(
     val id: Int,
@@ -120,7 +130,12 @@ val messageScrollerDoc =
             """
             import io.github.ronjunevaldoz.shadcncompose.components.*
 
-            ShadcnMessageScroller(modifier = Modifier.fillMaxSize()) {
+            // The default jump-to-bottom icon is a plain text glyph (this library ships no
+            // icon dependency of its own) -- pass a real vector via `icon` to override it.
+            ShadcnMessageScroller(
+                modifier = Modifier.fillMaxSize(),
+                icon = { rotationDegrees -> DocIcon(ArrowDown, modifier = Modifier.graphicsLayer(rotationZ = rotationDegrees)) },
+            ) {
                 messages.forEach { message ->
                     ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("AI") } }) {
                         ShadcnText(message.text)
@@ -136,7 +151,10 @@ val messageScrollerDoc =
                         """
                         // modifier must constrain the main-axis size (here: a fixed height) --
                         // this composable fills whatever it's given.
-                        ShadcnMessageScroller(modifier = Modifier.width(280.dp).height(200.dp)) {
+                        ShadcnMessageScroller(
+                            modifier = Modifier.width(280.dp).height(200.dp),
+                            icon = { rotationDegrees -> DocIcon(ArrowDown, modifier = Modifier.graphicsLayer(rotationZ = rotationDegrees)) },
+                        ) {
                             repeat(10) { index ->
                                 ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("AI") } }) {
                                     ShadcnText("Message number ${'$'}index")
@@ -145,7 +163,10 @@ val messageScrollerDoc =
                         }
                         """.trimIndent(),
                     preview = {
-                        ShadcnMessageScroller(modifier = Modifier.width(280.dp).height(200.dp)) {
+                        ShadcnMessageScroller(
+                            modifier = Modifier.width(280.dp).height(200.dp),
+                            icon = DocMessageScrollerIcon,
+                        ) {
                             repeat(10) { index ->
                                 ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("AI") } }) {
                                     ShadcnText("Message number $index")
@@ -225,7 +246,10 @@ val messageScrollerDoc =
                                 }
                             },
                         ) {
-                            ShadcnMessageScroller(modifier = Modifier.weight(1f)) {
+                            ShadcnMessageScroller(
+                                modifier = Modifier.weight(1f),
+                                icon = { rotationDegrees -> DocIcon(ArrowDown, modifier = Modifier.graphicsLayer(rotationZ = rotationDegrees)) },
+                            ) {
                                 messages.forEach { message ->
                                     ShadcnMessage(
                                         align = if (message.isUser) ShadcnMessageAlign.End else ShadcnMessageAlign.Start,
@@ -345,7 +369,7 @@ private fun InteractiveChatPanel() {
             }
         },
     ) {
-        ShadcnMessageScroller(modifier = Modifier.weight(1f)) {
+        ShadcnMessageScroller(modifier = Modifier.weight(1f), icon = DocMessageScrollerIcon) {
             messages.forEach { message ->
                 ShadcnMessage(
                     align = if (message.isUser) ShadcnMessageAlign.End else ShadcnMessageAlign.Start,
