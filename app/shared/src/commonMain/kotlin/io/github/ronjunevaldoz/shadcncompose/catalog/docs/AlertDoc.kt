@@ -5,8 +5,8 @@ package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.heroicons.outline.Check
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAlert
-import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.AlertVariant
 
 val alertDoc =
@@ -29,7 +29,7 @@ val alertDoc =
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             ShadcnAlert(
                                 title = "Success! Your changes have been saved.",
-                                icon = { ShadcnText("✓") },
+                                icon = { DocIcon(Check) },
                             )
                             ShadcnAlert(
                                 title = "This Alert has a title and no icon.",
@@ -41,7 +41,7 @@ val alertDoc =
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             ShadcnAlert(
                                 title = "Success! Your changes have been saved.",
-                                icon = { ShadcnText("✓") },
+                                icon = { DocIcon(Check) },
                             )
                             ShadcnAlert(
                                 title = "This Alert has a title and no icon.",

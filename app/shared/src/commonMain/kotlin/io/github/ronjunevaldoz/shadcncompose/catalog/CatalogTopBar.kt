@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.heroicons.outline.Bars3
+import io.github.ronjunevaldoz.shadcncompose.catalog.docs.DocIcon
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSelect
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSwitch
@@ -31,12 +33,17 @@ import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 private const val GITHUB_URL = "https://github.com/ronjunevaldoz/shadcn-compose"
 
 /**
- * App-wide top bar: brand mark on the left; Style/Base/Accent dropdown pickers +
- * GitHub link + dark mode toggle on the right -- mirroring ui.shadcn.com/create's
- * three independent theming axes. Sits above
+ * App-wide top bar: brand mark + "Components"/"Create" nav on the left; Style/Base/Accent
+ * dropdown pickers + GitHub link + dark mode toggle on the right -- mirroring
+ * ui.shadcn.com/create's three independent theming axes. Sits above
  * [io.github.ronjunevaldoz.shadcncompose.navigation.CatalogNavHost]'s sidebar/content
  * row so it stays visible across every screen -- switching any picker here re-themes
  * every component on every page instantly.
+ *
+ * Plain [ButtonVariant.Ghost]/[ButtonVariant.Secondary] buttons for the nav pair, not
+ * [ShadcnTabsList] -- that component's pill-track styling is built for in-page content
+ * switching (e.g. "Account"/"Password" settings tabs), not app-level navigation, and would
+ * visually compete with the pickers already in this row.
  */
 @Composable
 fun CatalogTopBar(
@@ -48,6 +55,9 @@ fun CatalogTopBar(
     onBaseColorChange: (ShadcnBaseColor) -> Unit,
     accent: ShadcnAccent,
     onAccentChange: (ShadcnAccent) -> Unit,
+    isOnCreateRoute: Boolean = false,
+    onNavigateToComponents: () -> Unit = {},
+    onNavigateToCreate: () -> Unit = {},
     onMenuClick: (() -> Unit)? = null,
 ) {
     val uriHandler = LocalUriHandler.current
@@ -68,10 +78,24 @@ fun CatalogTopBar(
         ) {
             if (onMenuClick != null) {
                 ShadcnButton(onClick = onMenuClick, variant = ButtonVariant.Ghost, size = ButtonSize.Sm) {
-                    ShadcnText("☰")
+                    DocIcon(Bars3)
                 }
             }
             ShadcnText("shadcn-compose", style = ShadcnTextStyle.TitleSmall)
+            ShadcnButton(
+                onClick = onNavigateToComponents,
+                variant = if (!isOnCreateRoute) ButtonVariant.Secondary else ButtonVariant.Ghost,
+                size = ButtonSize.Sm,
+            ) {
+                ShadcnText("Components")
+            }
+            ShadcnButton(
+                onClick = onNavigateToCreate,
+                variant = if (isOnCreateRoute) ButtonVariant.Secondary else ButtonVariant.Ghost,
+                size = ButtonSize.Sm,
+            ) {
+                ShadcnText("Create")
+            }
         }
 
         Row(

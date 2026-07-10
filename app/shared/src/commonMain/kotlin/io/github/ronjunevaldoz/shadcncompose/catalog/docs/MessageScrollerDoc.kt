@@ -2,11 +2,9 @@
 
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -46,7 +44,6 @@ import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnShimmer
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import io.github.ronjunevaldoz.heroicons.outline.ArrowPath
-import io.github.ronjunevaldoz.heroicons.outline.ArrowUp
 import io.github.ronjunevaldoz.heroicons.outline.PaperAirplane
 import io.github.ronjunevaldoz.heroicons.outline.Plus
 import kotlinx.coroutines.delay
@@ -102,11 +99,11 @@ private data class ScrollerDemoMessage(
 private val demoReplies =
     listOf(
         "Watch this reply stream in character by character -- MessageScroller keeps you pinned to the " +
-                "bottom the whole time, unless you scroll away to read something above.",
+            "bottom the whole time, unless you scroll away to read something above.",
         "That's the auto-scroll in action. Try scrolling up mid-stream and it'll release -- it won't jump " +
-                "back down until you press the button or send another message.",
+            "back down until you press the button or send another message.",
         "A streaming reply is really just content height growing one character at a time. Nothing special " +
-                "about it from MessageScroller's side -- same auto-scroll logic either way.",
+            "about it from MessageScroller's side -- same auto-scroll logic either way.",
     )
 
 private const val STREAM_TICK_MILLIS = 18L
@@ -118,7 +115,7 @@ val messageScrollerDoc =
         title = "Message Scroller",
         description =
             "A chat-transcript scroll container that follows new messages to the bottom -- but only while " +
-                    "the reader hasn't scrolled away -- with a floating jump-to-bottom button when they have.",
+                "the reader hasn't scrolled away -- with a floating jump-to-bottom button when they have.",
         usageCode =
             """
             import io.github.ronjunevaldoz.shadcncompose.components.*
@@ -260,11 +257,11 @@ val messageScrollerDoc =
 @Preview
 private fun InteractiveChatPanel() {
     var messages by
-    remember {
-        mutableStateOf(
-            listOf(ScrollerDemoMessage(0, "Hi! Ask me anything about MessageScroller.", isUser = false)),
-        )
-    }
+        remember {
+            mutableStateOf(
+                listOf(ScrollerDemoMessage(0, "Hi! Ask me anything about MessageScroller.", isUser = false)),
+            )
+        }
     var nextId by remember { mutableIntStateOf(1) }
     var composerText by remember { mutableStateOf("") }
     var isStreaming by remember { mutableStateOf(false) }

@@ -26,6 +26,7 @@ import androidx.navigation.toRoute
 import io.github.ronjunevaldoz.shadcncompose.catalog.CatalogSidebar
 import io.github.ronjunevaldoz.shadcncompose.catalog.CatalogTopBar
 import io.github.ronjunevaldoz.shadcncompose.catalog.ComponentDetailScreen
+import io.github.ronjunevaldoz.shadcncompose.catalog.CreatePage
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnAccent
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnBaseColor
@@ -65,6 +66,18 @@ fun CatalogNavHost(
             ?.let { runCatching { it.toRoute<ComponentDetailRoute>() }.getOrNull() }
             ?.componentId
     var drawerOpen by remember { mutableStateOf(false) }
+    // Hoisted here, not a local `remember` inside CatalogSidebar, since this composable
+    // instantiates two separate CatalogSidebar instances below (persistent desktop
+    // sidebar + mobile drawer overlay) that need to share one query rather than each
+    // starting fresh -- a resize crossing COMPACT_BREAKPOINT would otherwise silently
+    // drop an in-progress search.
+    var searchQuery by remember { mutableStateOf("") }
+    // Explicit UI state, not derived via toRoute<CreateRoute>() off the back stack --
+    // CreateRoute is a zero-property `data object`, so a mismatched entry's argument
+    // bundle (e.g. ComponentDetailRoute's componentId) has nothing for that decode to
+    // fail on, and toRoute<CreateRoute>() spuriously succeeds for *any* current
+    // destination. Tracked the same way as drawerOpen/searchQuery instead.
+    var isOnCreateRoute by remember { mutableStateOf(false) }
 
     fun navigateTo(componentId: String) {
         navController.navigate(ComponentDetailRoute(componentId)) {
@@ -72,6 +85,8 @@ fun CatalogNavHost(
             launchSingleTop = true
         }
         drawerOpen = false
+        searchQuery = ""
+        isOnCreateRoute = false
     }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
@@ -87,14 +102,22 @@ fun CatalogNavHost(
                 onBaseColorChange = onBaseColorChange,
                 accent = accent,
                 onAccentChange = onAccentChange,
-                onMenuClick = if (isCompact) ({ drawerOpen = true }) else null,
+                onMenuClick = if (isCompact && !isOnCreateRoute) ({ drawerOpen = true }) else null,
+                isOnCreateRoute = isOnCreateRoute,
+                onNavigateToComponents = { navigateTo(selectedId ?: "introduction") },
+                onNavigateToCreate = {
+                    navController.navigate(CreateRoute)
+                    isOnCreateRoute = true
+                },
             )
 
             Row(modifier = Modifier.weight(1f)) {
-                if (!isCompact) {
+                if (!isCompact && !isOnCreateRoute) {
                     CatalogSidebar(
                         selectedId = selectedId ?: "introduction",
                         onEntryClick = ::navigateTo,
+                        query = searchQuery,
+                        onQueryChange = { searchQuery = it },
                     )
                     Box(
                         modifier =
@@ -118,22 +141,37 @@ fun CatalogNavHost(
                             val route: ComponentDetailRoute = backStackEntry.toRoute()
                             ComponentDetailScreen(componentId = route.componentId)
                         }
+                        composable<CreateRoute> {
+                            CreatePage(
+                                stylePreset = stylePreset,
+                                onStylePresetChange = onStylePresetChange,
+                                baseColor = baseColor,
+                                onBaseColorChange = onBaseColorChange,
+                                accent = accent,
+                                onAccentChange = onAccentChange,
+                            )
+                        }
                     }
                 }
             }
         }
 
-        if (isCompact && drawerOpen) {
+        if (isCompact && drawerOpen && !isOnCreateRoute) {
             Box(
                 modifier =
                     Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = 0.4f))
-                        .clickable { drawerOpen = false },
+                        .clickable {
+                            drawerOpen = false
+                            searchQuery = ""
+                        },
             )
             CatalogSidebar(
                 selectedId = selectedId ?: "introduction",
                 onEntryClick = ::navigateTo,
+                query = searchQuery,
+                onQueryChange = { searchQuery = it },
                 modifier = Modifier.fillMaxHeight(),
             )
         }
