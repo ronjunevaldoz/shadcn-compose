@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
+import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
@@ -38,8 +39,8 @@ import kotlin.test.Test
  * Two kinds of capture per theme:
  * 1. `style_matrix_ring_swatch`: all 8 presets' ring token (width/offset/corner) drawn
  *    forced-on in one composite image, side by side -- each swatch renders inside its
- *    own `ShadcnTheme(preset = ..., isDark = ...)` subtree so the forced border resolves
- *    that preset's own ring width/color, not a shared one.
+ *    own `ShadcnTheme(preset = ..., isDark = ...)` subtree so `theme.focusRingShadow()`
+ *    resolves that preset's own ring, not a shared one.
  * 2. `style_matrix_button_focused_<preset>`: the *real* `ShadcnButton`, focused via real
  *    `requestFocus()`, one capture per preset -- proves the wiring through the actual
  *    component, not just a swatch.
@@ -98,8 +99,7 @@ private fun PresetRingSwatch(
             Style {
                 background(theme.colors.primary)
                 shape(RoundedCornerShape(theme.shapes.lg))
-                borderWidth(theme.ring.width)
-                borderColor(theme.colors.borderFocus)
+                dropShadow(theme.focusRingShadow())
             }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             ShadcnText(preset.label, style = ShadcnTextStyle.LabelSmall, muted = true)
