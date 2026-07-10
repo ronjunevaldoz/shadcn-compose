@@ -48,7 +48,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     contentColor(colors.onPrimary)
                     hovered { background(colors.primary.copy(alpha = 0.9f)) }
                     focusRing(RoundedCornerShape(shapes.lg))
-                    pressedScale()
+                    pressedMoveDown()
                     disabled { alpha(0.5f) }
                 }
 
@@ -63,7 +63,7 @@ fun ButtonVariant.rememberStyle(): Style {
                         contentColor(colors.onSecondary)
                     }
                     focusRing(RoundedCornerShape(shapes.lg))
-                    pressedScale()
+                    pressedMoveDown()
                     disabled { alpha(0.5f) }
                 }
 
@@ -73,7 +73,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     contentColor(colors.onSecondary)
                     hovered { background(colors.secondary.copy(alpha = 0.8f)) }
                     focusRing(RoundedCornerShape(shapes.lg))
-                    pressedScale()
+                    pressedMoveDown()
                     disabled { alpha(0.5f) }
                 }
 
@@ -85,7 +85,7 @@ fun ButtonVariant.rememberStyle(): Style {
                         contentColor(colors.onSecondary)
                     }
                     focusRing(RoundedCornerShape(shapes.lg))
-                    pressedScale()
+                    pressedMoveDown()
                     disabled { alpha(0.5f) }
                 }
 
@@ -95,7 +95,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     contentColor(colors.onDestructive)
                     hovered { background(colors.destructive.copy(alpha = 0.9f)) }
                     focusRing(RoundedCornerShape(shapes.lg))
-                    pressedScale()
+                    pressedMoveDown()
                     disabled { alpha(0.5f) }
                 }
 

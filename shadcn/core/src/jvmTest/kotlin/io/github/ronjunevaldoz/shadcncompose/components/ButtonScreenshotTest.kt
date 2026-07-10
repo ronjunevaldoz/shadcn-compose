@@ -62,12 +62,12 @@ class ButtonScreenshotTest : ShadcnScreenshotTest() {
     }
 
     /**
-     * [io.github.ronjunevaldoz.shadcncompose.styles.pressedScale] shrinks the button and
-     * nudges it down while held down -- driven by a real `down()` (held, no matching
-     * `up()`) so the `pressed { }` state predicate actually fires, not a forced visual
-     * stand-in. Pairs with [unpressed_baseline_light], identical content with no touch, so
-     * the two goldens are directly diffable pixel-for-pixel to confirm both the shrink and
-     * the downward shift (not just eyeballed).
+     * [io.github.ronjunevaldoz.shadcncompose.styles.pressedMoveDown] nudges the button
+     * down while held down -- driven by a real `down()` (held, no matching `up()`) so the
+     * `pressed { }` state predicate actually fires, not a forced visual stand-in. Pairs
+     * with [unpressed_baseline_light], identical content with no touch, so the two goldens
+     * are directly diffable pixel-for-pixel to confirm the downward shift (not just
+     * eyeballed).
      */
     @Test
     fun pressed_light() {
