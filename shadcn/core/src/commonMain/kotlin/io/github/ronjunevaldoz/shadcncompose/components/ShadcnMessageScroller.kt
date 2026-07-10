@@ -69,14 +69,17 @@ private val DefaultMessageScrollerIcon: @Composable (rotationDegrees: Float) -> 
     )
 }
 
-private fun defaultMessageScrollerButton(icon: @Composable (rotationDegrees: Float) -> Unit) : @Composable BoxScope.(isVisible: Boolean, onClick: () -> Unit) -> Unit = { isVisible, onClick ->
-    ShadcnMessageScrollerButton(
-        visible = isVisible,
-        onClick = { onClick() },
-        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = shadcnTheme.spacing.md),
-        icon = icon,
-    )
-}
+private fun defaultMessageScrollerButton(
+    icon: @Composable (rotationDegrees: Float) -> Unit,
+): @Composable BoxScope.(isVisible: Boolean, onClick: () -> Unit) -> Unit =
+    { isVisible, onClick ->
+        ShadcnMessageScrollerButton(
+            visible = isVisible,
+            onClick = { onClick() },
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = shadcnTheme.spacing.md),
+            icon = icon,
+        )
+    }
 
 /**
  * Whether the scroll position is within [thresholdPx] of the bottom of the content, as a
@@ -201,7 +204,7 @@ fun ShadcnMessageScroller(
             content = content,
         )
         val nearBottom = isMessageScrollerNearBottom(scrollState.value, scrollState.maxValue, autoScrollThresholdPx)
-        button?.invoke(this, scrollState.maxValue > 0 && !nearBottom, ::jumpToEnd)
+        button(this, scrollState.maxValue > 0 && !nearBottom, ::jumpToEnd)
     }
 }
 

@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.center
+import androidx.compose.ui.test.down
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
@@ -54,6 +58,31 @@ class ButtonScreenshotTest : ShadcnScreenshotTest() {
     fun focused_dark() {
         snapshotFocused("button_focused", focusTag = "btn", darkTheme = true) {
             ShadcnButton(onClick = {}, modifier = Modifier.testTag("btn")) { ShadcnText("Focus me") }
+        }
+    }
+
+    /**
+     * [io.github.ronjunevaldoz.shadcncompose.styles.pressedScale] shrinks the button while
+     * held down -- driven by a real `down()` (held, no matching `up()`) so the `pressed { }`
+     * state predicate actually fires, not a forced visual stand-in. Pairs with
+     * [unpressed_baseline_light], identical content with no touch, so the two goldens are
+     * directly diffable pixel-for-pixel to confirm the shrink (not just eyeballed).
+     */
+    @Test
+    fun pressed_light() {
+        setThemedContent(darkTheme = false) {
+            ShadcnButton(onClick = {}, modifier = Modifier.testTag("btn")) { ShadcnText("Push me") }
+        }
+        composeRule.waitForIdle()
+        composeRule.onNodeWithTag("btn").performTouchInput { down(center) }
+        composeRule.waitForIdle()
+        captureNamed("button_pressed", darkTheme = false)
+    }
+
+    @Test
+    fun unpressed_baseline_light() {
+        snapshot("button_unpressed_baseline", darkTheme = false) {
+            ShadcnButton(onClick = {}, modifier = Modifier.testTag("btn")) { ShadcnText("Push me") }
         }
     }
 }
