@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationStyleApi::class)
+
 package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.animation.AnimatedVisibility
@@ -9,8 +11,6 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,6 +23,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
+import androidx.compose.foundation.style.MutableStyleState
+import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnScrollFade
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import kotlinx.coroutines.launch
@@ -226,15 +231,22 @@ fun ShadcnMessageScrollerButton(
     ) {
         val interactionSource = remember { MutableInteractionSource() }
         val isHovered by interactionSource.collectIsHoveredAsState()
+        val theme = shadcnTheme
+        val styleState = remember { MutableStyleState(interactionSource) }
+        val buttonStyle =
+            remember(isHovered, theme) {
+                Style {
+                    background(if (isHovered) theme.colors.muted else theme.colors.background)
+                    borderWidth(1.dp)
+                    borderColor(theme.colors.border)
+                    focusRing(RoundedCornerShape(theme.shapes.lg))
+                }
+            }
         Box(
             modifier =
                 Modifier
                     .size(36.dp)
-                    .background(
-                        if (isHovered) shadcnTheme.colors.muted else shadcnTheme.colors.background,
-                        RoundedCornerShape(shadcnTheme.shapes.lg),
-                    )
-                    .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.lg))
+                    .styleable(styleState, buttonStyle)
                     .hoverable(interactionSource)
                     .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
             contentAlignment = Alignment.Center,

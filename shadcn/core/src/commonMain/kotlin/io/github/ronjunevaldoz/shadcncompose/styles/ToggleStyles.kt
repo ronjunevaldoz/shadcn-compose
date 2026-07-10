@@ -7,7 +7,6 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.checked
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -39,19 +38,17 @@ fun ToggleVariant.rememberStyle(): Style {
                 Style {
                     background(Color.Transparent)
                     contentColor(colors.onSurface)
-                    shape(RoundedCornerShape(shapes.lg))
                     contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
                     height(36.dp)
                     minWidth(36.dp)
                     fontSize(14.sp)
                     hovered { background(colors.muted) }
                     checked { background(colors.secondary) }
-                    // dropShadow follows the *final* resolved shape() -- including a
-                    // later ShadcnToggleGroup style-param override with a corner-stripped
-                    // shape -- not just whatever shape() this block itself declares, same
-                    // as real CSS box-shadow always following the element's own
-                    // border-radius regardless of which rule set it.
-                    focused { dropShadow(theme.focusRingShadow()) }
+                    // focusRing's shape() still yields to a *later* resolved shape --
+                    // including a ShadcnToggleGroup style-param override with a
+                    // corner-stripped shape -- since the ring always follows the
+                    // *final* resolved shape(), regardless of which rule set it.
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
                 }
 
@@ -61,17 +58,13 @@ fun ToggleVariant.rememberStyle(): Style {
                     contentColor(colors.onSurface)
                     borderWidth(1.dp)
                     borderColor(colors.border)
-                    shape(RoundedCornerShape(shapes.lg))
                     contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
                     height(36.dp)
                     minWidth(36.dp)
                     fontSize(14.sp)
                     hovered { background(colors.secondary) }
                     checked { background(colors.secondary) }
-                    focused {
-                        borderColor(colors.borderFocus)
-                        dropShadow(theme.focusRingShadow())
-                    }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
                 }
         }

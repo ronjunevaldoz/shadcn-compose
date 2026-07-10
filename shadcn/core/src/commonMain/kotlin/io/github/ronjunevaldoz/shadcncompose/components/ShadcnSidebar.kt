@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -35,7 +34,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
+import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /** Whether a [ShadcnSidebar] is expanded (full width) or collapsed (width 0), plus how to toggle it. */
@@ -141,8 +140,7 @@ fun ShadcnSidebarTrigger(
     val triggerStyle =
         remember(theme) {
             Style {
-                shape(RoundedCornerShape(theme.shapes.md))
-                focused { dropShadow(theme.focusRingShadow()) }
+                focusRing(RoundedCornerShape(theme.shapes.md))
             }
         }
     Box(

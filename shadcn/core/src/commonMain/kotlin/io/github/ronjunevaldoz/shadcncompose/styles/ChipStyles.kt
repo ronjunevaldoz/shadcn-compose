@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.runtime.Composable
@@ -20,8 +19,8 @@ import io.github.ronjunevaldoz.shadcncompose.theme.spacing
 
 // Chip isn't a real shadcn/ui component (shadcn only ships a static Badge), so
 // there's no upstream reference here -- but it follows the same conventions
-// established from Button/TextField/Checkbox/Radio/Switch/Toggle: the focus ring
-// (focused { dropShadow(...) }) never resizes the chip.
+// established from Button/TextField/Checkbox/Radio/Switch/Toggle: `focusRing(...)`
+// handles the focus ring for every variant.
 sealed interface ChipVariant {
     data object Default : ChipVariant
 
@@ -43,7 +42,7 @@ fun ChipVariant.rememberStyle(): Style {
     // 2. Cache the style; recalculate only if variant or theme changes. Keyed on the
     // whole `theme` (superset of colors/shapes/spacing/ring) -- previously keyed on
     // just `colors`, a real bug (see AGENTS.md's "Component styling rules" #2) that
-    // would have applied to the new dropShadow(theme.focusRingShadow()) call below too.
+    // would have applied to `focusRing(...)`'s ring color/width too.
     return remember(this, theme, colors, shapes, spacing) {
         when (this) {
             ChipVariant.Default ->
@@ -52,15 +51,11 @@ fun ChipVariant.rememberStyle(): Style {
                     contentColor(colors.onSecondary) // Dynamically resolves Color(0xFFFAFAFA) in dark mode!
                     borderWidth(1.dp)
                     borderColor(colors.border)
-                    shape(RoundedCornerShape(shapes.full))
+                    focusRing(RoundedCornerShape(shapes.full))
                     contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                     fontSize(13.sp)
                     hovered { background(colors.secondaryHover) }
                     pressed { background(colors.secondaryHover) }
-                    focused {
-                        borderColor(colors.borderFocus)
-                        dropShadow(theme.focusRingShadow())
-                    }
                     disabled { alpha(0.5f) }
                 }
 
@@ -70,13 +65,9 @@ fun ChipVariant.rememberStyle(): Style {
                     contentColor(colors.onPrimary)
                     borderWidth(1.dp)
                     borderColor(colors.primary)
-                    shape(RoundedCornerShape(shapes.full))
+                    focusRing(RoundedCornerShape(shapes.full))
                     contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                     fontSize(13.sp)
-                    focused {
-                        borderColor(colors.borderFocus)
-                        dropShadow(theme.focusRingShadow())
-                    }
                     disabled { alpha(0.5f) }
                 }
 
@@ -85,14 +76,10 @@ fun ChipVariant.rememberStyle(): Style {
                     borderWidth(1.dp)
                     borderColor(colors.border)
                     contentColor(colors.onSurface)
-                    shape(RoundedCornerShape(shapes.full))
+                    focusRing(RoundedCornerShape(shapes.full))
                     contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                     fontSize(13.sp)
                     hovered { background(colors.secondary) }
-                    focused {
-                        borderColor(colors.borderFocus)
-                        dropShadow(theme.focusRingShadow())
-                    }
                     disabled { alpha(0.5f) }
                 }
         }

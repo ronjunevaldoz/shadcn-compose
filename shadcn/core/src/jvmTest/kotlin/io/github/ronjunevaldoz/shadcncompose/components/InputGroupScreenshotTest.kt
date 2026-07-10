@@ -48,6 +48,38 @@ class InputGroupScreenshotTest : ShadcnScreenshotTest() {
     @Test fun states_dark() = states(darkTheme = true)
 
     /**
+     * Regression guard for a real bug: the leading/trailing addon gap used to come
+     * entirely from the inner field's own `contentPadding`, which only holds while the
+     * field's value is short enough to leave slack in its `weight(1f)` box. Once the
+     * value is long enough to fill it, that inset stopped keeping the addon clear of the
+     * text -- "$" or ".com" would render flush against the value with no gap at all. The
+     * group now owns an explicit minimum gap of its own (`shadcnTheme.spacing.xs`) so
+     * this holds regardless of how full the field is.
+     */
+    private fun longValue(darkTheme: Boolean) {
+        snapshot("input_group_long_value", darkTheme = darkTheme) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                ShadcnInputGroup(
+                    modifier = Modifier.width(260.dp),
+                    leading = { ShadcnInputGroupText("$") },
+                ) {
+                    ShadcnTextField(value = "123456789012345678901234", onValueChange = {})
+                }
+                ShadcnInputGroup(
+                    modifier = Modifier.width(260.dp),
+                    trailing = { ShadcnInputGroupText(".com") },
+                ) {
+                    ShadcnTextField(value = "areallylongsubdomainname", onValueChange = {})
+                }
+            }
+        }
+    }
+
+    @Test fun long_value_light() = longValue(darkTheme = false)
+
+    @Test fun long_value_dark() = longValue(darkTheme = true)
+
+    /**
      * Focusing the inner field must ring/highlight the *group container* (real shadcn's
      * `has-[:focus-visible]:ring-[3px]` on `InputGroup`), with no inner border or ring
      * on the field itself.

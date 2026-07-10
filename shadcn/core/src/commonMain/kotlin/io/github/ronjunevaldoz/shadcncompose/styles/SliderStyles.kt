@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -17,8 +16,8 @@ import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 // border border-primary bg-background, ring on *both* hover and focus (unlike
 // Button, which only rings on focus) -- real shadcn's own `hover:ring-4
 // focus-visible:ring-4` on this specific component, two separate rules with the
-// same properties (we don't have a per-component ring width override, so this
-// still uses the shared theme.ring.width, same as before this migration).
+// same properties (we don't have a per-component ring width override, so both
+// grow the border to the shared theme.ring.width).
 @Composable
 fun rememberSliderTrackStyle(): Style {
     val theme = ShadcnTheme.LocalShadcnTheme.current
@@ -49,9 +48,8 @@ fun rememberSliderThumbStyle(): Style {
             background(theme.colors.background)
             borderWidth(1.dp)
             borderColor(theme.colors.primary)
-            shape(RoundedCornerShape(theme.shapes.full))
-            hovered { dropShadow(theme.focusRingShadow()) }
-            focused { dropShadow(theme.focusRingShadow()) }
+            hovered { borderWidth(theme.ring.width) }
+            focusRing(RoundedCornerShape(theme.shapes.full))
             disabled { alpha(0.5f) }
         }
     }

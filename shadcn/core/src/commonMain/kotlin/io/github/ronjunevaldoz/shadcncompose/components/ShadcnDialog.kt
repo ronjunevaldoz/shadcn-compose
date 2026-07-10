@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -26,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnModalOverlay
-import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
+import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -102,8 +101,7 @@ private fun DialogCloseButton(
     val closeButtonStyle =
         remember(theme) {
             Style {
-                shape(RoundedCornerShape(theme.shapes.sm))
-                focused { dropShadow(theme.focusRingShadow()) }
+                focusRing(RoundedCornerShape(theme.shapes.sm))
             }
         }
     Box(

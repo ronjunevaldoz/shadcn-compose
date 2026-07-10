@@ -2,25 +2,23 @@
 
 package io.github.ronjunevaldoz.shadcncompose.styles
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.disabled
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.hovered
-import androidx.compose.foundation.style.then
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
-import io.github.ronjunevaldoz.tailwind.style.roundedStyle
 
 // Matches shadcn/ui's real button.tsx (github.com/shadcn-ui/ui) as closely as our
 // Style API allows: most variants have zero border (only Outline has one), hover
 // is an alpha-blended background rather than a whole-node dim. Every variant gets
-// the same focused { dropShadow(...) } ring -- real shadcn's shared `.cn-button`
-// class applies focus-visible:ring-* regardless of variant, including Link.
+// the same `focusRing(...)` ring -- real shadcn's shared `.cn-button` class applies
+// focus-visible:ring-* regardless of variant, including Link.
 
 sealed interface ButtonVariant {
     data object Default : ButtonVariant
@@ -49,9 +47,9 @@ fun ButtonVariant.rememberStyle(): Style {
                     background(colors.primary)
                     contentColor(colors.onPrimary)
                     hovered { background(colors.primary.copy(alpha = 0.9f)) }
-                    focused { dropShadow(theme.focusRingShadow()) }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
-                }.then(Style.roundedStyle(shapes.lg))
+                }
 
             ButtonVariant.Outline ->
                 Style {
@@ -63,21 +61,18 @@ fun ButtonVariant.rememberStyle(): Style {
                         background(colors.secondary)
                         contentColor(colors.onSecondary)
                     }
-                    focused {
-                        borderColor(colors.borderFocus)
-                        dropShadow(theme.focusRingShadow())
-                    }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
-                }.then(Style.roundedStyle(shapes.lg))
+                }
 
             ButtonVariant.Secondary ->
                 Style {
                     background(colors.secondary)
                     contentColor(colors.onSecondary)
                     hovered { background(colors.secondary.copy(alpha = 0.8f)) }
-                    focused { dropShadow(theme.focusRingShadow()) }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
-                }.then(Style.roundedStyle(shapes.lg))
+                }
 
             ButtonVariant.Ghost ->
                 Style {
@@ -86,26 +81,26 @@ fun ButtonVariant.rememberStyle(): Style {
                         background(colors.secondary)
                         contentColor(colors.onSecondary)
                     }
-                    focused { dropShadow(theme.focusRingShadow()) }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
-                }.then(Style.roundedStyle(shapes.lg))
+                }
 
             ButtonVariant.Destructive ->
                 Style {
                     background(colors.destructive)
                     contentColor(colors.onDestructive)
                     hovered { background(colors.destructive.copy(alpha = 0.9f)) }
-                    focused { dropShadow(theme.focusRingShadow()) }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
-                }.then(Style.roundedStyle(shapes.lg))
+                }
 
             ButtonVariant.Link ->
                 Style {
                     contentColor(colors.primary)
                     hovered { textDecoration(TextDecoration.Underline) }
-                    focused { dropShadow(theme.focusRingShadow()) }
+                    focusRing(RoundedCornerShape(shapes.lg))
                     disabled { alpha(0.5f) }
-                }.then(Style.roundedStyle(shapes.lg))
+                }
         }
     }
 }

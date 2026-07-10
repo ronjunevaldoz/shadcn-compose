@@ -25,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -111,10 +110,9 @@ fun ShadcnInputGroup(
     val containerStyle =
         Style {
             background(colors.background)
-            borderWidth(1.dp)
+            borderWidth(if (hasFocusWithin) theme.ring.width else 1.dp)
             borderColor(if (hasFocusWithin) colors.borderFocus else colors.border)
             shape(RoundedCornerShape(shapes.lg))
-            if (hasFocusWithin) dropShadow(theme.focusRingShadow())
         }
 
     Column(
@@ -130,11 +128,21 @@ fun ShadcnInputGroup(
         ) {
             CompositionLocalProvider(LocalInsideInputGroup provides true) {
                 if (leading != null) {
-                    Box(modifier = Modifier.padding(start = shadcnTheme.spacing.md)) { leading() }
+                    // `end = xs` is a floor, not a duplicate of the field's own start
+                    // contentPadding: that inset only holds while the field's text is
+                    // short enough to leave slack in its weight(1f) box. Once the value
+                    // is long enough to fill it, the field's padding no longer keeps the
+                    // addon clear of the text, so the group must own a minimum gap of
+                    // its own instead of trusting whatever `content()` happens to be.
+                    Box(modifier = Modifier.padding(start = shadcnTheme.spacing.md, end = shadcnTheme.spacing.xs)) {
+                        leading()
+                    }
                 }
                 Box(modifier = Modifier.weight(1f)) { content() }
                 if (trailing != null) {
-                    Box(modifier = Modifier.padding(end = shadcnTheme.spacing.md)) { trailing() }
+                    Box(modifier = Modifier.padding(start = shadcnTheme.spacing.xs, end = shadcnTheme.spacing.md)) {
+                        trailing()
+                    }
                 }
             }
         }

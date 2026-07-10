@@ -22,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -79,20 +78,15 @@ private fun OtpSlot(
     isActive: Boolean,
 ) {
     val theme = shadcnTheme
-    // Real shadcn's active slot is `data-[active=true]:border-ring
-    // data-[active=true]:ring-[3px] data-[active=true]:ring-ring/50` -- border *color*
-    // swaps to the ring color (width stays 1dp, it never grows to 2dp) plus the same
-    // shared ring every other focusable component draws. `isActive` is a computed
-    // boolean from the parent, not a real per-slot focus event, so this uses a plain
-    // conditional inside Style { } rather than a focused { } predicate -- same pattern
-    // as ShadcnInputGroup's hasFocusWithin.
+    // `isActive` is a computed boolean from the parent, not a real per-slot focus
+    // event, so this uses a plain conditional inside Style { } rather than a
+    // focused { } predicate -- same pattern as ShadcnInputGroup's hasFocusWithin.
     val slotStyle =
         Style {
             background(theme.colors.background)
-            borderWidth(1.dp)
+            borderWidth(if (isActive) theme.ring.width else 1.dp)
             borderColor(if (isActive) theme.colors.borderFocus else theme.colors.border)
             shape(RoundedCornerShape(theme.shapes.md))
-            if (isActive) dropShadow(theme.focusRingShadow())
         }
 
     Box(

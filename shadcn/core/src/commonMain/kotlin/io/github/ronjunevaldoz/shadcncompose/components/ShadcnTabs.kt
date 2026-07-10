@@ -13,13 +13,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
+import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /** One tab in a [ShadcnTabsList]. */
@@ -66,8 +65,7 @@ fun ShadcnTabsList(
                 remember(isSelected, theme) {
                     Style {
                         background(if (isSelected) theme.colors.background else theme.colors.muted)
-                        shape(RoundedCornerShape(theme.shapes.md))
-                        focused { dropShadow(theme.focusRingShadow()) }
+                        focusRing(RoundedCornerShape(theme.shapes.md))
                     }
                 }
             Box(

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import io.github.ronjunevaldoz.shadcncompose.styles.CardSize
@@ -81,4 +82,17 @@ class SidebarScreenshotTest : ShadcnScreenshotTest() {
     @Test fun app_shell_light() = appShell(darkTheme = false)
 
     @Test fun app_shell_dark() = appShell(darkTheme = true)
+
+    private fun triggerFocused(darkTheme: Boolean) {
+        snapshotFocused("sidebar_trigger_focused", focusTag = "sidebar-trigger", darkTheme = darkTheme) {
+            ShadcnSidebarProvider(expanded = true, onExpandedChange = {}, modifier = Modifier.height(200.dp)) {
+                ShadcnSidebarInset {
+                    ShadcnSidebarTrigger(modifier = Modifier.testTag("sidebar-trigger"))
+                    ShadcnText("Main content")
+                }
+            }
+        }
+    }
+
+    @Test fun trigger_focused_light() = triggerFocused(darkTheme = false)
 }

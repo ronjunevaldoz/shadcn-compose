@@ -5,11 +5,9 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.focused
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface SelectVariant {
@@ -35,11 +33,7 @@ fun SelectVariant.rememberStyle(): Style {
             background(colors.background)
             borderWidth(1.dp)
             borderColor(colors.border)
-            shape(RoundedCornerShape(shapes.lg))
-            focused {
-                borderColor(colors.borderFocus)
-                dropShadow(theme.focusRingShadow())
-            }
+            focusRing(RoundedCornerShape(shapes.lg))
         }
     }
 }

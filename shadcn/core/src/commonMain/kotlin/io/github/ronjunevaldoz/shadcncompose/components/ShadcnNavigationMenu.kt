@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.focused
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
-import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
+import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -72,8 +71,7 @@ fun ShadcnNavigationMenu(
                 remember(isOpen, theme) {
                     Style {
                         background(if (isOpen) theme.colors.secondary else theme.colors.background)
-                        shape(RoundedCornerShape(theme.shapes.sm))
-                        focused { dropShadow(theme.focusRingShadow()) }
+                        focusRing(RoundedCornerShape(theme.shapes.sm))
                     }
                 }
             Box(
