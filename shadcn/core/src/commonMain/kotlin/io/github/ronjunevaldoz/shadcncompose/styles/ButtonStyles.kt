@@ -99,8 +99,8 @@ fun ButtonVariant.rememberStyle(): Style {
                     disabled { alpha(0.5f) }
                 }
 
-            // No pressedScale() -- Link renders as inline text, not a boxed control, so
-            // scaling it on press (rather than the underline real shadcn's own .cn-button
+            // No pressedMoveDown() -- Link renders as inline text, not a boxed control, so
+            // nudging it on press (rather than the underline real shadcn's own .cn-button
             // gives it) would look like the surrounding text is glitching, not a button push.
             ButtonVariant.Link ->
                 Style {
