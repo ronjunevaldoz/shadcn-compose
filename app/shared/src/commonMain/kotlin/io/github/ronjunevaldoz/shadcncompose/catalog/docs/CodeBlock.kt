@@ -16,7 +16,11 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +39,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.BadgeVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import kotlinx.coroutines.delay
 
 private val KOTLIN_KEYWORDS =
     setOf(
@@ -105,16 +110,32 @@ private fun highlightKotlin(
 }
 
 /**
- * A callback that copies [text] to the system clipboard, re-created only when [text] changes.
- * The one place this catalog reads [LocalClipboardManager] -- centralizes the eventual
- * migration to the suspend-based `Clipboard`/`ClipEntry` API to a single call site.
+ * [copy] copies [text] to the system clipboard; [justCopied] is briefly true afterward so
+ * callers can swap their button label to a "Copied!" confirmation -- matches real shadcn/ui's
+ * own docs site pattern (a label swap, not a toast). The one place this catalog reads
+ * [LocalClipboardManager] -- centralizes the eventual migration to the suspend-based
+ * `Clipboard`/`ClipEntry` API to a single call site.
  */
+class CopyToClipboardState(val copy: () -> Unit, val justCopied: Boolean)
+
 @Composable
-fun rememberCopyToClipboard(text: String): () -> Unit {
+fun rememberCopyToClipboard(text: String): CopyToClipboardState {
     val clipboardManager = LocalClipboardManager.current
-    return remember(clipboardManager, text) {
-        { clipboardManager.setText(AnnotatedString(text)) }
+    var justCopied by remember(text) { mutableStateOf(false) }
+    val copy =
+        remember(clipboardManager, text) {
+            {
+                clipboardManager.setText(AnnotatedString(text))
+                justCopied = true
+            }
+        }
+    LaunchedEffect(justCopied) {
+        if (justCopied) {
+            delay(1500)
+            justCopied = false
+        }
     }
+    return CopyToClipboardState(copy, justCopied)
 }
 
 /** A syntax-highlighted, copyable Kotlin code block used throughout the catalog. */
@@ -123,7 +144,7 @@ fun CodeBlock(
     code: String,
     modifier: Modifier = Modifier,
 ) {
-    val copyToClipboard = rememberCopyToClipboard(code)
+    val copyState = rememberCopyToClipboard(code)
     val highlighted =
         highlightKotlin(code, shadcnTheme.colors.isLight, mutedColor = shadcnTheme.colors.onSurfaceVariant)
 
@@ -143,11 +164,11 @@ fun CodeBlock(
         ) {
             ShadcnBadge(variant = BadgeVariant.Ghost) { ShadcnText("Kotlin", style = ShadcnTextStyle.LabelSmall) }
             ShadcnButton(
-                onClick = copyToClipboard,
+                onClick = copyState.copy,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Xs,
             ) {
-                ShadcnText("Copy", style = ShadcnTextStyle.LabelSmall)
+                ShadcnText(if (copyState.justCopied) "Copied!" else "Copy", style = ShadcnTextStyle.LabelSmall)
             }
         }
         Box(

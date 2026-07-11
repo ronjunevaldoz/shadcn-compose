@@ -88,7 +88,7 @@ fun CreatePage(
             }
             """.trimIndent()
         }
-    val copyToClipboard = rememberCopyToClipboard(snippet)
+    val copyState = rememberCopyToClipboard(snippet)
 
     Row(modifier = modifier.fillMaxSize()) {
         Column(
@@ -156,10 +156,10 @@ fun CreatePage(
                 },
             )
             ShadcnButton(
-                onClick = copyToClipboard,
+                onClick = copyState.copy,
                 modifier = Modifier.fillMaxWidth().padding(top = shadcnTheme.spacing.sm),
             ) {
-                ShadcnText("Get Code")
+                ShadcnText(if (copyState.justCopied) "Copied!" else "Get Code")
             }
         }
         Box(
