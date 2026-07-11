@@ -6,11 +6,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface BadgeVariant {
     data object Default : BadgeVariant
@@ -25,14 +23,9 @@ sealed interface BadgeVariant {
 }
 
 @Composable
-fun BadgeVariant.rememberStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-    val spacing = theme.spacing
-
-    return remember(this, colors, shapes, spacing) {
-        when (this) {
+fun BadgeVariant.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
+        when (this@rememberStyle) {
             BadgeVariant.Default ->
                 Style {
                     background(colors.primary)
@@ -84,4 +77,3 @@ fun BadgeVariant.rememberStyle(): Style {
                 }
         }
     }
-}

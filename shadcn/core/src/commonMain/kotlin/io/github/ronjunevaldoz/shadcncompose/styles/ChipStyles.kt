@@ -8,13 +8,8 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
-import io.github.ronjunevaldoz.shadcncompose.theme.colors
-import io.github.ronjunevaldoz.shadcncompose.theme.shapes
-import io.github.ronjunevaldoz.shadcncompose.theme.spacing
 
 // Chip isn't a real shadcn/ui component (shadcn only ships a static Badge), so
 // there's no upstream reference here -- but it follows the same conventions
@@ -31,19 +26,9 @@ sealed interface ChipVariant {
 }
 
 @Composable
-fun ChipVariant.rememberStyle(): Style {
-    // 1. Gather context from the active theme layer
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-    val spacing = theme.spacing
-
-    // 2. Cache the style; recalculate only if variant or theme changes. Keyed on the
-    // whole `theme` (superset of colors/shapes/spacing/ring) -- previously keyed on
-    // just `colors`, a real bug (see AGENTS.md's "Component styling rules" #2) that
-    // would have applied to `focusRing(...)`'s ring color/width too.
-    return remember(this, theme, colors, shapes, spacing) {
-        when (this) {
+fun ChipVariant.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
+        when (this@rememberStyle) {
             ChipVariant.Default ->
                 Style {
                     background(colors.secondary)
@@ -83,4 +68,3 @@ fun ChipVariant.rememberStyle(): Style {
                 }
         }
     }
-}

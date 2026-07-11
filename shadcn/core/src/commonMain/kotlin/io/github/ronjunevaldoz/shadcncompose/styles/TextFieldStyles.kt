@@ -6,11 +6,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 // Matches shadcn/ui's real input.tsx: border border-input (1.dp, always visible),
 // focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 --
@@ -26,14 +24,9 @@ sealed interface TextFieldVariant {
 }
 
 @Composable
-fun TextFieldVariant.rememberStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-    val spacing = theme.spacing
-
-    return remember(this, theme, colors, shapes, spacing) {
-        when (this) {
+fun TextFieldVariant.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
+        when (this@rememberStyle) {
             TextFieldVariant.Default ->
                 Style {
                     background(colors.background)
@@ -70,4 +63,3 @@ fun TextFieldVariant.rememberStyle(): Style {
                 }
         }
     }
-}

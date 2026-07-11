@@ -8,11 +8,9 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.checked
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 // Matches shadcn/ui's real toggle.tsx: shared hover:bg-muted, data-[state=on]:bg-accent
 // (our `secondary` token stands in for `accent`, since they're the same value in
@@ -25,14 +23,9 @@ sealed interface ToggleVariant {
 }
 
 @Composable
-fun ToggleVariant.rememberStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-    val spacing = theme.spacing
-
-    return remember(this, theme, colors, shapes, spacing) {
-        when (this) {
+fun ToggleVariant.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
+        when (this@rememberStyle) {
             ToggleVariant.Default ->
                 Style {
                     background(Color.Transparent)
@@ -68,4 +61,3 @@ fun ToggleVariant.rememberStyle(): Style {
                 }
         }
     }
-}

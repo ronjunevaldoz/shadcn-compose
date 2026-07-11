@@ -4,9 +4,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface AlertVariant {
     data object Default : AlertVariant
@@ -16,13 +14,9 @@ sealed interface AlertVariant {
 
 @OptIn(ExperimentalFoundationStyleApi::class)
 @Composable
-fun AlertVariant.rememberStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-
-    return remember(this, colors, shapes) {
-        when (this) {
+fun AlertVariant.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
+        when (this@rememberStyle) {
             AlertVariant.Default ->
                 Style {
                     background(colors.surface)
@@ -42,4 +36,3 @@ fun AlertVariant.rememberStyle(): Style {
                 }
         }
     }
-}

@@ -6,9 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface SelectVariant {
     data object Default : SelectVariant
@@ -23,12 +21,8 @@ sealed interface SelectVariant {
  * [ButtonVariant.Outline]).
  */
 @Composable
-fun SelectVariant.rememberStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-
-    return remember(this, theme, colors, shapes) {
+fun SelectVariant.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
         Style {
             background(colors.background)
             borderWidth(1.dp)
@@ -36,7 +30,6 @@ fun SelectVariant.rememberStyle(): Style {
             focusRing(RoundedCornerShape(shapes.lg))
         }
     }
-}
 
 /**
  * The dropdown panel's style. Matches real shadcn's `SelectContent`
@@ -44,12 +37,8 @@ fun SelectVariant.rememberStyle(): Style {
  * `surface` token (see [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors]).
  */
 @Composable
-fun SelectVariant.rememberPanelStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-
-    return remember(this, colors, shapes) {
+fun SelectVariant.rememberPanelStyle(): Style =
+    rememberShadcnStyle(this) {
         Style {
             background(colors.popover)
             borderWidth(1.dp)
@@ -57,20 +46,14 @@ fun SelectVariant.rememberPanelStyle(): Style {
             shape(RoundedCornerShape(shapes.md))
         }
     }
-}
 
 /** Matches real shadcn's `SelectItem` (`focus:bg-accent`) -- selected rows highlight via [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.secondary]. */
 @Composable
-fun rememberSelectItemStyle(isSelected: Boolean): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-
-    return remember(isSelected, colors, shapes) {
+fun rememberSelectItemStyle(isSelected: Boolean): Style =
+    rememberShadcnStyle(isSelected) {
         Style {
             background(if (isSelected) colors.secondary else colors.popover)
             contentColor(if (isSelected) colors.onSecondary else colors.onPopover)
             shape(RoundedCornerShape(shapes.sm))
         }
     }
-}

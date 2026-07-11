@@ -7,11 +7,9 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 // Matches shadcn/ui's real button.tsx (github.com/shadcn-ui/ui) as closely as our
 // Style API allows: most variants have zero border (only Outline has one), hover
@@ -34,13 +32,9 @@ sealed interface ButtonVariant {
 }
 
 @Composable
-fun ButtonVariant.rememberStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-
-    return remember(this, theme, colors, shapes) {
-        when (this) {
+fun ButtonVariant.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
+        when (this@rememberStyle) {
             ButtonVariant.Default ->
                 Style {
                     background(colors.primary)
@@ -110,7 +104,6 @@ fun ButtonVariant.rememberStyle(): Style {
                 }
         }
     }
-}
 
 sealed interface ButtonSize {
     data object Xs : ButtonSize
@@ -125,12 +118,9 @@ sealed interface ButtonSize {
 }
 
 @Composable
-fun ButtonSize.rememberStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val spacing = theme.spacing
-
-    return remember(this, spacing) {
-        when (this) {
+fun ButtonSize.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
+        when (this@rememberStyle) {
             ButtonSize.Xs ->
                 Style {
                     contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
@@ -167,4 +157,3 @@ fun ButtonSize.rememberStyle(): Style {
                 }
         }
     }
-}

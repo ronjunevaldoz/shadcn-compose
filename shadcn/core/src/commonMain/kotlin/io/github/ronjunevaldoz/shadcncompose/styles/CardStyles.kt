@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
@@ -20,14 +19,9 @@ sealed interface CardVariant {
 }
 
 @Composable
-fun CardVariant.rememberStyle(): Style {
-    val theme = ShadcnTheme.LocalShadcnTheme.current
-    val colors = theme.colors
-    val shapes = theme.shapes
-    val spacing = theme.spacing
-
-    return remember(this, colors, shapes, spacing) {
-        when (this) {
+fun CardVariant.rememberStyle(): Style =
+    rememberShadcnStyle(this) {
+        when (this@rememberStyle) {
             CardVariant.Default ->
                 Style {
                     background(colors.card)
@@ -55,7 +49,6 @@ fun CardVariant.rememberStyle(): Style {
                 }
         }
     }
-}
 
 sealed interface CardSize {
     data object Default : CardSize
