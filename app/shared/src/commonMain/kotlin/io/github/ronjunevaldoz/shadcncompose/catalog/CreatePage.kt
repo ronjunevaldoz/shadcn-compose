@@ -29,10 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.catalog.docs.CodeBlock
+import io.github.ronjunevaldoz.shadcncompose.catalog.docs.rememberCopyToClipboard
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBadge
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCard
@@ -89,7 +88,7 @@ fun CreatePage(
             }
             """.trimIndent()
         }
-    val clipboardManager = LocalClipboardManager.current
+    val copyToClipboard = rememberCopyToClipboard(snippet)
 
     Row(modifier = modifier.fillMaxSize()) {
         Column(
@@ -157,7 +156,7 @@ fun CreatePage(
                 },
             )
             ShadcnButton(
-                onClick = { clipboardManager.setText(AnnotatedString(snippet)) },
+                onClick = copyToClipboard,
                 modifier = Modifier.fillMaxWidth().padding(top = shadcnTheme.spacing.sm),
             ) {
                 ShadcnText("Get Code")

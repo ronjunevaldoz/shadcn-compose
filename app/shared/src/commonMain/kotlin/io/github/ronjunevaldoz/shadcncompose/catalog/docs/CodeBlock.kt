@@ -16,6 +16,7 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -103,13 +104,26 @@ private fun highlightKotlin(
     }
 }
 
+/**
+ * A callback that copies [text] to the system clipboard, re-created only when [text] changes.
+ * The one place this catalog reads [LocalClipboardManager] -- centralizes the eventual
+ * migration to the suspend-based `Clipboard`/`ClipEntry` API to a single call site.
+ */
+@Composable
+fun rememberCopyToClipboard(text: String): () -> Unit {
+    val clipboardManager = LocalClipboardManager.current
+    return remember(clipboardManager, text) {
+        { clipboardManager.setText(AnnotatedString(text)) }
+    }
+}
+
 /** A syntax-highlighted, copyable Kotlin code block used throughout the catalog. */
 @Composable
 fun CodeBlock(
     code: String,
     modifier: Modifier = Modifier,
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val copyToClipboard = rememberCopyToClipboard(code)
     val highlighted =
         highlightKotlin(code, shadcnTheme.colors.isLight, mutedColor = shadcnTheme.colors.onSurfaceVariant)
 
@@ -129,7 +143,7 @@ fun CodeBlock(
         ) {
             ShadcnBadge(variant = BadgeVariant.Ghost) { ShadcnText("Kotlin", style = ShadcnTextStyle.LabelSmall) }
             ShadcnButton(
-                onClick = { clipboardManager.setText(AnnotatedString(code)) },
+                onClick = copyToClipboard,
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Xs,
             ) {
