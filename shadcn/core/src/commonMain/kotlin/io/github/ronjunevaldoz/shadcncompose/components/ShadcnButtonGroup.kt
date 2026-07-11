@@ -110,16 +110,14 @@ fun ShadcnButtonGroup(
                     Modifier
                 }
 
-            CompositionLocalProvider(LocalGroupCorners provides corners) {
-                ShadcnButton(
-                    onClick = item.onClick,
-                    enabled = item.enabled,
-                    variant = item.variant,
-                    style = Style { shape(itemShape) },
-                    modifier = overlapModifier,
-                ) {
-                    ShadcnText(item.label)
-                }
+            ShadcnButton(
+                onClick = item.onClick,
+                enabled = item.enabled,
+                variant = item.variant,
+                style = Style { shape(itemShape) },
+                modifier = overlapModifier,
+            ) {
+                ShadcnText(item.label)
             }
         }
     }
@@ -215,18 +213,13 @@ fun ButtonGroupDocPreview() {
     ShadcnButtonGroup {
         ShadcnButtonGroupText("https://", topStart = rounded, bottomStart = rounded)
         ShadcnButtonGroupSeparator()
-        CompositionLocalProvider(
-            LocalGroupCorners provides
-                ShadcnGroupCorners(topStart = 0.dp, bottomStart = 0.dp, topEnd = rounded, bottomEnd = rounded),
-        ) {
-            ShadcnButton(
-                onClick = {},
-                variant = ButtonVariant.Ghost,
-                style =
-                    Style {
-                        shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
-                    },
-            ) { ShadcnText("example.com") }
-        }
+        ShadcnButton(
+            onClick = {},
+            variant = ButtonVariant.Ghost,
+            style =
+                Style {
+                    shape(RoundedCornerShape(0.dp, rounded, rounded, 0.dp))
+                },
+        ) { ShadcnText("example.com") }
     }
 }
