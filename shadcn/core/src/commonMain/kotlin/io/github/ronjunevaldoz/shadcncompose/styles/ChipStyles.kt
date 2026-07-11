@@ -5,7 +5,6 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.runtime.Composable
@@ -56,7 +55,7 @@ fun ChipVariant.rememberStyle(): Style {
                     fontSize(13.sp)
                     hovered { background(colors.secondaryHover) }
                     pressed { background(colors.secondaryHover) }
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             ChipVariant.Selected ->
@@ -68,7 +67,7 @@ fun ChipVariant.rememberStyle(): Style {
                     focusRing(RoundedCornerShape(shapes.full))
                     contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                     fontSize(13.sp)
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             ChipVariant.Outline ->
@@ -80,7 +79,7 @@ fun ChipVariant.rememberStyle(): Style {
                     contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                     fontSize(13.sp)
                     hovered { background(colors.secondary) }
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
         }
     }

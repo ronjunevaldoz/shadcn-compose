@@ -5,7 +5,6 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -49,7 +48,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     hovered { background(colors.primary.copy(alpha = 0.9f)) }
                     focusRing(RoundedCornerShape(shapes.lg))
                     pressedMoveDown()
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             ButtonVariant.Outline ->
@@ -64,7 +63,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     }
                     focusRing(RoundedCornerShape(shapes.lg))
                     pressedMoveDown()
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             ButtonVariant.Secondary ->
@@ -74,7 +73,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     hovered { background(colors.secondary.copy(alpha = 0.8f)) }
                     focusRing(RoundedCornerShape(shapes.lg))
                     pressedMoveDown()
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             ButtonVariant.Ghost ->
@@ -86,7 +85,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     }
                     focusRing(RoundedCornerShape(shapes.lg))
                     pressedMoveDown()
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             ButtonVariant.Destructive ->
@@ -96,7 +95,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     hovered { background(colors.destructive.copy(alpha = 0.9f)) }
                     focusRing(RoundedCornerShape(shapes.lg))
                     pressedMoveDown()
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             // No pressedMoveDown() -- Link renders as inline text, not a boxed control, so
@@ -107,7 +106,7 @@ fun ButtonVariant.rememberStyle(): Style {
                     contentColor(colors.primary)
                     hovered { textDecoration(TextDecoration.Underline) }
                     focusRing(RoundedCornerShape(shapes.lg))
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
         }
     }

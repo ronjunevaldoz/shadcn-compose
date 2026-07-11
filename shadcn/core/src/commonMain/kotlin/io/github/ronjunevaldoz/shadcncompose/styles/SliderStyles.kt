@@ -5,7 +5,6 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -50,7 +49,7 @@ fun rememberSliderThumbStyle(): Style {
             borderColor(theme.colors.primary)
             hovered { dropShadow(theme.focusRingShadow()) }
             focusRing(RoundedCornerShape(theme.shapes.full))
-            disabled { alpha(0.5f) }
+            disabledDim()
         }
     }
 }

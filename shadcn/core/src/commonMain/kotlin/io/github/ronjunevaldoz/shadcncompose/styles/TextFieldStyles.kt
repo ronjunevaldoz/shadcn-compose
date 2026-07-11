@@ -5,7 +5,6 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.disabled
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -44,7 +43,7 @@ fun TextFieldVariant.rememberStyle(): Style {
                     contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                     fontSize(14.sp)
                     focusRingAlways(RoundedCornerShape(shapes.lg))
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             TextFieldVariant.Filled ->
@@ -56,7 +55,7 @@ fun TextFieldVariant.rememberStyle(): Style {
                     contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                     fontSize(14.sp)
                     focusRingAlways(RoundedCornerShape(shapes.lg))
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             TextFieldVariant.Ghost ->
@@ -67,7 +66,7 @@ fun TextFieldVariant.rememberStyle(): Style {
                     contentPadding(horizontal = spacing.xs, vertical = spacing.xs)
                     fontSize(14.sp)
                     focusRingAlways(RoundedCornerShape(shapes.lg))
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
         }
     }

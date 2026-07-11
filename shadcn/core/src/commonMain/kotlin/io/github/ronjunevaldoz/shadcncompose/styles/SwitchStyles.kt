@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.checked
-import androidx.compose.foundation.style.disabled
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -27,7 +26,7 @@ fun rememberSwitchTrackStyle(): Style {
             borderColor(Color.Transparent)
             checked { background(theme.colors.primary) }
             focusRing(RoundedCornerShape(theme.shapes.full))
-            disabled { alpha(0.5f) }
+            disabledDim()
         }
     }
 }

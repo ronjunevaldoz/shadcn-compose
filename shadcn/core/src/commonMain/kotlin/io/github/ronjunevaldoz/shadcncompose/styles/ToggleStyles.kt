@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.checked
-import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -49,7 +48,7 @@ fun ToggleVariant.rememberStyle(): Style {
                     // corner-stripped shape -- since the ring always follows the
                     // *final* resolved shape(), regardless of which rule set it.
                     focusRing(RoundedCornerShape(shapes.lg))
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
 
             ToggleVariant.Outline ->
@@ -65,7 +64,7 @@ fun ToggleVariant.rememberStyle(): Style {
                     hovered { background(colors.secondary) }
                     checked { background(colors.secondary) }
                     focusRing(RoundedCornerShape(shapes.lg))
-                    disabled { alpha(0.5f) }
+                    disabledDim()
                 }
         }
     }

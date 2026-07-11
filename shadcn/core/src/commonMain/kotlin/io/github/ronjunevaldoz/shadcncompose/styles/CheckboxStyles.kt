@@ -5,7 +5,6 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
-import androidx.compose.foundation.style.disabled
 import androidx.compose.foundation.style.triStateToggleIndeterminate
 import androidx.compose.foundation.style.triStateToggleOn
 import androidx.compose.runtime.Composable
@@ -37,7 +36,7 @@ fun rememberCheckboxStyle(): Style {
                 borderColor(colors.primary)
             }
             focusRing(RoundedCornerShape(shapes.sm))
-            disabled { alpha(0.5f) }
+            disabledDim()
         }
     }
 }
