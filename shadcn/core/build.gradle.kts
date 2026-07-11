@@ -74,7 +74,11 @@ kotlin {
             // surface -- component internals may call its Modifier utilities, but no
             // Shadcn* function signature should ever require a caller to import
             // `io.github.ronjunevaldoz.tailwind.*`.
-            implementation(libs.tailwind.compose)
+            // Depend on the specific modules actually used (core: TwColors/Oklch,
+            // effects: shadowMd) rather than the tailwind-compose facade, which also
+            // pulls in layout/color/typography -- none of which this module calls.
+            implementation(libs.tailwind.core)
+            implementation(libs.tailwind.effects)
             // tailwind-style: Ring/Border/Shadow/Color/Opacity/Sizing/Transform/Transition/
             // Typography/ZIndex ported onto the real Compose Styles API -- same Compose
             // Multiplatform version this module already targets (1.11.1), so no version

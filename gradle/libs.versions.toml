@@ -45,7 +45,8 @@ wrappers-browser = { module = "org.jetbrains.kotlin-wrappers:kotlin-browser", ve
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
-tailwind-compose = { module = "io.github.ronjunevaldoz:tailwind-compose", version.ref = "tailwind-compose" }
+tailwind-core = { module = "io.github.ronjunevaldoz:tailwind-core", version.ref = "tailwind-compose" }
+tailwind-effects = { module = "io.github.ronjunevaldoz:tailwind-effects", version.ref = "tailwind-compose" }
 tailwind-style = { module = "io.github.ronjunevaldoz:tailwind-style", version.ref = "tailwind-compose" }
 heroicons-outline = { module = "io.github.ronjunevaldoz:heroicons-outline", version.ref = "heroicons-outline" }
 roborazzi-compose-desktop = { module = "io.github.takahirom.roborazzi:roborazzi-compose-desktop", version.ref = "roborazzi" }
