@@ -7,7 +7,6 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 sealed interface BadgeVariant {
@@ -59,8 +58,7 @@ fun BadgeVariant.rememberStyle(): Style =
             BadgeVariant.Outline ->
                 Style {
                     contentColor(colors.onSurface)
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     shape(RoundedCornerShape(shapes.full))
                     contentPadding(horizontal = spacing.sm, vertical = spacing.xxs)
                     fontSize(12.sp)

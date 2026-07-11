@@ -48,8 +48,7 @@ fun ToggleVariant.rememberStyle(): Style =
                 Style {
                     background(Color.Transparent)
                     contentColor(colors.onSurface)
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
                     height(36.dp)
                     minWidth(36.dp)

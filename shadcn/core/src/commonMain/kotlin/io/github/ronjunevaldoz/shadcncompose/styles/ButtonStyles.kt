@@ -49,8 +49,7 @@ fun ButtonVariant.rememberStyle(): Style =
                 Style {
                     background(colors.background)
                     contentColor(colors.onSurface)
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     hovered {
                         background(colors.secondary)
                         contentColor(colors.onSecondary)

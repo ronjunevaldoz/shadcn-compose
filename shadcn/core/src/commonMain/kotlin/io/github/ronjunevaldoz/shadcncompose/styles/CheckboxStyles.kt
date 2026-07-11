@@ -9,7 +9,6 @@ import androidx.compose.foundation.style.triStateToggleIndeterminate
 import androidx.compose.foundation.style.triStateToggleOn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 
 // Matches shadcn/ui's real checkbox.tsx: border border-input (1.dp, constant),
 // data-[state=checked]:border-primary data-[state=checked]:bg-primary,
@@ -19,8 +18,7 @@ fun rememberCheckboxStyle(): Style =
     rememberShadcnStyle {
         Style {
             background(Color.Transparent)
-            borderWidth(1.dp)
-            borderColor(colors.border)
+            border(colors.border)
             triStateToggleOn {
                 background(colors.primary)
                 borderColor(colors.primary)

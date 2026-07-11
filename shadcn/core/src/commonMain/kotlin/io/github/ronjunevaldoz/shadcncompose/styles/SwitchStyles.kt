@@ -8,7 +8,6 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.checked
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 
 // Matches shadcn/ui's real switch.tsx: border border-transparent (1.dp, constant),
 // data-[state=unchecked]:bg-input (not muted), data-[state=checked]:bg-primary,
@@ -19,8 +18,7 @@ fun rememberSwitchTrackStyle(): Style =
     rememberShadcnStyle {
         Style {
             background(colors.border)
-            borderWidth(1.dp)
-            borderColor(Color.Transparent)
+            border(Color.Transparent)
             checked { background(colors.primary) }
             focusRing(RoundedCornerShape(shapes.full))
             disabledDim()

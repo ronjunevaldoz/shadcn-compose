@@ -7,7 +7,6 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // Matches shadcn/ui's real input.tsx: border border-input (1.dp, always visible),
@@ -31,8 +30,7 @@ fun TextFieldVariant.rememberStyle(): Style =
                 Style {
                     background(colors.background)
                     contentColor(colors.onSurface)
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                     fontSize(14.sp)
                     focusRingAlways(RoundedCornerShape(shapes.lg))
@@ -43,8 +41,7 @@ fun TextFieldVariant.rememberStyle(): Style =
                 Style {
                     background(colors.surfaceVariant)
                     contentColor(colors.onSurface)
-                    borderWidth(1.dp)
-                    borderColor(Color.Transparent)
+                    border(Color.Transparent)
                     contentPadding(horizontal = spacing.md, vertical = spacing.sm)
                     fontSize(14.sp)
                     focusRingAlways(RoundedCornerShape(shapes.lg))
@@ -54,8 +51,7 @@ fun TextFieldVariant.rememberStyle(): Style =
             TextFieldVariant.Ghost ->
                 Style {
                     contentColor(colors.onSurface)
-                    borderWidth(1.dp)
-                    borderColor(Color.Transparent)
+                    border(Color.Transparent)
                     contentPadding(horizontal = spacing.xs, vertical = spacing.xs)
                     fontSize(14.sp)
                     focusRingAlways(RoundedCornerShape(shapes.lg))

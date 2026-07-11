@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 
 sealed interface SelectVariant {
     data object Default : SelectVariant
@@ -25,8 +24,7 @@ fun SelectVariant.rememberStyle(): Style =
     rememberShadcnStyle(this) {
         Style {
             background(colors.background)
-            borderWidth(1.dp)
-            borderColor(colors.border)
+            border(colors.border)
             focusRing(RoundedCornerShape(shapes.lg))
         }
     }
@@ -41,8 +39,7 @@ fun SelectVariant.rememberPanelStyle(): Style =
     rememberShadcnStyle(this) {
         Style {
             background(colors.popover)
-            borderWidth(1.dp)
-            borderColor(colors.border)
+            border(colors.border)
             shape(RoundedCornerShape(shapes.md))
         }
     }

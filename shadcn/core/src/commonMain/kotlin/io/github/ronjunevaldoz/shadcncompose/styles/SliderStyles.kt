@@ -7,7 +7,6 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 
 // Matches shadcn/ui's real slider.tsx: track bg-muted, range bg-primary, thumb
 // border border-primary bg-background, ring on *both* hover and focus (unlike
@@ -38,8 +37,7 @@ fun rememberSliderThumbStyle(): Style =
     rememberShadcnStyle {
         Style {
             background(colors.background)
-            borderWidth(1.dp)
-            borderColor(colors.primary)
+            border(colors.primary)
             hovered { dropShadow(focusRingShadow()) }
             focusRing(RoundedCornerShape(shapes.full))
             disabledDim()

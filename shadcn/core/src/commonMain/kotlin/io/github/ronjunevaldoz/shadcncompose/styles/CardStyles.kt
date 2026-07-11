@@ -7,7 +7,6 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 sealed interface CardVariant {
@@ -26,8 +25,7 @@ fun CardVariant.rememberStyle(): Style =
                 Style {
                     background(colors.card)
                     contentColor(colors.onCard)
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     shape(RoundedCornerShape(shapes.xxl))
                     contentPadding(spacing.lg)
                 }

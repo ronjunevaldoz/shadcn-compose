@@ -4,7 +4,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 
 sealed interface AlertVariant {
     data object Default : AlertVariant
@@ -21,8 +20,7 @@ fun AlertVariant.rememberStyle(): Style =
                 Style {
                     background(colors.surface)
                     contentColor(colors.onSurface)
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     shape(RoundedCornerShape(shapes.lg))
                 }
 
@@ -30,8 +28,7 @@ fun AlertVariant.rememberStyle(): Style =
                 Style {
                     background(colors.surface)
                     contentColor(colors.error)
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     shape(RoundedCornerShape(shapes.lg))
                 }
         }

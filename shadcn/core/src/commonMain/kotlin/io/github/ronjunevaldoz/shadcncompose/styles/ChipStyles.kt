@@ -8,7 +8,6 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // Chip isn't a real shadcn/ui component (shadcn only ships a static Badge), so
@@ -33,8 +32,7 @@ fun ChipVariant.rememberStyle(): Style =
                 Style {
                     background(colors.secondary)
                     contentColor(colors.onSecondary) // Dynamically resolves Color(0xFFFAFAFA) in dark mode!
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     focusRing(RoundedCornerShape(shapes.full))
                     contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                     fontSize(13.sp)
@@ -47,8 +45,7 @@ fun ChipVariant.rememberStyle(): Style =
                 Style {
                     background(colors.primary)
                     contentColor(colors.onPrimary)
-                    borderWidth(1.dp)
-                    borderColor(colors.primary)
+                    border(colors.primary)
                     focusRing(RoundedCornerShape(shapes.full))
                     contentPadding(horizontal = spacing.md, vertical = spacing.xs)
                     fontSize(13.sp)
@@ -57,8 +54,7 @@ fun ChipVariant.rememberStyle(): Style =
 
             ChipVariant.Outline ->
                 Style {
-                    borderWidth(1.dp)
-                    borderColor(colors.border)
+                    border(colors.border)
                     contentColor(colors.onSurface)
                     focusRing(RoundedCornerShape(shapes.full))
                     contentPadding(horizontal = spacing.md, vertical = spacing.xs)
