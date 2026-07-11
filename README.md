@@ -17,12 +17,12 @@ dependency, no icon-library dependency — every component is drawn from this li
 
 ## Installation
 
-Not yet published to Maven Central.
+Published to Maven Central.
 
 ```toml
 # gradle/libs.versions.toml
 [versions]
-shadcn-compose = "0.1.0"
+shadcn-compose = "0.2.0"
 
 [libraries]
 shadcn-compose = { module = "io.github.ronjunevaldoz:shadcn-compose", version.ref = "shadcn-compose" }
