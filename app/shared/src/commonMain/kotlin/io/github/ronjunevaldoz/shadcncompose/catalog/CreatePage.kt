@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.catalog.docs.CodeBlock
+import io.github.ronjunevaldoz.shadcncompose.catalog.docs.CopyLabel
 import io.github.ronjunevaldoz.shadcncompose.catalog.docs.rememberCopyToClipboard
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBadge
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
@@ -159,7 +160,7 @@ fun CreatePage(
                 onClick = copyState.copy,
                 modifier = Modifier.fillMaxWidth().padding(top = shadcnTheme.spacing.sm),
             ) {
-                ShadcnText(if (copyState.justCopied) "Copied!" else "Get Code")
+                CopyLabel(copyState.justCopied, "Get Code")
             }
         }
         Box(

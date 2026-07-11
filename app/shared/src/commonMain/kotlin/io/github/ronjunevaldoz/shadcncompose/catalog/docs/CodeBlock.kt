@@ -2,6 +2,10 @@
 
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -138,6 +142,23 @@ fun rememberCopyToClipboard(text: String): CopyToClipboardState {
     return CopyToClipboardState(copy, justCopied)
 }
 
+/** Cross-fades between [label] and "Copied!" as [justCopied] flips -- a plain instant text
+ *  swap read as a glitch, not a confirmation. */
+@Composable
+fun CopyLabel(
+    justCopied: Boolean,
+    label: String,
+    style: ShadcnTextStyle = ShadcnTextStyle.BodyMedium,
+) {
+    AnimatedContent(
+        targetState = justCopied,
+        transitionSpec = { fadeIn() togetherWith fadeOut() },
+        label = "copyLabel",
+    ) { copied ->
+        ShadcnText(if (copied) "Copied!" else label, style = style)
+    }
+}
+
 /** A syntax-highlighted, copyable Kotlin code block used throughout the catalog. */
 @Composable
 fun CodeBlock(
@@ -168,7 +189,7 @@ fun CodeBlock(
                 variant = ButtonVariant.Ghost,
                 size = ButtonSize.Xs,
             ) {
-                ShadcnText(if (copyState.justCopied) "Copied!" else "Copy", style = ShadcnTextStyle.LabelSmall)
+                CopyLabel(copyState.justCopied, "Copy", style = ShadcnTextStyle.LabelSmall)
             }
         }
         Box(
