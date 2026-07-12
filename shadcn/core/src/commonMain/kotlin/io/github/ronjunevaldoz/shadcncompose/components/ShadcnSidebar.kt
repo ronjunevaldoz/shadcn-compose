@@ -34,6 +34,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.Menu
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -127,11 +129,11 @@ fun ShadcnSidebarInset(
 @Composable
 fun ShadcnSidebarTrigger(
     modifier: Modifier = Modifier,
-    // A plain glyph placeholder -- this library has no icon-library dependency (see
-    // README), so it doesn't ship a real hamburger vector. Override with any icon set
-    // (e.g. this repo's own demo app passes a real heroicons-outline Bars3 here -- see
-    // SidebarDoc.kt).
-    icon: @Composable () -> Unit = { ShadcnText("☰", style = ShadcnTextStyle.TitleMedium) },
+    // A self-generated ImageVector, not a third-party icon-set dependency (this library
+    // still takes none -- see README) -- text glyphs don't render on WasmJS (Skia has no
+    // browser emoji-font fallback). Override with any icon set (e.g. this repo's own demo
+    // app passes a real heroicons-outline Bars3 here -- see SidebarDoc.kt).
+    icon: @Composable () -> Unit = { ShadcnGlyphIcon(Menu, tint = shadcnTheme.colors.onSurface) },
 ) {
     val state = LocalShadcnSidebarState.current
     val interactionSource = remember { MutableInteractionSource() }

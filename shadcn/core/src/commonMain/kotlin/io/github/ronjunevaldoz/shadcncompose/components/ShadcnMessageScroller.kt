@@ -41,6 +41,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.ArrowDown
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.styles.shadcnScrollFade
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -56,15 +58,16 @@ internal const val DEFAULT_AUTO_SCROLL_THRESHOLD_PX = 64
 /** Which edge of the scroller a [ShadcnMessageScrollerButton] jumps to, matching real shadcn's `direction` prop. */
 enum class ShadcnMessageScrollerDirection { Start, End }
 
-// A plain glyph placeholder that rotates 180deg for [ShadcnMessageScrollerDirection.Start]
-// -- this library has no icon-library dependency (see README), so it doesn't ship a real
-// arrow vector. Shared between [ShadcnMessageScroller]'s own `icon` parameter and
+// A self-generated ImageVector that rotates 180deg for [ShadcnMessageScrollerDirection.Start]
+// -- not a third-party icon-set dependency (this library still takes none -- see README),
+// just a plain text glyph doesn't render on WasmJS (Skia has no browser emoji-font
+// fallback). Shared between [ShadcnMessageScroller]'s own `icon` parameter and
 // [ShadcnMessageScrollerButton]'s so overriding it once, at whichever level a caller is
 // already customizing, doesn't require redeclaring shadcn's own default glyph.
 private val DefaultMessageScrollerIcon: @Composable (rotationDegrees: Float) -> Unit = { rotationDegrees ->
-    ShadcnText(
-        "↓",
-        style = ShadcnTextStyle.TitleMedium,
+    ShadcnGlyphIcon(
+        ArrowDown,
+        tint = shadcnTheme.colors.onSurface,
         modifier = Modifier.graphicsLayer(rotationZ = rotationDegrees),
     )
 }

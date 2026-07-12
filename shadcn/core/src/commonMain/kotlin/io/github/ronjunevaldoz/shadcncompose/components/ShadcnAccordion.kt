@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -58,14 +60,21 @@ fun ShadcnAccordion(
     onExpandedIdsChange: (Set<String>) -> Unit,
     modifier: Modifier = Modifier,
     type: ShadcnAccordionType = ShadcnAccordionType.Single,
-    // A plain glyph placeholder that rotates 180deg on open -- this library has no
-    // icon-library dependency (see README), so it doesn't ship a real chevron vector.
-    // Receives isOpen so an override can drive its own rotation/animation too (e.g. this
-    // repo's own demo app passes a real heroicons-outline ChevronDown here -- see
-    // AccordionDoc.kt).
+    // A self-generated ImageVector (ChevronRight rotated) that rotates 180deg on open --
+    // not a third-party icon-set dependency (this library still takes none -- see README),
+    // just a plain text glyph doesn't render on WasmJS (Skia has no browser emoji-font
+    // fallback). Receives isOpen so an override can drive its own rotation/animation too
+    // (e.g. this repo's own demo app passes a real heroicons-outline ChevronDown here --
+    // see AccordionDoc.kt). Base rotation is 90deg (pointing down, closed) / 270deg
+    // (pointing up, open) since the underlying shape points right at 0deg, not down.
     icon: @Composable (isOpen: Boolean) -> Unit = { isOpen ->
-        val rotation by animateFloatAsState(if (isOpen) 180f else 0f, label = "accordion-chevron")
-        ShadcnText("⌄", style = ShadcnTextStyle.BodyMedium, muted = true, modifier = Modifier.rotate(rotation))
+        val rotation by animateFloatAsState(if (isOpen) 270f else 90f, label = "accordion-chevron")
+        ShadcnGlyphIcon(
+            ChevronRight,
+            tint = shadcnTheme.colors.onSurfaceVariant,
+            modifier = Modifier.rotate(rotation),
+            small = true,
+        )
     },
 ) {
     Column(modifier = modifier) {

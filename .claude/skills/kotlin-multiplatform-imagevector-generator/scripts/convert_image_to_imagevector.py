@@ -263,12 +263,14 @@ def generate_kotlin(
     body_blocks = []
     for cmds, argb in layers:
         if color_mode == "semantic":
-            fill = "SolidColor(Color.Black)  // color-agnostic — tint at the call site"
+            fill = "SolidColor(Color.Black)"
+            comment = "            // color-agnostic -- tint at the call site\n"
         else:
             fill = f"SolidColor(Color({argb}))"
+            comment = ""
         lines = "\n".join(f"                {_cmd_to_kotlin(c)}" for c in cmds)
         body_blocks.append(
-            f"            path(fill = {fill}) {{\n{lines}\n            }}"
+            f"{comment}            path(fill = {fill}) {{\n{lines}\n            }}"
         )
     paths_kt = "\n".join(body_blocks)
     vp = f"{viewport:g}f"

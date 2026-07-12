@@ -24,8 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRingShadow
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -196,12 +199,12 @@ private fun CalendarHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CalendarNavButton("‹") {
+        CalendarNavButton(pointingLeft = true) {
             val (y, m) = previousMonth(year, month)
             onMonthChange(y, m)
         }
         ShadcnText("${MONTH_NAMES[month - 1]} $year", style = ShadcnTextStyle.LabelLarge)
-        CalendarNavButton("›") {
+        CalendarNavButton(pointingLeft = false) {
             val (y, m) = nextMonth(year, month)
             onMonthChange(y, m)
         }
@@ -210,7 +213,7 @@ private fun CalendarHeader(
 
 @Composable
 private fun CalendarNavButton(
-    label: String,
+    pointingLeft: Boolean,
     onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -223,7 +226,12 @@ private fun CalendarNavButton(
                 .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        ShadcnText(label, style = ShadcnTextStyle.BodyMedium)
+        ShadcnGlyphIcon(
+            ChevronRight,
+            tint = shadcnTheme.colors.onSurface,
+            modifier = if (pointingLeft) Modifier.rotate(180f) else Modifier,
+            small = true,
+        )
     }
 }
 

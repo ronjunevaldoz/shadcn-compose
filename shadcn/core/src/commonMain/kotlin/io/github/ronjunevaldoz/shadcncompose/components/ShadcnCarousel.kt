@@ -20,7 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -65,11 +68,16 @@ fun ShadcnCarousel(
 fun ShadcnCarouselPrevious(
     state: PagerState,
     modifier: Modifier = Modifier,
-    // A plain glyph placeholder -- this library has no icon-library dependency (see
-    // README), so it doesn't ship a real chevron vector. Override with any icon set (e.g.
-    // this repo's own demo app passes a real heroicons-outline ChevronLeft here -- see
-    // CarouselDoc.kt).
-    icon: @Composable () -> Unit = { ShadcnText("‹", style = ShadcnTextStyle.TitleMedium) },
+    // A self-generated ImageVector (ChevronRight rotated 180deg), not a third-party
+    // icon-set dependency (this library still takes none -- see README) -- a plain text
+    // glyph doesn't render on WasmJS (Skia has no browser emoji-font fallback). tint
+    // matches ButtonVariant.Outline's own contentColor (colors.onSurface) since a plain
+    // Image never auto-inherits the Style API's ambient contentColor the way ShadcnText
+    // did. Override with any icon set (e.g. this repo's own demo app passes a real
+    // heroicons-outline ChevronLeft here -- see CarouselDoc.kt).
+    icon: @Composable () -> Unit = {
+        ShadcnGlyphIcon(ChevronRight, tint = shadcnTheme.colors.onSurface, modifier = Modifier.rotate(180f))
+    },
 ) {
     val scope = rememberCoroutineScope()
     ShadcnButton(
@@ -107,11 +115,14 @@ fun ShadcnCarouselPrevious(
 fun ShadcnCarouselNext(
     state: PagerState,
     modifier: Modifier = Modifier,
-    // A plain glyph placeholder -- this library has no icon-library dependency (see
-    // README), so it doesn't ship a real chevron vector. Override with any icon set (e.g.
+    // A self-generated ImageVector, not a third-party icon-set dependency (this library
+    // still takes none -- see README) -- a plain text glyph doesn't render on WasmJS
+    // (Skia has no browser emoji-font fallback). tint matches ButtonVariant.Outline's own
+    // contentColor (colors.onSurface) since a plain Image never auto-inherits the Style
+    // API's ambient contentColor the way ShadcnText did. Override with any icon set (e.g.
     // this repo's own demo app passes a real heroicons-outline ChevronRight here -- see
     // CarouselDoc.kt).
-    icon: @Composable () -> Unit = { ShadcnText("›", style = ShadcnTextStyle.TitleMedium) },
+    icon: @Composable () -> Unit = { ShadcnGlyphIcon(ChevronRight, tint = shadcnTheme.colors.onSurface) },
 ) {
     val scope = rememberCoroutineScope()
     val canScrollNext = state.currentPage < state.pageCount - 1

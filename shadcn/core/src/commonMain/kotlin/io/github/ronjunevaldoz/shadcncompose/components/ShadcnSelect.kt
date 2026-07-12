@@ -24,7 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
 import io.github.ronjunevaldoz.shadcncompose.styles.SelectVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberPanelStyle
@@ -66,10 +69,19 @@ fun <T> ShadcnSelect(
     placeholder: String = "Select an option",
     variant: SelectVariant = SelectVariant.Default,
     style: Style = Style,
-    // A plain glyph placeholder -- this library has no icon-library dependency (see README),
-    // so it doesn't ship a real chevron vector. Override with any icon set (e.g. this repo's
-    // own demo app passes a real heroicons-outline ChevronDown here -- see SelectDoc.kt).
-    icon: @Composable () -> Unit = { ShadcnText("⌄", style = ShadcnTextStyle.LabelSmall, muted = true) },
+    // A self-generated ImageVector (ChevronRight rotated 90deg), not a third-party icon-set
+    // dependency (this library still takes none -- see README) -- a plain text glyph
+    // doesn't render on WasmJS (Skia has no browser emoji-font fallback). Override with any
+    // icon set (e.g. this repo's own demo app passes a real heroicons-outline ChevronDown
+    // here -- see SelectDoc.kt).
+    icon: @Composable () -> Unit = {
+        ShadcnGlyphIcon(
+            ChevronRight,
+            tint = shadcnTheme.colors.onSurfaceVariant,
+            modifier = Modifier.rotate(90f),
+            small = true,
+        )
+    },
 ) {
     var expanded by remember { mutableStateOf(false) }
     val triggerInteractionSource = remember { MutableInteractionSource() }

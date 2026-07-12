@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.rememberUpdatedStyleState
@@ -24,8 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.Check
+import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
@@ -57,10 +62,19 @@ fun <T> ShadcnCombobox(
     label: (T) -> String = { it.toString() },
     placeholder: String = "Select...",
     searchPlaceholder: String = "Search...",
-    // A plain glyph placeholder -- this library has no icon-library dependency (see README),
-    // so it doesn't ship a real chevron vector. Override with any icon set (e.g. this repo's
-    // own demo app passes a real heroicons-outline ChevronDown here -- see ComboboxDoc.kt).
-    icon: @Composable () -> Unit = { ShadcnText("⌄", style = ShadcnTextStyle.LabelSmall, muted = true) },
+    // A self-generated ImageVector (ChevronRight rotated 90deg), not a third-party icon-set
+    // dependency (this library still takes none -- see README) -- a plain text glyph
+    // doesn't render on WasmJS (Skia has no browser emoji-font fallback). Override with any
+    // icon set (e.g. this repo's own demo app passes a real heroicons-outline ChevronDown
+    // here -- see ComboboxDoc.kt).
+    icon: @Composable () -> Unit = {
+        ShadcnGlyphIcon(
+            ChevronRight,
+            tint = shadcnTheme.colors.onSurfaceVariant,
+            modifier = Modifier.rotate(90f),
+            small = true,
+        )
+    },
 ) {
     var expanded by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
@@ -159,7 +173,12 @@ private fun ComboboxRow(
         horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        ShadcnText(if (selected) "✓" else " ", style = ShadcnTextStyle.BodySmall)
+        // A fixed-width slot, not a conditionally-emitted composable directly -- the
+        // previous ShadcnText(" ") placeholder reserved this width via font metrics; an
+        // empty `if` branch reserves none, which would shift unselected rows' labels left.
+        Box(modifier = Modifier.size(shadcnTheme.icons.smallSize)) {
+            if (selected) ShadcnGlyphIcon(Check, tint = shadcnTheme.colors.onSurface, small = true)
+        }
         ShadcnText(label, style = ShadcnTextStyle.BodySmall)
     }
 }

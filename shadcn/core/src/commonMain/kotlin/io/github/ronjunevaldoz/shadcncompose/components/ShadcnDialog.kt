@@ -24,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
+import io.github.ronjunevaldoz.shadcncompose.icons.X
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnModalOverlay
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -55,11 +57,13 @@ fun ShadcnDialog(
     modifier: Modifier = Modifier,
     showCloseButton: Boolean = true,
     dismissOnClickOutside: Boolean = true,
-    // A plain glyph placeholder -- this library has no icon-library dependency (see
-    // README), so it doesn't ship a real X-mark vector. Override with any icon set (e.g.
-    // this repo's own demo app passes a real heroicons-outline XMark here -- see
-    // DialogDoc.kt).
-    closeIcon: @Composable () -> Unit = { ShadcnText("✕", style = ShadcnTextStyle.LabelSmall, muted = true) },
+    // A self-generated ImageVector, not a third-party icon-set dependency (this library
+    // still takes none -- see README) -- text glyphs don't render on WasmJS (Skia has no
+    // browser emoji-font fallback). Override with any icon set (e.g. this repo's own demo
+    // app passes a real heroicons-outline XMark here -- see DialogDoc.kt).
+    closeIcon: @Composable () -> Unit = {
+        ShadcnGlyphIcon(X, tint = shadcnTheme.colors.onSurfaceVariant, small = true)
+    },
     content: @Composable ColumnScope.() -> Unit,
 ) {
     ShadcnModalOverlay(

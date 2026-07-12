@@ -17,7 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
+import io.github.ronjunevaldoz.shadcncompose.icons.MoreHorizontal
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -61,7 +65,7 @@ fun ShadcnPagination(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         PaginationControl(
-            label = "‹",
+            pointingLeft = true,
             enabled = hasPrevious,
             onClick = { onPageChange(currentPage - 1) },
         )
@@ -77,7 +81,7 @@ fun ShadcnPagination(
             }
         }
         PaginationControl(
-            label = "›",
+            pointingLeft = false,
             enabled = hasNext,
             onClick = { onPageChange(currentPage + 1) },
         )
@@ -114,7 +118,7 @@ private fun PaginationPageButton(
 
 @Composable
 private fun PaginationControl(
-    label: String,
+    pointingLeft: Boolean,
     enabled: Boolean,
     onClick: () -> Unit,
 ) {
@@ -135,13 +139,17 @@ private fun PaginationControl(
                 ),
         contentAlignment = Alignment.Center,
     ) {
-        ShadcnText(label, style = ShadcnTextStyle.TitleMedium, muted = !enabled)
+        ShadcnGlyphIcon(
+            ChevronRight,
+            tint = if (enabled) shadcnTheme.colors.onSurface else shadcnTheme.colors.onSurfaceVariant,
+            modifier = if (pointingLeft) Modifier.rotate(180f) else Modifier,
+        )
     }
 }
 
 @Composable
 private fun PaginationEllipsis() {
     Box(modifier = Modifier.size(36.dp), contentAlignment = Alignment.Center) {
-        ShadcnText("…", style = ShadcnTextStyle.LabelLarge, muted = true)
+        ShadcnGlyphIcon(MoreHorizontal, tint = shadcnTheme.colors.onSurfaceVariant)
     }
 }

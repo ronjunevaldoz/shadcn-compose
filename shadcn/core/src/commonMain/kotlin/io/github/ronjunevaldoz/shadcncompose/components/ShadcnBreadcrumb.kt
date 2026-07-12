@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
+import io.github.ronjunevaldoz.shadcncompose.icons.MoreHorizontal
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
@@ -67,11 +70,11 @@ fun ShadcnBreadcrumbPage(
 /** A "›" divider between crumbs; insert manually where wanted, matching real shadcn's chevron default. */
 @Composable
 fun ShadcnBreadcrumbSeparator(modifier: Modifier = Modifier) {
-    ShadcnText("›", style = ShadcnTextStyle.BodySmall, muted = true, modifier = modifier)
+    ShadcnGlyphIcon(ChevronRight, tint = shadcnTheme.colors.onSurfaceVariant, modifier = modifier, small = true)
 }
 
 /** A collapsed run of hidden crumbs, e.g. `Home › ... › Settings`. Purely presentational -- expanding it is caller-driven. */
 @Composable
 fun ShadcnBreadcrumbEllipsis(modifier: Modifier = Modifier) {
-    ShadcnText("…", style = ShadcnTextStyle.BodySmall, muted = true, modifier = modifier)
+    ShadcnGlyphIcon(MoreHorizontal, tint = shadcnTheme.colors.onSurfaceVariant, modifier = modifier, small = true)
 }
