@@ -95,7 +95,7 @@ class MessageScreenshotTest : ShadcnScreenshotTest() {
                             ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
                                 ShadcnText("Alright, let me take a look.")
                             }
-                            ShadcnBubbleReactions { ShadcnText("👍", style = ShadcnTextStyle.LabelSmall) }
+                            ShadcnBubbleReactions { ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall) }
                         }
                     }
                 }

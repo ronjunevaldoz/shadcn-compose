@@ -6,6 +6,12 @@
       "runtimeExecutable": "./gradlew",
       "runtimeArgs": [":app:webApp:jsBrowserDevelopmentRun", "--continuous"],
       "port": 8080
+    },
+    {
+      "name": "catalog-web-wasm",
+      "runtimeExecutable": "./gradlew",
+      "runtimeArgs": [":app:webApp:wasmJsBrowserDevelopmentRun", "--continuous"],
+      "port": 8080
     }
   ]
 }

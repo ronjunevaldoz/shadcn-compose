@@ -11,6 +11,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubble
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleContent
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleReactions
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleVariant
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmojiText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessage
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessageAlign
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessageAvatar
@@ -123,7 +124,7 @@ val messageDoc =
                                     ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
                                         ShadcnText("Alright, let me take a look.")
                                     }
-                                    ShadcnBubbleReactions { ShadcnText("👍", style = ShadcnTextStyle.LabelSmall) }
+                                    ShadcnBubbleReactions { ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall) }
                                 }
                             }
                         }
@@ -174,7 +175,7 @@ val messageDoc =
                                             ShadcnText("Alright, let me take a look.")
                                         }
                                         ShadcnBubbleReactions {
-                                            ShadcnText("👍", style = ShadcnTextStyle.LabelSmall)
+                                            ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall)
                                         }
                                     }
                                 }
