@@ -3,6 +3,7 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmojiText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmpty
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmptyContent
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmptyDescription
@@ -23,7 +24,7 @@ val emptyDoc =
 
             ShadcnEmpty {
                 ShadcnEmptyHeader {
-                    ShadcnEmptyMedia { ShadcnText("📭") }
+                    ShadcnEmptyMedia { ShadcnEmojiText("📭") }
                     ShadcnEmptyTitle("No results")
                     ShadcnEmptyDescription("Try a different search term.")
                 }
@@ -37,7 +38,7 @@ val emptyDoc =
                         """
                         ShadcnEmpty {
                             ShadcnEmptyHeader {
-                                ShadcnEmptyMedia { ShadcnText("📭") }
+                                ShadcnEmptyMedia { ShadcnEmojiText("📭") }
                                 ShadcnEmptyTitle("No results found")
                                 ShadcnEmptyDescription("Try adjusting your search or filters.")
                             }
@@ -49,7 +50,7 @@ val emptyDoc =
                     preview = {
                         ShadcnEmpty {
                             ShadcnEmptyHeader {
-                                ShadcnEmptyMedia { ShadcnText("📭") }
+                                ShadcnEmptyMedia { ShadcnEmojiText("📭") }
                                 ShadcnEmptyTitle("No results found")
                                 ShadcnEmptyDescription("Try adjusting your search or filters.")
                             }

@@ -8,7 +8,7 @@ class ItemScreenshotTest : ShadcnScreenshotTest() {
         snapshot("item_states", darkTheme = darkTheme) {
             ShadcnItemGroup {
                 ShadcnItem(variant = ShadcnItemVariant.Outline) {
-                    ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnText("📦") }
+                    ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnEmojiText("📦") }
                     ShadcnItemContent {
                         ShadcnItemTitle("Order #1234")
                         ShadcnItemDescription("Shipped on March 12")

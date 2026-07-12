@@ -23,7 +23,7 @@ class MarkerScreenshotTest : ShadcnScreenshotTest() {
     private fun border(darkTheme: Boolean) {
         snapshot("marker_border", darkTheme = darkTheme) {
             ShadcnMarker(variant = ShadcnMarkerVariant.Border) {
-                ShadcnMarkerIcon { ShadcnText("📌") }
+                ShadcnMarkerIcon { ShadcnEmojiText("📌") }
                 ShadcnMarkerContent { ShadcnText("Pinned messages") }
             }
         }

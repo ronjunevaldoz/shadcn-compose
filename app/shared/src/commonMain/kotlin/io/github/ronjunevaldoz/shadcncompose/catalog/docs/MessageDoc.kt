@@ -88,13 +88,13 @@ val messageDoc =
                         ShadcnMessageGroup {
                             ShadcnMessage(
                                 align = ShadcnMessageAlign.End,
-                                avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                                avatar = { ShadcnMessageAvatar { ShadcnEmojiText("🙂") } },
                             ) {
                                 ShadcnBubble(align = ShadcnMessageAlign.End) {
                                     ShadcnBubbleContent { ShadcnText("Deploying to prod real quick.") }
                                 }
                             }
-                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnEmojiText("👨") } }) {
                                 ShadcnBubble {
                                     ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
                                         ShadcnText("It's 4:55 PM. On a Friday.")
@@ -103,7 +103,7 @@ val messageDoc =
                             }
                             ShadcnMessage(
                                 align = ShadcnMessageAlign.End,
-                                avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                                avatar = { ShadcnMessageAvatar { ShadcnEmojiText("🙂") } },
                             ) {
                                 ShadcnBubble(align = ShadcnMessageAlign.End) {
                                     ShadcnBubbleContent { ShadcnText("It's a one-line change.") }
@@ -112,14 +112,14 @@ val messageDoc =
                                     ShadcnText("Delivered", style = ShadcnTextStyle.LabelSmall, muted = true)
                                 }
                             }
-                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnEmojiText("👨") } }) {
                                 ShadcnBubble {
                                     ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
-                                        ShadcnText("It's always a one-line change 😭.")
+                                        ShadcnEmojiText("It's always a one-line change 😭.")
                                     }
                                 }
                             }
-                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                            ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnEmojiText("👨") } }) {
                                 ShadcnBubble {
                                     ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
                                         ShadcnText("Alright, let me take a look.")
@@ -138,13 +138,13 @@ val messageDoc =
                             ShadcnMessageGroup {
                                 ShadcnMessage(
                                     align = ShadcnMessageAlign.End,
-                                    avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                                    avatar = { ShadcnMessageAvatar { ShadcnEmojiText("🙂") } },
                                 ) {
                                     ShadcnBubble(align = ShadcnMessageAlign.End) {
                                         ShadcnBubbleContent { ShadcnText("Deploying to prod real quick.") }
                                     }
                                 }
-                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnEmojiText("👨") } }) {
                                     ShadcnBubble {
                                         ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
                                             ShadcnText("It's 4:55 PM. On a Friday.")
@@ -153,7 +153,7 @@ val messageDoc =
                                 }
                                 ShadcnMessage(
                                     align = ShadcnMessageAlign.End,
-                                    avatar = { ShadcnMessageAvatar { ShadcnText("🙂") } },
+                                    avatar = { ShadcnMessageAvatar { ShadcnEmojiText("🙂") } },
                                 ) {
                                     ShadcnBubble(align = ShadcnMessageAlign.End) {
                                         ShadcnBubbleContent { ShadcnText("It's a one-line change.") }
@@ -162,14 +162,14 @@ val messageDoc =
                                         ShadcnText("Delivered", style = ShadcnTextStyle.LabelSmall, muted = true)
                                     }
                                 }
-                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnEmojiText("👨") } }) {
                                     ShadcnBubble {
                                         ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
-                                            ShadcnText("It's always a one-line change 😭.")
+                                            ShadcnEmojiText("It's always a one-line change 😭.")
                                         }
                                     }
                                 }
-                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnText("👨") } }) {
+                                ShadcnMessage(avatar = { ShadcnMessageAvatar { ShadcnEmojiText("👨") } }) {
                                     ShadcnBubble {
                                         ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
                                             ShadcnText("Alright, let me take a look.")

@@ -18,21 +18,21 @@ class AttachmentScreenshotTest : ShadcnScreenshotTest() {
         snapshot("attachment_states", darkTheme = darkTheme) {
             ShadcnAttachmentGroup(modifier = Modifier.height(56.dp)) {
                 ShadcnAttachment(state = ShadcnAttachmentState.Done) {
-                    ShadcnAttachmentMedia { ShadcnText("📄") }
+                    ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                     ShadcnAttachmentContent {
                         ShadcnAttachmentTitle("report.pdf")
                         ShadcnAttachmentDescription("2.4 MB")
                     }
                 }
                 ShadcnAttachment(state = ShadcnAttachmentState.Uploading) {
-                    ShadcnAttachmentMedia { ShadcnText("📄") }
+                    ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                     ShadcnAttachmentContent {
                         ShadcnAttachmentTitle("uploading.zip", state = ShadcnAttachmentState.Uploading)
                         ShadcnAttachmentDescription("Uploading…")
                     }
                 }
                 ShadcnAttachment(state = ShadcnAttachmentState.Error) {
-                    ShadcnAttachmentMedia { ShadcnText("📄") }
+                    ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                     ShadcnAttachmentContent {
                         ShadcnAttachmentTitle("failed.csv")
                         ShadcnAttachmentDescription("Upload failed", isError = true)
@@ -46,7 +46,7 @@ class AttachmentScreenshotTest : ShadcnScreenshotTest() {
         snapshot("attachment_vertical", darkTheme = darkTheme) {
             ShadcnAttachmentGroup {
                 ShadcnAttachment(orientation = ShadcnAttachmentOrientation.Vertical) {
-                    ShadcnAttachmentMedia { ShadcnText("🖼️") }
+                    ShadcnAttachmentMedia { ShadcnEmojiText("🖼️") }
                     ShadcnAttachmentContent {
                         ShadcnAttachmentTitle("photo.png")
                         ShadcnAttachmentDescription("1.1 MB")
@@ -67,7 +67,7 @@ class AttachmentScreenshotTest : ShadcnScreenshotTest() {
                         orientation = ShadcnAttachmentOrientation.Vertical,
                         actions = { ShadcnAttachmentActions { RemoveButton() } },
                     ) {
-                        ShadcnAttachmentMedia { ShadcnText("🏢") }
+                        ShadcnAttachmentMedia { ShadcnEmojiText("🏢") }
                         ShadcnAttachmentContent {
                             ShadcnAttachmentTitle("workspace.png")
                             ShadcnAttachmentDescription("PNG · 820 KB")
@@ -77,7 +77,7 @@ class AttachmentScreenshotTest : ShadcnScreenshotTest() {
                         orientation = ShadcnAttachmentOrientation.Vertical,
                         actions = { ShadcnAttachmentActions { RemoveButton() } },
                     ) {
-                        ShadcnAttachmentMedia { ShadcnText("🌿") }
+                        ShadcnAttachmentMedia { ShadcnEmojiText("🌿") }
                         ShadcnAttachmentContent {
                             ShadcnAttachmentTitle("desk-reference-photo.jpg")
                             ShadcnAttachmentDescription("JPG · 1.1 MB")
@@ -87,7 +87,7 @@ class AttachmentScreenshotTest : ShadcnScreenshotTest() {
                         orientation = ShadcnAttachmentOrientation.Vertical,
                         actions = { ShadcnAttachmentActions { RemoveButton() } },
                     ) {
-                        ShadcnAttachmentMedia { ShadcnText("🪑") }
+                        ShadcnAttachmentMedia { ShadcnEmojiText("🪑") }
                         ShadcnAttachmentContent {
                             ShadcnAttachmentTitle("office-reference.jpg")
                             ShadcnAttachmentDescription("JPG · 940 KB")

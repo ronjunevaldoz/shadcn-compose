@@ -11,7 +11,7 @@ class EmptyScreenshotTest : ShadcnScreenshotTest() {
         snapshot("empty_states", darkTheme = darkTheme) {
             ShadcnEmpty {
                 ShadcnEmptyHeader {
-                    ShadcnEmptyMedia { ShadcnText("📭") }
+                    ShadcnEmptyMedia { ShadcnEmojiText("📭") }
                     ShadcnEmptyTitle("No results found")
                     ShadcnEmptyDescription("Try adjusting your search or filters.")
                 }

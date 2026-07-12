@@ -21,6 +21,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentOrientat
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentState
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAttachmentTitle
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmojiText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSpinner
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
@@ -39,7 +40,7 @@ val attachmentDoc =
 
             ShadcnAttachmentGroup {
                 ShadcnAttachment(state = ShadcnAttachmentState.Done) {
-                    ShadcnAttachmentMedia { ShadcnText("📄") }
+                    ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                     ShadcnAttachmentContent {
                         ShadcnAttachmentTitle("report.pdf")
                         ShadcnAttachmentDescription("2.4 MB")
@@ -55,21 +56,21 @@ val attachmentDoc =
                         """
                         ShadcnAttachmentGroup {
                             ShadcnAttachment(state = ShadcnAttachmentState.Done) {
-                                ShadcnAttachmentMedia { ShadcnText("📄") }
+                                ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                                 ShadcnAttachmentContent {
                                     ShadcnAttachmentTitle("report.pdf")
                                     ShadcnAttachmentDescription("2.4 MB")
                                 }
                             }
                             ShadcnAttachment(state = ShadcnAttachmentState.Uploading) {
-                                ShadcnAttachmentMedia { ShadcnText("📄") }
+                                ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                                 ShadcnAttachmentContent {
                                     ShadcnAttachmentTitle("uploading.zip", state = ShadcnAttachmentState.Uploading)
                                     ShadcnAttachmentDescription("Uploading…")
                                 }
                             }
                             ShadcnAttachment(state = ShadcnAttachmentState.Error) {
-                                ShadcnAttachmentMedia { ShadcnText("📄") }
+                                ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                                 ShadcnAttachmentContent {
                                     ShadcnAttachmentTitle("failed.csv")
                                     ShadcnAttachmentDescription("Upload failed", isError = true)
@@ -80,21 +81,21 @@ val attachmentDoc =
                     preview = {
                         ShadcnAttachmentGroup {
                             ShadcnAttachment(state = ShadcnAttachmentState.Done) {
-                                ShadcnAttachmentMedia { ShadcnText("📄") }
+                                ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                                 ShadcnAttachmentContent {
                                     ShadcnAttachmentTitle("report.pdf")
                                     ShadcnAttachmentDescription("2.4 MB")
                                 }
                             }
                             ShadcnAttachment(state = ShadcnAttachmentState.Uploading) {
-                                ShadcnAttachmentMedia { ShadcnText("📄") }
+                                ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                                 ShadcnAttachmentContent {
                                     ShadcnAttachmentTitle("uploading.zip", state = ShadcnAttachmentState.Uploading)
                                     ShadcnAttachmentDescription("Uploading…")
                                 }
                             }
                             ShadcnAttachment(state = ShadcnAttachmentState.Error) {
-                                ShadcnAttachmentMedia { ShadcnText("📄") }
+                                ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
                                 ShadcnAttachmentContent {
                                     ShadcnAttachmentTitle("failed.csv")
                                     ShadcnAttachmentDescription("Upload failed", isError = true)
@@ -113,7 +114,7 @@ val attachmentDoc =
                                     orientation = ShadcnAttachmentOrientation.Vertical,
                                     actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
                                 ) {
-                                    ShadcnAttachmentMedia { ShadcnText("🏢") }
+                                    ShadcnAttachmentMedia { ShadcnEmojiText("🏢") }
                                     ShadcnAttachmentContent {
                                         ShadcnAttachmentTitle("workspace.png")
                                         ShadcnAttachmentDescription("PNG · 820 KB")
@@ -123,7 +124,7 @@ val attachmentDoc =
                                     orientation = ShadcnAttachmentOrientation.Vertical,
                                     actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
                                 ) {
-                                    ShadcnAttachmentMedia { ShadcnText("🌿") }
+                                    ShadcnAttachmentMedia { ShadcnEmojiText("🌿") }
                                     ShadcnAttachmentContent {
                                         ShadcnAttachmentTitle("desk-reference-photo.jpg")
                                         ShadcnAttachmentDescription("JPG · 1.1 MB")
@@ -133,7 +134,7 @@ val attachmentDoc =
                                     orientation = ShadcnAttachmentOrientation.Vertical,
                                     actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
                                 ) {
-                                    ShadcnAttachmentMedia { ShadcnText("🪑") }
+                                    ShadcnAttachmentMedia { ShadcnEmojiText("🪑") }
                                     ShadcnAttachmentContent {
                                         ShadcnAttachmentTitle("office-reference.jpg")
                                         ShadcnAttachmentDescription("JPG · 940 KB")
@@ -171,7 +172,7 @@ val attachmentDoc =
                                     orientation = ShadcnAttachmentOrientation.Vertical,
                                     actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
                                 ) {
-                                    ShadcnAttachmentMedia { ShadcnText("🏢") }
+                                    ShadcnAttachmentMedia { ShadcnEmojiText("🏢") }
                                     ShadcnAttachmentContent {
                                         ShadcnAttachmentTitle("workspace.png")
                                         ShadcnAttachmentDescription("PNG · 820 KB")
@@ -181,7 +182,7 @@ val attachmentDoc =
                                     orientation = ShadcnAttachmentOrientation.Vertical,
                                     actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
                                 ) {
-                                    ShadcnAttachmentMedia { ShadcnText("🌿") }
+                                    ShadcnAttachmentMedia { ShadcnEmojiText("🌿") }
                                     ShadcnAttachmentContent {
                                         ShadcnAttachmentTitle("desk-reference-photo.jpg")
                                         ShadcnAttachmentDescription("JPG · 1.1 MB")
@@ -191,7 +192,7 @@ val attachmentDoc =
                                     orientation = ShadcnAttachmentOrientation.Vertical,
                                     actions = { ShadcnAttachmentActions { AttachmentRemoveButton() } },
                                 ) {
-                                    ShadcnAttachmentMedia { ShadcnText("🪑") }
+                                    ShadcnAttachmentMedia { ShadcnEmojiText("🪑") }
                                     ShadcnAttachmentContent {
                                         ShadcnAttachmentTitle("office-reference.jpg")
                                         ShadcnAttachmentDescription("JPG · 940 KB")

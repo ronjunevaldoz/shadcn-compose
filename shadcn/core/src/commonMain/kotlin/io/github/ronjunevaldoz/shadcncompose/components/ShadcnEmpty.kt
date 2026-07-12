@@ -23,7 +23,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * ```
  * ShadcnEmpty {
  *     ShadcnEmptyHeader {
- *         ShadcnEmptyMedia { ShadcnText("📭") }
+ *         ShadcnEmptyMedia { ShadcnEmojiText("📭") }
  *         ShadcnEmptyTitle("No results")
  *         ShadcnEmptyDescription("Try a different search term.")
  *     }

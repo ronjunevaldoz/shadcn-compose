@@ -1,5 +1,6 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmojiText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMarker
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMarkerContent
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMarkerIcon
@@ -54,13 +55,13 @@ val markerDoc =
                     code =
                         """
                         ShadcnMarker(variant = ShadcnMarkerVariant.Border) {
-                            ShadcnMarkerIcon { ShadcnText("📌") }
+                            ShadcnMarkerIcon { ShadcnEmojiText("📌") }
                             ShadcnMarkerContent { ShadcnText("Pinned messages") }
                         }
                         """.trimIndent(),
                     preview = {
                         ShadcnMarker(variant = ShadcnMarkerVariant.Border) {
-                            ShadcnMarkerIcon { ShadcnText("📌") }
+                            ShadcnMarkerIcon { ShadcnEmojiText("📌") }
                             ShadcnMarkerContent { ShadcnText("Pinned messages") }
                         }
                     },

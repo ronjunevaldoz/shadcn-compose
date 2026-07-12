@@ -1,5 +1,6 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmojiText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnItem
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnItemActions
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnItemContent
@@ -36,7 +37,7 @@ val itemDoc =
                         """
                         ShadcnItemGroup {
                             ShadcnItem(variant = ShadcnItemVariant.Outline) {
-                                ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnText("📦") }
+                                ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnEmojiText("📦") }
                                 ShadcnItemContent {
                                     ShadcnItemTitle("Order #1234")
                                     ShadcnItemDescription("Shipped on March 12")
@@ -45,7 +46,7 @@ val itemDoc =
                             }
                             ShadcnItemSeparator()
                             ShadcnItem(variant = ShadcnItemVariant.Outline) {
-                                ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnText("📦") }
+                                ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnEmojiText("📦") }
                                 ShadcnItemContent {
                                     ShadcnItemTitle("Order #1235")
                                     ShadcnItemDescription("Processing")
@@ -57,7 +58,7 @@ val itemDoc =
                     preview = {
                         ShadcnItemGroup {
                             ShadcnItem(variant = ShadcnItemVariant.Outline) {
-                                ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnText("📦") }
+                                ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnEmojiText("📦") }
                                 ShadcnItemContent {
                                     ShadcnItemTitle("Order #1234")
                                     ShadcnItemDescription("Shipped on March 12")
@@ -66,7 +67,7 @@ val itemDoc =
                             }
                             ShadcnItemSeparator()
                             ShadcnItem(variant = ShadcnItemVariant.Outline) {
-                                ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnText("📦") }
+                                ShadcnItemMedia(variant = ShadcnItemMediaVariant.Icon) { ShadcnEmojiText("📦") }
                                 ShadcnItemContent {
                                     ShadcnItemTitle("Order #1235")
                                     ShadcnItemDescription("Processing")

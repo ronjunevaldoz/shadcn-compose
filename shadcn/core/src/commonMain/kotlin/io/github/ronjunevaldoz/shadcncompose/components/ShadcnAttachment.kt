@@ -89,7 +89,7 @@ private fun ShadcnAttachmentState.rememberStyle(): Style {
  *         state = ShadcnAttachmentState.Done,
  *         actions = { ShadcnAttachmentActions { ShadcnButton(onClick = {}) { ShadcnText("✕") } } },
  *     ) {
- *         ShadcnAttachmentMedia { ShadcnText("📄") }
+ *         ShadcnAttachmentMedia { ShadcnEmojiText("📄") }
  *         ShadcnAttachmentContent {
  *             ShadcnAttachmentTitle("report.pdf")
  *             ShadcnAttachmentDescription("2.4 MB")
