@@ -20,6 +20,7 @@ fun rememberSliderTrackStyle(): Style =
         Style {
             background(colors.muted)
             shape(RoundedCornerShape(shapes.full))
+            disabledDim()
         }
     }
 
@@ -29,6 +30,7 @@ fun rememberSliderRangeStyle(): Style =
         Style {
             background(colors.primary)
             shape(RoundedCornerShape(shapes.full))
+            disabledDim()
         }
     }
 

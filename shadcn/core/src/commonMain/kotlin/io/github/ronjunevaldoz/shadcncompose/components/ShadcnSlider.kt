@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
-import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
@@ -53,7 +52,14 @@ fun ShadcnSlider(
 
     val interactionSource = remember { MutableInteractionSource() }
     val thumbStyleState = rememberUpdatedStyleState(interactionSource) { it.isEnabled = enabled }
-    val trackStyleState = remember { MutableStyleState(MutableInteractionSource()) }
+    // Track/range have no hover/press/focus of their own -- just enabled, so they don't
+    // need a real interaction source. Previously these were plain MutableStyleState()
+    // instances whose isEnabled defaults to true and was never wired to the enabled
+    // param, so disabling the slider only dimmed the thumb: its now-translucent
+    // background let the still fully-opaque primary-colored range fill bleed through,
+    // reading as a "transparent" circle instead of a uniformly muted control.
+    val trackStyleState = rememberUpdatedStyleState(null) { it.isEnabled = enabled }
+    val rangeStyleState = rememberUpdatedStyleState(null) { it.isEnabled = enabled }
 
     BoxWithConstraints(
         modifier =
@@ -89,7 +95,7 @@ fun ShadcnSlider(
                     // between the fill's end and the thumb (worst at fraction=1).
                     .width((usableWidth * fraction + THUMB_SIZE / 2).coerceAtLeast(0.dp))
                     .height(TRACK_HEIGHT)
-                    .styleable(remember { MutableStyleState(MutableInteractionSource()) }, rememberSliderRangeStyle()),
+                    .styleable(rangeStyleState, rememberSliderRangeStyle()),
         )
         Box(
             modifier =
