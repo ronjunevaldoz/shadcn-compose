@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
 import androidx.compose.foundation.style.Style
@@ -80,7 +81,13 @@ fun ShadcnSlider(
         Box(
             modifier =
                 Modifier
-                    .fillMaxWidth(fraction)
+                    // Ends at the thumb's *center* (usableWidth * fraction is its left-edge
+                    // offset, same as the thumb Box below), not fillMaxWidth(fraction) -- that
+                    // sized this against the full track width instead of the thumb-aware
+                    // usableWidth, so the fill stopped short of the thumb entirely at every
+                    // fraction other than 0, leaving a visible gap of muted track color
+                    // between the fill's end and the thumb (worst at fraction=1).
+                    .width((usableWidth * fraction + THUMB_SIZE / 2).coerceAtLeast(0.dp))
                     .height(TRACK_HEIGHT)
                     .styleable(remember { MutableStyleState(MutableInteractionSource()) }, rememberSliderRangeStyle()),
         )
