@@ -113,7 +113,7 @@ private fun ShadcnBubbleVariant.rememberStyle(): Style {
  * ShadcnBubbleGroup {
  *     ShadcnBubble(align = ShadcnMessageAlign.End) {
  *         ShadcnBubbleContent { ShadcnText("Hey, how's it going?") }
- *         ShadcnBubbleReactions { ShadcnText("👍") }
+ *         ShadcnBubbleReactions { ShadcnEmojiText("👍") }
  *     }
  * }
  * ```

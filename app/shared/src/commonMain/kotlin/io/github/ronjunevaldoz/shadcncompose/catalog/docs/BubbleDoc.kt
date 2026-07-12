@@ -7,6 +7,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleContent
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleGroup
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleReactions
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBubbleVariant
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmojiText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMessageAlign
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
@@ -118,7 +119,7 @@ val bubbleDoc =
                                 ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
                                     ShadcnText("I can group messages, switch sides, and keep the whole thread easy to scan.")
                                 }
-                                ShadcnBubbleReactions { ShadcnText("👍", style = ShadcnTextStyle.LabelSmall) }
+                                ShadcnBubbleReactions { ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall) }
                             }
                             ShadcnBubble(align = ShadcnMessageAlign.End) {
                                 ShadcnBubbleContent { ShadcnText("Sure. Hit me with your best demo.") }
@@ -128,9 +129,8 @@ val bubbleDoc =
                                     ShadcnText("Yes. You are reading a demo that is demoing itself. Very meta. Very on-brand.")
                                 }
                                 ShadcnBubbleReactions {
-                                    ShadcnText("👍", style = ShadcnTextStyle.LabelSmall)
-                                    ShadcnText("🔥", style = ShadcnTextStyle.LabelSmall)
-                                    ShadcnText("👀", style = ShadcnTextStyle.LabelSmall)
+                                    ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall)
+                                    ShadcnEmojiText("🔥", style = ShadcnTextStyle.LabelSmall)
                                     ShadcnText("+2", style = ShadcnTextStyle.LabelSmall, muted = true)
                                 }
                             }
@@ -149,7 +149,7 @@ val bubbleDoc =
                                         "I can group messages, switch sides, and keep the whole thread easy to scan.",
                                     )
                                 }
-                                ShadcnBubbleReactions { ShadcnText("👍", style = ShadcnTextStyle.LabelSmall) }
+                                ShadcnBubbleReactions { ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall) }
                             }
                             ShadcnBubble(align = ShadcnMessageAlign.End) {
                                 ShadcnBubbleContent { ShadcnText("Sure. Hit me with your best demo.") }
@@ -161,9 +161,8 @@ val bubbleDoc =
                                     )
                                 }
                                 ShadcnBubbleReactions {
-                                    ShadcnText("👍", style = ShadcnTextStyle.LabelSmall)
-                                    ShadcnText("🔥", style = ShadcnTextStyle.LabelSmall)
-                                    ShadcnText("👀", style = ShadcnTextStyle.LabelSmall)
+                                    ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall)
+                                    ShadcnEmojiText("🔥", style = ShadcnTextStyle.LabelSmall)
                                     ShadcnText("+2", style = ShadcnTextStyle.LabelSmall, muted = true)
                                 }
                             }

@@ -82,6 +82,12 @@ how components are checked against real shadcn/ui source.
 
 [Apache License 2.0](LICENSE).
 
+The curated emoji reaction set used by `ShadcnEmojiText`
+(`shadcn/core/src/commonMain/.../icons/emoji/`) is derived from
+[Twemoji](https://github.com/jdecked/twemoji), licensed under
+[CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Copyright 2020 Twitter, Inc and other
+contributors, graphics licensed under CC-BY 4.0.
+
 ---
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),

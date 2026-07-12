@@ -55,7 +55,7 @@ class BubbleScreenshotTest : ShadcnScreenshotTest() {
                     ShadcnBubbleContent(variant = ShadcnBubbleVariant.Muted) {
                         ShadcnText("I can group messages, switch sides, and keep the whole thread easy to scan.")
                     }
-                    ShadcnBubbleReactions { ShadcnText("👍", style = ShadcnTextStyle.LabelSmall) }
+                    ShadcnBubbleReactions { ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall) }
                 }
                 ShadcnBubble(align = ShadcnMessageAlign.End) {
                     ShadcnBubbleContent { ShadcnText("Sure. Hit me with your best demo.") }
@@ -65,9 +65,8 @@ class BubbleScreenshotTest : ShadcnScreenshotTest() {
                         ShadcnText("Yes. You are reading a demo that is demoing itself. Very meta. Very on-brand.")
                     }
                     ShadcnBubbleReactions {
-                        ShadcnText("👍", style = ShadcnTextStyle.LabelSmall)
-                        ShadcnText("🔥", style = ShadcnTextStyle.LabelSmall)
-                        ShadcnText("👀", style = ShadcnTextStyle.LabelSmall)
+                        ShadcnEmojiText("👍", style = ShadcnTextStyle.LabelSmall)
+                        ShadcnEmojiText("🔥", style = ShadcnTextStyle.LabelSmall)
                         ShadcnText("+2", style = ShadcnTextStyle.LabelSmall, muted = true)
                     }
                 }
