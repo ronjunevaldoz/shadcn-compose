@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberSliderRangeStyle
@@ -51,21 +52,28 @@ fun ShadcnSlider(
     val currentValue = rememberUpdatedState(value)
 
     val interactionSource = remember { MutableInteractionSource() }
-    val thumbStyleState = rememberUpdatedStyleState(interactionSource) { it.isEnabled = enabled }
-    // Track/range have no hover/press/focus of their own -- just enabled, so they don't
-    // need a real interaction source. Previously these were plain MutableStyleState()
-    // instances whose isEnabled defaults to true and was never wired to the enabled
-    // param, so disabling the slider only dimmed the thumb: its now-translucent
-    // background let the still fully-opaque primary-colored range fill bleed through,
-    // reading as a "transparent" circle instead of a uniformly muted control.
-    val trackStyleState = rememberUpdatedStyleState(null) { it.isEnabled = enabled }
-    val rangeStyleState = rememberUpdatedStyleState(null) { it.isEnabled = enabled }
+    // None of the three styles read isEnabled -- disabled dimming is the single
+    // Modifier.alpha() below, not a per-style disabled { } rule -- so these StyleStates
+    // exist only to satisfy styleable()'s required parameter; track/range don't need a
+    // real interaction source either, since neither reads hover/press/focus.
+    val thumbStyleState = rememberUpdatedStyleState(interactionSource)
+    val trackStyleState = rememberUpdatedStyleState(null)
+    val rangeStyleState = rememberUpdatedStyleState(null)
 
     BoxWithConstraints(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(THUMB_SIZE),
+                .height(THUMB_SIZE)
+                // A single group-level alpha, not each child dimming itself independently
+                // (disabledDim() on all three, tried first) -- that made the thumb's own
+                // now-translucent background blend with the *also-translucent* fill sitting
+                // directly behind it, instead of one cleanly occluding the other, so the
+                // fill kept showing through the thumb. Compositing the whole control first
+                // (children stay fully opaque relative to each other, thumb still fully
+                // covers the fill beneath it) and dimming that one flat result afterward
+                // matches how CSS's disabled:opacity-50 behaves on a real DOM subtree.
+                .alpha(if (enabled) 1f else 0.5f),
         contentAlignment = Alignment.CenterStart,
     ) {
         val usableWidth = maxWidth - THUMB_SIZE
