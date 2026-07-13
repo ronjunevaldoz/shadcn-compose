@@ -69,14 +69,12 @@ private fun ComponentDetailContent(doc: ComponentDoc) {
             Section(title = "Examples") {
                 Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xl)) {
                     additionalExamples.forEach { example ->
-                        Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
-                            ShadcnText(example.title, style = ShadcnTextStyle.TitleSmall)
-                            PreviewCodeSection(
-                                code = example.code,
-                                modifier = Modifier.fillMaxWidth(),
-                                preview = example.preview,
-                            )
-                        }
+                        PreviewCodeSection(
+                            code = example.code,
+                            title = example.title,
+                            modifier = Modifier.fillMaxWidth(),
+                            preview = example.preview,
+                        )
                     }
                 }
             }

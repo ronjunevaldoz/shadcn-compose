@@ -23,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -33,17 +35,30 @@ import io.github.ronjunevaldoz.heroicons.outline.Eye
  * A "Preview | Code" toggle used for every live example in the catalog, mirroring
  * the shadcn/ui docs pattern: a single icon button in the top-right corner swaps
  * between the live preview and its source, rather than two separate labeled controls.
+ *
+ * [title], when given, shares the same header row as the toggle button instead of being
+ * rendered as a separate line above it -- one header, not two stacked rows.
  */
 @Composable
 fun PreviewCodeSection(
     code: String,
     modifier: Modifier = Modifier,
+    title: String? = null,
     preview: @Composable () -> Unit,
 ) {
     var showCode by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (title != null) {
+                ShadcnText(title, style = ShadcnTextStyle.TitleSmall)
+            } else {
+                Spacer(Modifier)
+            }
             ShadcnButton(
                 onClick = { showCode = !showCode },
                 variant = if (showCode) ButtonVariant.Secondary else ButtonVariant.Ghost,
