@@ -7,9 +7,11 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.hovered
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors
 
 // Matches shadcn/ui's real button.tsx (github.com/shadcn-ui/ui) as closely as our
 // Style API allows: most variants have zero border (only Outline has one), hover
@@ -30,6 +32,26 @@ sealed interface ButtonVariant {
 
     data object Link : ButtonVariant
 }
+
+/**
+ * The same color each variant passes to `contentColor(...)` below, factored out so
+ * [io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton] can also provide it via
+ * [io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor] for
+ * [io.github.ronjunevaldoz.shadcncompose.components.ShadcnIcon] to read -- the Style API's own
+ * `contentColor` has no public reader, only [rememberStyle]'s `Style { }` block can set it.
+ * Ignores hover/disabled state (unlike the `Style` block below): a static per-variant color is
+ * enough for icon tinting, and tracking those dynamically here would duplicate this same `when`
+ * a second time for no real visual benefit.
+ */
+fun ButtonVariant.iconTint(colors: ShadcnColors): Color =
+    when (this) {
+        ButtonVariant.Default -> colors.onPrimary
+        ButtonVariant.Outline -> colors.onSurface
+        ButtonVariant.Secondary -> colors.onSecondary
+        ButtonVariant.Ghost -> colors.onSurface
+        ButtonVariant.Destructive -> colors.onDestructive
+        ButtonVariant.Link -> colors.primary
+    }
 
 @Composable
 fun ButtonVariant.rememberStyle(): Style =

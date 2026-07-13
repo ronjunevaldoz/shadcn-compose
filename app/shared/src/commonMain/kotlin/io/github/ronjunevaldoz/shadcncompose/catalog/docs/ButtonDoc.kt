@@ -3,8 +3,10 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnIcon
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.heroicons.outline.Check
 
 val buttonDoc =
     ComponentDoc(
@@ -77,6 +79,25 @@ val buttonDoc =
                         """.trimIndent(),
                     preview = {
                         ShadcnButton(onClick = {}, variant = ButtonVariant.Destructive) { ShadcnText("Destructive") }
+                    },
+                ),
+                ComponentExample(
+                    title = "With icon",
+                    code =
+                        """
+                        // ShadcnIcon needs no `tint` here -- it reads the same ambient content
+                        // color ShadcnButton gives its text, so it matches automatically across
+                        // variants and light/dark themes.
+                        ShadcnButton(onClick = {}) {
+                            ShadcnIcon(Check)
+                            ShadcnText("Confirm")
+                        }
+                        """.trimIndent(),
+                    preview = {
+                        ShadcnButton(onClick = {}) {
+                            ShadcnIcon(Check)
+                            ShadcnText("Confirm")
+                        }
                     },
                 ),
                 ComponentExample(

@@ -11,6 +11,7 @@ import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.foundation.style.then
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +19,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.iconTint
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
+import io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor
+import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
  * shadcn-inspired button.
@@ -69,7 +73,9 @@ fun ShadcnButton(
             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            content()
+            CompositionLocalProvider(LocalShadcnContentColor provides variant.iconTint(shadcnTheme.colors)) {
+                content()
+            }
         }
     }
 }

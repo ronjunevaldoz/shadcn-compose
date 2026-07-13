@@ -17,13 +17,18 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * icon set (e.g. this repo's catalog app using `heroicons-outline` via `DocIcon`) supply their
  * own composable instead of this one.
  *
- * [tint] has no default -- the Compose Foundation Style API's `contentColor` ambient
- * inheritance that [io.github.ronjunevaldoz.shadcncompose.components.ShadcnText] relies on is
- * text-component-specific (confirmed directly against its source: `StyleScope.contentColor`'s
- * own doc says it "primarily affect[s] text color... inherited by child text components"; no
- * `LocalContentColor`-equivalent exists for non-text content in this Compose version), so a
- * plain `Image` never inherits it automatically. Every call site must pass the same color its
- * neighboring text already resolves to in that context.
+ * [tint] has no default -- the Compose Foundation Style API's `contentColor` is write-only
+ * (`StyleScope.contentColor(value: Color)` has no public reader; it's resolved internally by the
+ * Style API's own text-rendering pipeline), so a plain `Image` can't inherit it the way
+ * [io.github.ronjunevaldoz.shadcncompose.components.ShadcnText] does. Every call site here must
+ * pass the same color its neighboring text already resolves to in that context.
+ *
+ * Public consumers wanting ambient tinting should use
+ * [io.github.ronjunevaldoz.shadcncompose.components.ShadcnIcon] instead, which reads
+ * [io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor] -- a CompositionLocal
+ * this library provides itself precisely because the Style API doesn't expose one. This
+ * internal util predates that and stays explicit-tint-only since every one of its call sites
+ * already computes the right color directly from theme tokens.
  */
 @Composable
 internal fun ShadcnGlyphIcon(

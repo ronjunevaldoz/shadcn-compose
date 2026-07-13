@@ -16,6 +16,7 @@ render live at `installation`/`introduction` plus one page per component.
 | `ShadcnChip` | Compact, often removable/selectable token (filter chips, multi-select tags) | chip, filter tag, removable tag, token, pill button |
 | `ShadcnTextField` | Single-line text input (real shadcn's `input.tsx`) | text field, input box, text input, form field |
 | `ShadcnText` | Themed text with the design system's typography scale | text, label, typography, heading, body copy |
+| `ShadcnIcon` | Renders any `ImageVector` (heroicons, custom vectors, ...), auto-tinted to match its surroundings the same way `ShadcnText` does -- no icon-library dependency itself, BYO vector | icon, icon button, vector icon, tinted icon, icon color |
 
 ### Forms & inputs
 

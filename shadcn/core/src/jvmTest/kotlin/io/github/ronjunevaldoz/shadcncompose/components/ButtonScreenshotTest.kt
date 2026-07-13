@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
+import io.github.ronjunevaldoz.shadcncompose.icons.Check
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import kotlin.test.Test
 
@@ -46,6 +47,34 @@ class ButtonScreenshotTest : ShadcnScreenshotTest() {
     @Test fun variants_disabled_light() = allVariants(darkTheme = false, enabled = false)
 
     @Test fun variants_disabled_dark() = allVariants(darkTheme = true, enabled = false)
+
+    /**
+     * [ShadcnIcon] with no explicit `tint` -- confirms it picks up each variant's ambient
+     * [io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor] (provided by
+     * [ShadcnButton]) instead of defaulting to a fixed color regardless of variant/theme.
+     */
+    private fun iconVariants(darkTheme: Boolean) {
+        snapshot("button_icon_variants", darkTheme = darkTheme) {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                listOf(
+                    ButtonVariant.Default,
+                    ButtonVariant.Secondary,
+                    ButtonVariant.Outline,
+                    ButtonVariant.Ghost,
+                    ButtonVariant.Destructive,
+                ).forEach { variant ->
+                    ShadcnButton(onClick = {}, variant = variant) {
+                        ShadcnIcon(Check)
+                        ShadcnText(variant::class.simpleName ?: "?")
+                    }
+                }
+            }
+        }
+    }
+
+    @Test fun icon_variants_light() = iconVariants(darkTheme = false)
+
+    @Test fun icon_variants_dark() = iconVariants(darkTheme = true)
 
     @Test
     fun focused_light() {
