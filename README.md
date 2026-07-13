@@ -22,7 +22,7 @@ Published to Maven Central.
 ```toml
 # gradle/libs.versions.toml
 [versions]
-shadcn-compose = "0.2.3"
+shadcn-compose = "0.2.4"
 
 [libraries]
 shadcn-compose = { module = "io.github.ronjunevaldoz:shadcn-compose", version.ref = "shadcn-compose" }
