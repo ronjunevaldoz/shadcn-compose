@@ -117,7 +117,12 @@ val stepperDoc =
                         """.trimIndent(),
                     preview = {
                         ShadcnStepper(
-                            steps = listOf(ShadcnStepperStep("Step 1"), ShadcnStepperStep("Step 2"), ShadcnStepperStep("Step 3")),
+                            steps =
+                                listOf(
+                                    ShadcnStepperStep("Step 1"),
+                                    ShadcnStepperStep("Step 2"),
+                                    ShadcnStepperStep("Step 3"),
+                                ),
                             currentStep = 1,
                             modifier = Modifier.width(320.dp),
                         )
@@ -203,7 +208,10 @@ val stepperDoc =
                                 ShadcnStepperStep("Review", "Confirm your information and choices"),
                                 ShadcnStepperStep("Done", "All set. Review completed"),
                             )
-                        Column(modifier = Modifier.width(320.dp), verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
+                        Column(
+                            modifier = Modifier.width(320.dp),
+                            verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md),
+                        ) {
                             ShadcnStepper(steps = steps, currentStep = step)
                             Box(
                                 modifier =
@@ -213,7 +221,11 @@ val stepperDoc =
                                         .background(shadcnTheme.colors.muted, RoundedCornerShape(shadcnTheme.shapes.md))
                                         .padding(shadcnTheme.spacing.md),
                             ) {
-                                ShadcnText("${'$'}{steps[step].title} content", style = ShadcnTextStyle.BodySmall, muted = true)
+                                ShadcnText(
+                                    "${'$'}{steps[step].title} content",
+                                    style = ShadcnTextStyle.BodySmall,
+                                    muted = true,
+                                )
                             }
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 ShadcnButton(
@@ -249,8 +261,16 @@ val stepperDoc =
                         """.trimIndent(),
                     preview = {
                         var step by remember { mutableStateOf(1) }
-                        val steps = listOf(ShadcnStepperStep("Step 1"), ShadcnStepperStep("Step 2"), ShadcnStepperStep("Step 3"))
-                        Column(modifier = Modifier.width(320.dp), verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
+                        val steps =
+                            listOf(
+                                ShadcnStepperStep("Step 1"),
+                                ShadcnStepperStep("Step 2"),
+                                ShadcnStepperStep("Step 3"),
+                            )
+                        Column(
+                            modifier = Modifier.width(320.dp),
+                            verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md),
+                        ) {
                             ShadcnStepper(steps = steps, currentStep = step)
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 ShadcnButton(
@@ -292,7 +312,10 @@ val stepperDoc =
                     preview = {
                         var firstName by remember { mutableStateOf("") }
                         var lastName by remember { mutableStateOf("") }
-                        Column(modifier = Modifier.width(320.dp), verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
+                        Column(
+                            modifier = Modifier.width(320.dp),
+                            verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md),
+                        ) {
                             ShadcnStepper(
                                 steps =
                                     listOf(

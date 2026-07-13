@@ -22,15 +22,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.ronjunevaldoz.shadcncompose.components.ShadcnChip
-import io.github.ronjunevaldoz.shadcncompose.styles.ChipVariant
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
+import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
+import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import io.github.ronjunevaldoz.heroicons.outline.CodeBracket
+import io.github.ronjunevaldoz.heroicons.outline.Eye
 
 /**
  * A "Preview | Code" toggle used for every live example in the catalog, mirroring
- * the shadcn/ui docs pattern. There's no Tabs component in the design system yet
- * (that's a later Overlays & Navigation milestone), so this uses a small chip
- * pair locally rather than blocking on that component.
+ * the shadcn/ui docs pattern: a single icon button in the top-right corner swaps
+ * between the live preview and its source, rather than two separate labeled controls.
  */
 @Composable
 fun PreviewCodeSection(
@@ -41,19 +43,14 @@ fun PreviewCodeSection(
     var showCode by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            ShadcnChip(
-                label = "Preview",
-                selected = !showCode,
-                onClick = { showCode = false },
-                variant = if (!showCode) ChipVariant.Selected else ChipVariant.Outline,
-            )
-            ShadcnChip(
-                label = "Code",
-                selected = showCode,
-                onClick = { showCode = true },
-                variant = if (showCode) ChipVariant.Selected else ChipVariant.Outline,
-            )
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            ShadcnButton(
+                onClick = { showCode = !showCode },
+                variant = if (showCode) ButtonVariant.Secondary else ButtonVariant.Ghost,
+                size = ButtonSize.Icon,
+            ) {
+                DocIcon(if (showCode) Eye else CodeBracket)
+            }
         }
         Spacer(Modifier.height(shadcnTheme.spacing.sm))
         if (showCode) {

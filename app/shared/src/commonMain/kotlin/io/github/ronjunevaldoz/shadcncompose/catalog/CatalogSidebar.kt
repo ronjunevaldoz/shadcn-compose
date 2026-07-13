@@ -87,7 +87,11 @@ fun CatalogSidebar(
                     ShadcnSidebarMenu(
                         items =
                             entries.map {
-                                ShadcnSidebarMenuItem(id = it.id, label = it.title, badge = if (it.isNew) "New" else null)
+                                ShadcnSidebarMenuItem(
+                                    id = it.id,
+                                    label = it.title,
+                                    badge = if (it.isNew) "New" else null,
+                                )
                             },
                         activeId = selectedId,
                         onItemClick = onEntryClick,
