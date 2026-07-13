@@ -85,7 +85,10 @@ fun CatalogSidebar(
             filteredEntriesByCategory.forEach { (category, entries) ->
                 ShadcnSidebarGroup(label = category.title) {
                     ShadcnSidebarMenu(
-                        items = entries.map { ShadcnSidebarMenuItem(id = it.id, label = it.title) },
+                        items =
+                            entries.map {
+                                ShadcnSidebarMenuItem(id = it.id, label = it.title, badge = if (it.isNew) "New" else null)
+                            },
                         activeId = selectedId,
                         onItemClick = onEntryClick,
                     )

@@ -15,6 +15,7 @@ val componentDocsById: Map<String, ComponentDoc> =
         toggleDoc,
         sliderDoc,
         toggleGroupDoc,
+        stepperDoc,
         inputGroupDoc,
         buttonGroupDoc,
         textareaDoc,

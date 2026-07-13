@@ -24,6 +24,7 @@ data class CatalogEntry(
     val id: String,
     val title: String,
     val category: CatalogCategory,
+    val isNew: Boolean = false,
 )
 
 val catalogEntries: List<CatalogEntry> =
@@ -49,6 +50,7 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "toggle", title = "Toggle", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "slider", title = "Slider", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "toggle-group", title = "Toggle Group", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(id = "stepper", title = "Stepper", category = CatalogCategory.FORMS_AND_INPUTS, isNew = true),
         CatalogEntry(id = "input-group", title = "Input Group", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "button-group", title = "Button Group", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "textarea", title = "Textarea", category = CatalogCategory.FORMS_AND_INPUTS),

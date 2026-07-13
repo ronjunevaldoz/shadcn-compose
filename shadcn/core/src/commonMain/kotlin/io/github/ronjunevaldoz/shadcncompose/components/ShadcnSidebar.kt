@@ -196,8 +196,8 @@ fun ShadcnSidebarGroup(
     }
 }
 
-/** One clickable destination inside a [ShadcnSidebarGroup]. */
-data class ShadcnSidebarMenuItem(val id: String, val label: String)
+/** One clickable destination inside a [ShadcnSidebarGroup]. [badge] renders as a trailing [ShadcnBadge], e.g. "New". */
+data class ShadcnSidebarMenuItem(val id: String, val label: String, val badge: String? = null)
 
 /** A vertical list of [ShadcnSidebarMenuItem]s with one active/highlighted entry. */
 @Composable
@@ -211,7 +211,7 @@ fun ShadcnSidebarMenu(
         items.forEach { item ->
             val isActive = item.id == activeId
             val interactionSource = remember { MutableInteractionSource() }
-            Box(
+            Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -219,6 +219,7 @@ fun ShadcnSidebarMenu(
                         .let { if (isActive) it.background(shadcnTheme.colors.sidebarAccent) else it }
                         .clickable(interactionSource = interactionSource, indication = null) { onItemClick(item.id) }
                         .padding(horizontal = shadcnTheme.spacing.sm, vertical = shadcnTheme.spacing.sm),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 ShadcnText(
                     item.label,
@@ -226,6 +227,7 @@ fun ShadcnSidebarMenu(
                     muted = !isActive,
                     color = if (isActive) shadcnTheme.colors.onSidebarAccent else Color.Unspecified,
                 )
+                item.badge?.let { ShadcnBadge { ShadcnText(it, style = ShadcnTextStyle.LabelSmall) } }
             }
         }
     }
