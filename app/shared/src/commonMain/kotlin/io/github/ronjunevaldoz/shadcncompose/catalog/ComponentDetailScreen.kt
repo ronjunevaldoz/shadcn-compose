@@ -49,6 +49,7 @@ private fun ComponentDetailContent(doc: ComponentDoc) {
         Section(title = "Preview & Code") {
             PreviewCodeSection(
                 code = doc.examples.first().code,
+                title = doc.examples.first().title,
                 modifier = Modifier.fillMaxWidth(),
                 preview = doc.examples.first().preview,
             )
