@@ -6,6 +6,11 @@ agent or developer might actually type — match on any of them, not just the co
 usage examples for every entry live in the catalog app (`/app/shared/.../catalog/docs/*Doc.kt`) and
 render live at `installation`/`introduction` plus one page per component.
 
+For machine-readable access to this same data — properties, parity family, and public preview
+image URLs for every component/state/theme combination (useful for comparing another library's
+components against this one) — see [`component-metadata.json`](component-metadata.json) and
+[`component-metadata.md`](component-metadata.md) for its schema and how to use it.
+
 ### Core primitives
 
 | Component | Use case | Keywords |

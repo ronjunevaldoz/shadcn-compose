@@ -1,0 +1,2152 @@
+{
+  "stylePreset": "Vega",
+  "stylePresetNote": "Every preview image was captured under the 'Vega' style preset (this library's default), not a neutral/preset-agnostic render. shadcn-compose ships 8 presets total (Vega, Nova, Maia, Lyra, Mira, Luma, Sera, Rhea), each changing shape/spacing/animation -- swapping presets would change these components' appearance without changing this file.",
+  "components": [
+    {
+      "id": "button",
+      "title": "Button",
+      "description": "Triggers an action or event. Supports six variants and five sizes.",
+      "category": "core-primitives",
+      "family": "action",
+      "isNew": false,
+      "properties": {
+        "ButtonVariant": [
+          "Default",
+          "Outline",
+          "Secondary",
+          "Ghost",
+          "Destructive",
+          "Link"
+        ],
+        "ButtonSize": [
+          "Xs",
+          "Sm",
+          "Md",
+          "Lg",
+          "Icon"
+        ]
+      },
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_focused_light.png"
+        },
+        {
+          "state": "group_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_states_dark.png"
+        },
+        {
+          "state": "group_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_states_light.png"
+        },
+        {
+          "state": "group_with_label",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_with_label_dark.png"
+        },
+        {
+          "state": "group_with_label_focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_with_label_focused_dark.png"
+        },
+        {
+          "state": "group_with_label_focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_with_label_focused_light.png"
+        },
+        {
+          "state": "group_with_label",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_with_label_light.png"
+        },
+        {
+          "state": "icon_variants",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_icon_variants_dark.png"
+        },
+        {
+          "state": "icon_variants",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_icon_variants_light.png"
+        },
+        {
+          "state": "pressed",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_pressed_light.png"
+        },
+        {
+          "state": "unpressed_baseline",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_unpressed_baseline_light.png"
+        },
+        {
+          "state": "variants",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_variants_dark.png"
+        },
+        {
+          "state": "variants_disabled",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_variants_disabled_dark.png"
+        },
+        {
+          "state": "variants_disabled",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_variants_disabled_light.png"
+        },
+        {
+          "state": "variants",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_variants_light.png"
+        }
+      ]
+    },
+    {
+      "id": "card",
+      "title": "Card",
+      "description": "Displays content in a bordered container, with optional header and footer slots.",
+      "category": "core-primitives",
+      "family": "layout",
+      "isNew": false,
+      "properties": {
+        "CardVariant": [
+          "Default",
+          "Elevated",
+          "Filled"
+        ],
+        "CardSize": [
+          "Default",
+          "Sm"
+        ]
+      },
+      "previews": [
+        {
+          "state": "create_account",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/card_create_account_dark.png"
+        },
+        {
+          "state": "create_account",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/card_create_account_light.png"
+        },
+        {
+          "state": "muted_text_isolation",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/card_muted_text_isolation_light.png"
+        },
+        {
+          "state": "variants",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/card_variants_dark.png"
+        },
+        {
+          "state": "variants",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/card_variants_light.png"
+        }
+      ]
+    },
+    {
+      "id": "badge",
+      "title": "Badge",
+      "description": "A small label used to highlight status, counts, or metadata.",
+      "category": "core-primitives",
+      "family": "text",
+      "isNew": false,
+      "properties": {
+        "BadgeVariant": [
+          "Default",
+          "Secondary",
+          "Destructive",
+          "Outline",
+          "Ghost"
+        ]
+      },
+      "previews": [
+        {
+          "state": "variants",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/badge_variants_dark.png"
+        },
+        {
+          "state": "variants",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/badge_variants_light.png"
+        }
+      ]
+    },
+    {
+      "id": "chip",
+      "title": "Chip",
+      "description": "A selectable tag, commonly used for filters or multi-select choices.",
+      "category": "core-primitives",
+      "family": "text",
+      "isNew": false,
+      "properties": {
+        "ChipVariant": [
+          "Default",
+          "Selected",
+          "Outline"
+        ]
+      },
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chip_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chip_focused_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chip_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chip_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "text-field",
+      "title": "Text Field",
+      "description": "A single-line or multi-line input with label, placeholder, and error states.",
+      "category": "core-primitives",
+      "family": "field",
+      "isNew": false,
+      "properties": {
+        "TextFieldVariant": [
+          "Default",
+          "Filled",
+          "Ghost"
+        ]
+      },
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textfield_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textfield_focused_light.png"
+        },
+        {
+          "state": "focused_with_ring_disabled",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textfield_focused_with_ring_disabled_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textfield_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textfield_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "text",
+      "title": "Text",
+      "description": "Renders text using the design system's type scale, with an optional muted tone.",
+      "category": "core-primitives",
+      "family": "text",
+      "isNew": false,
+      "properties": {
+        "ShadcnTextStyle": [
+          "DisplayLarge",
+          "DisplayMedium",
+          "TitleLarge",
+          "TitleMedium",
+          "TitleSmall",
+          "BodyLarge",
+          "BodyMedium",
+          "BodySmall",
+          "LabelLarge",
+          "LabelSmall"
+        ]
+      },
+      "previews": [
+        {
+          "state": "styles",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/text_styles_dark.png"
+        },
+        {
+          "state": "styles",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/text_styles_light.png"
+        }
+      ]
+    },
+    {
+      "id": "label",
+      "title": "Label",
+      "description": "A form-field label, optionally marked required.",
+      "category": "forms-and-inputs",
+      "family": "text",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/label_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/label_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "checkbox",
+      "title": "Checkbox",
+      "description": "A tri-state input control: unchecked, checked, or indeterminate.",
+      "category": "forms-and-inputs",
+      "family": "selection",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/checkbox_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/checkbox_focused_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/checkbox_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/checkbox_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "radio-group",
+      "title": "Radio Group",
+      "description": "A set of mutually exclusive options. Combine ShadcnRadioButton items inside ShadcnRadioGroup.",
+      "category": "forms-and-inputs",
+      "family": "selection",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/radio_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/radio_focused_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/radio_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/radio_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "switch",
+      "title": "Switch",
+      "description": "An on/off control for a single setting, applied immediately.",
+      "category": "forms-and-inputs",
+      "family": "selection",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/switch_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/switch_focused_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/switch_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/switch_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "toggle",
+      "title": "Toggle",
+      "description": "A two-state button, commonly used for toolbar toggles like bold or italic.",
+      "category": "forms-and-inputs",
+      "family": "selection",
+      "isNew": false,
+      "properties": {
+        "ToggleVariant": [
+          "Default",
+          "Outline"
+        ]
+      },
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toggle_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toggle_focused_light.png"
+        },
+        {
+          "state": "group_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toggle_group_states_dark.png"
+        },
+        {
+          "state": "group_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toggle_group_states_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toggle_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toggle_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "slider",
+      "title": "Slider",
+      "description": "An input for selecting a value from within a range by dragging a thumb.",
+      "category": "forms-and-inputs",
+      "family": "field",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/slider_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/slider_focused_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/slider_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/slider_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "toggle-group",
+      "title": "Toggle Group",
+      "description": "A segmented row of toggles for single- or multi-select, e.g. text formatting.",
+      "category": "forms-and-inputs",
+      "family": "selection",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toggle_group_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toggle_group_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "stepper",
+      "title": "Stepper",
+      "description": "A numbered multi-step progress indicator for wizards, onboarding, and checkout flows.",
+      "category": "forms-and-inputs",
+      "family": "selection",
+      "isNew": true,
+      "properties": {
+        "ShadcnStepperOrientation": [
+          "Horizontal",
+          "Vertical"
+        ]
+      },
+      "previews": [
+        {
+          "state": "compact",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/stepper_compact_dark.png"
+        },
+        {
+          "state": "compact",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/stepper_compact_light.png"
+        },
+        {
+          "state": "mid_progress",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/stepper_mid_progress_dark.png"
+        },
+        {
+          "state": "mid_progress",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/stepper_mid_progress_light.png"
+        },
+        {
+          "state": "vertical",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/stepper_vertical_dark.png"
+        },
+        {
+          "state": "vertical",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/stepper_vertical_light.png"
+        }
+      ]
+    },
+    {
+      "id": "input-group",
+      "title": "Input Group",
+      "description": "Groups a text field with leading or trailing addons -- icons, static text, or buttons.",
+      "category": "forms-and-inputs",
+      "family": "field",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "bottom_bar",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_group_bottom_bar_dark.png"
+        },
+        {
+          "state": "bottom_bar",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_group_bottom_bar_light.png"
+        },
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_group_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_group_focused_light.png"
+        },
+        {
+          "state": "long_value",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_group_long_value_dark.png"
+        },
+        {
+          "state": "long_value",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_group_long_value_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_group_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_group_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "button-group",
+      "title": "Button Group",
+      "description": "Visually joins a row of buttons into a single segmented control.",
+      "category": "forms-and-inputs",
+      "family": "action",
+      "isNew": false,
+      "properties": {
+        "ButtonGroupOrientation": [
+          "Horizontal",
+          "Vertical"
+        ]
+      },
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_states_light.png"
+        },
+        {
+          "state": "with_label",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_with_label_dark.png"
+        },
+        {
+          "state": "with_label_focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_with_label_focused_dark.png"
+        },
+        {
+          "state": "with_label_focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_with_label_focused_light.png"
+        },
+        {
+          "state": "with_label",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/button_group_with_label_light.png"
+        }
+      ]
+    },
+    {
+      "id": "textarea",
+      "title": "Textarea",
+      "description": "A multi-line text input, sharing the same border/focus spec as Text Field.",
+      "category": "forms-and-inputs",
+      "family": "field",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textarea_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textarea_focused_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textarea_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/textarea_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "field",
+      "title": "Field",
+      "description": "A labeled control + description layout for building forms. Real shadcn/ui's form.tsx is a thin wrapper of these same primitives around react-hook-form; this library has no form-state dependency, so compose Field directly with your own hoisted state.",
+      "category": "forms-and-inputs",
+      "family": "field",
+      "isNew": false,
+      "properties": {
+        "ShadcnFieldOrientation": [
+          "Vertical",
+          "Horizontal"
+        ]
+      },
+      "previews": [
+        {
+          "state": "profile_form",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/field_profile_form_dark.png"
+        },
+        {
+          "state": "profile_form",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/field_profile_form_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/field_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/field_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "input-otp",
+      "title": "Input OTP",
+      "description": "A one-time-passcode input with boxed slots that fill left-to-right.",
+      "category": "forms-and-inputs",
+      "family": "field",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_otp_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_otp_focused_light.png"
+        },
+        {
+          "state": "focused_with_ring_disabled",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_otp_focused_with_ring_disabled_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_otp_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_otp_states_light.png"
+        },
+        {
+          "state": "verify_email",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_otp_verify_email_dark.png"
+        },
+        {
+          "state": "verify_email",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/input_otp_verify_email_light.png"
+        }
+      ]
+    },
+    {
+      "id": "avatar",
+      "title": "Avatar",
+      "description": "A circular user/entity image container with an initials fallback.",
+      "category": "data-display",
+      "family": "text",
+      "isNew": false,
+      "properties": {
+        "ShadcnAvatarSize": [
+          "Sm",
+          "ShadcnTextStyle.LabelSmall)",
+          "Default",
+          "ShadcnTextStyle.LabelSmall)",
+          "Lg",
+          "ShadcnTextStyle.LabelLarge)"
+        ]
+      },
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/avatar_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/avatar_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "aspect-ratio",
+      "title": "Aspect Ratio",
+      "description": "Constrains content to a fixed width/height ratio.",
+      "category": "data-display",
+      "family": "layout",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/aspect_ratio_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/aspect_ratio_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "separator",
+      "title": "Separator",
+      "description": "A thin line for visually or semantically separating content. Matches real shadcn/ui: it has no built-in margin, so surrounding spacing is always the caller's responsibility -- via Arrangement.spacedBy or explicit padding, as shown in the examples below.",
+      "category": "data-display",
+      "family": "layout",
+      "isNew": false,
+      "properties": {
+        "ShadcnSeparatorOrientation": [
+          "Horizontal",
+          "Vertical"
+        ]
+      },
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/separator_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/separator_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "kbd",
+      "title": "Kbd",
+      "description": "A keyboard-shortcut label.",
+      "category": "data-display",
+      "family": "text",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/kbd_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/kbd_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "item",
+      "title": "Item",
+      "description": "A single row in a list of interactive/informational rows.",
+      "category": "data-display",
+      "family": "text",
+      "isNew": false,
+      "properties": {
+        "ShadcnItemVariant": [
+          "Default",
+          "Outline",
+          "Muted"
+        ],
+        "ShadcnItemMediaVariant": [
+          "Default",
+          "Icon"
+        ]
+      },
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/item_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/item_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "empty",
+      "title": "Empty",
+      "description": "A centered placeholder for an empty list, search result, or state.",
+      "category": "data-display",
+      "family": "text",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/empty_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/empty_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "alert",
+      "title": "Alert",
+      "description": "A short, prominent callout for important information.",
+      "category": "feedback",
+      "family": "feedback",
+      "isNew": false,
+      "properties": {
+        "AlertVariant": [
+          "Default",
+          "Destructive"
+        ]
+      },
+      "previews": [
+        {
+          "state": "dialog_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/alert_dialog_states_dark.png"
+        },
+        {
+          "state": "dialog_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/alert_dialog_states_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/alert_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/alert_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "progress",
+      "title": "Progress",
+      "description": "A linear progress bar.",
+      "category": "feedback",
+      "family": "feedback",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/progress_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/progress_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "skeleton",
+      "title": "Skeleton",
+      "description": "A pulsing placeholder block shown while content is loading.",
+      "category": "feedback",
+      "family": "feedback",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/skeleton_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/skeleton_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "spinner",
+      "title": "Spinner",
+      "description": "A spinning loading indicator.",
+      "category": "feedback",
+      "family": "feedback",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/spinner_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/spinner_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "toast",
+      "title": "Toast",
+      "description": "A stackable, auto-dismissing notification queue. Real shadcn/ui's sonner.tsx wraps the separate `sonner` npm library; since there's no Compose Multiplatform equivalent, ShadcnToastState + ShadcnToaster reimplement that queue directly.",
+      "category": "feedback",
+      "family": "feedback",
+      "isNew": false,
+      "properties": {
+        "ShadcnToastVariant": [
+          "Default",
+          "Success",
+          "Error",
+          "Warning",
+          "Info"
+        ]
+      },
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toast_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/toast_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "collapsible",
+      "title": "Collapsible",
+      "description": "An expand/collapse container for showing or hiding content.",
+      "category": "disclosure-and-navigation",
+      "family": "disclosure",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "collapsed",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/collapsible_collapsed_dark.png"
+        },
+        {
+          "state": "collapsed",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/collapsible_collapsed_light.png"
+        },
+        {
+          "state": "expanded",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/collapsible_expanded_dark.png"
+        },
+        {
+          "state": "expanded",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/collapsible_expanded_light.png"
+        }
+      ]
+    },
+    {
+      "id": "accordion",
+      "title": "Accordion",
+      "description": "A vertically-stacked set of collapsible sections.",
+      "category": "disclosure-and-navigation",
+      "family": "disclosure",
+      "isNew": false,
+      "properties": {
+        "ShadcnAccordionType": [
+          "Single",
+          "Multiple"
+        ]
+      },
+      "previews": [
+        {
+          "state": "collapsed",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/accordion_collapsed_dark.png"
+        },
+        {
+          "state": "collapsed",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/accordion_collapsed_light.png"
+        },
+        {
+          "state": "expanded",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/accordion_expanded_dark.png"
+        },
+        {
+          "state": "expanded",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/accordion_expanded_light.png"
+        },
+        {
+          "state": "trigger_focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/accordion_trigger_focused_dark.png"
+        },
+        {
+          "state": "trigger_focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/accordion_trigger_focused_light.png"
+        }
+      ]
+    },
+    {
+      "id": "tabs",
+      "title": "Tabs",
+      "description": "A segmented control for switching between related views.",
+      "category": "disclosure-and-navigation",
+      "family": "selection",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "item_focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/tabs_item_focused_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/tabs_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/tabs_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "breadcrumb",
+      "title": "Breadcrumb",
+      "description": "A row of navigation links showing the current page's location in a hierarchy.",
+      "category": "disclosure-and-navigation",
+      "family": "disclosure",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "ellipsis",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/breadcrumb_ellipsis_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/breadcrumb_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/breadcrumb_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "tooltip",
+      "title": "Tooltip",
+      "description": "A small hover-triggered label for an interactive element.",
+      "category": "overlays-and-navigation",
+      "family": "overlay",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "trigger",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/tooltip_trigger_dark.png"
+        },
+        {
+          "state": "trigger",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/tooltip_trigger_light.png"
+        }
+      ]
+    },
+    {
+      "id": "popover",
+      "title": "Popover",
+      "description": "A click-triggered anchored panel for rich content.",
+      "category": "overlays-and-navigation",
+      "family": "field",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "dimensions_form",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/popover_dimensions_form_dark.png"
+        },
+        {
+          "state": "dimensions_form",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/popover_dimensions_form_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/popover_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/popover_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "hover-card",
+      "title": "Hover Card",
+      "description": "A hover-triggered panel for richer preview content than a Tooltip.",
+      "category": "overlays-and-navigation",
+      "family": "overlay",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "trigger",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/hover_card_trigger_dark.png"
+        },
+        {
+          "state": "trigger",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/hover_card_trigger_light.png"
+        }
+      ]
+    },
+    {
+      "id": "dropdown-menu",
+      "title": "Dropdown Menu",
+      "description": "An anchored list of actions, optionally grouped under labels and separators.",
+      "category": "overlays-and-navigation",
+      "family": "field",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/dropdown_menu_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/dropdown_menu_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "context-menu",
+      "title": "Context Menu",
+      "description": "A menu triggered by right-click, opened at the cursor.",
+      "category": "overlays-and-navigation",
+      "family": "overlay",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "idle",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/context_menu_idle_dark.png"
+        },
+        {
+          "state": "idle",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/context_menu_idle_light.png"
+        }
+      ]
+    },
+    {
+      "id": "dialog",
+      "title": "Dialog",
+      "description": "A modal window layered over the page.",
+      "category": "overlays-and-navigation",
+      "family": "overlay",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "close_button_focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/dialog_close_button_focused_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/dialog_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/dialog_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "alert-dialog",
+      "title": "Alert Dialog",
+      "description": "A Dialog that can't be dismissed by clicking outside -- requires an explicit choice.",
+      "category": "overlays-and-navigation",
+      "family": "overlay",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/alert_dialog_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/alert_dialog_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "sheet",
+      "title": "Sheet",
+      "description": "A modal panel that slides in from a screen edge.",
+      "category": "overlays-and-navigation",
+      "family": "overlay",
+      "isNew": false,
+      "properties": {
+        "ShadcnSheetSide": [
+          "Top",
+          "Bottom",
+          "Start",
+          "End"
+        ]
+      },
+      "previews": [
+        {
+          "state": "edit_profile",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sheet_edit_profile_dark.png"
+        },
+        {
+          "state": "edit_profile",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sheet_edit_profile_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sheet_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sheet_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "drawer",
+      "title": "Drawer",
+      "description": "A modal panel that slides in from a screen edge and can be swiped back toward that edge to dismiss. Distinct from Sheet: same sliding-panel shape, but with real drag-to-dismiss physics.",
+      "category": "overlays-and-navigation",
+      "family": "overlay",
+      "isNew": false,
+      "properties": {
+        "ShadcnDrawerDirection": [
+          "Top",
+          "Bottom",
+          "Start",
+          "End"
+        ]
+      },
+      "previews": [
+        {
+          "state": "bottom",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/drawer_bottom_dark.png"
+        },
+        {
+          "state": "bottom",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/drawer_bottom_light.png"
+        },
+        {
+          "state": "edit_profile",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/drawer_edit_profile_dark.png"
+        },
+        {
+          "state": "edit_profile",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/drawer_edit_profile_light.png"
+        },
+        {
+          "state": "end",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/drawer_end_light.png"
+        },
+        {
+          "state": "top",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/drawer_top_light.png"
+        }
+      ]
+    },
+    {
+      "id": "combobox",
+      "title": "Combobox",
+      "description": "A select with a filterable/searchable option list.",
+      "category": "overlays-and-navigation",
+      "family": "field",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "idle",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_idle_dark.png"
+        },
+        {
+          "state": "idle",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_idle_light.png"
+        }
+      ]
+    },
+    {
+      "id": "select",
+      "title": "Select",
+      "description": "A plain (non-searchable) dropdown select. Unlike Combobox, the option list isn't filterable by typing.",
+      "category": "overlays-and-navigation",
+      "family": "field",
+      "isNew": false,
+      "properties": {
+        "SelectVariant": [
+          "Default"
+        ]
+      },
+      "previews": [
+        {
+          "state": "closed",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/select_closed_dark.png"
+        },
+        {
+          "state": "closed",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/select_closed_light.png"
+        },
+        {
+          "state": "placeholder",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/select_placeholder_dark.png"
+        },
+        {
+          "state": "placeholder",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/select_placeholder_light.png"
+        },
+        {
+          "state": "trigger_focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/select_trigger_focused_light.png"
+        }
+      ]
+    },
+    {
+      "id": "date-picker",
+      "title": "Date Picker",
+      "description": "A date picker built by composing Popover and Calendar -- not a standalone component in real shadcn/ui either.",
+      "category": "overlays-and-navigation",
+      "family": "field",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/date_picker_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/date_picker_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "command",
+      "title": "Command",
+      "description": "A searchable/filterable action list -- the building block behind a command palette.",
+      "category": "overlays-and-navigation",
+      "family": "selection",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/command_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/command_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "menubar",
+      "title": "Menubar",
+      "description": "A horizontal row of menu triggers, desktop-app style.",
+      "category": "overlays-and-navigation",
+      "family": "selection",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "idle",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/menubar_idle_dark.png"
+        },
+        {
+          "state": "idle",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/menubar_idle_light.png"
+        }
+      ]
+    },
+    {
+      "id": "navigation-menu",
+      "title": "Navigation Menu",
+      "description": "A horizontal top-level site navigation row where some items open a panel of related links.",
+      "category": "overlays-and-navigation",
+      "family": "selection",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "idle",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/navigation_menu_idle_dark.png"
+        },
+        {
+          "state": "idle",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/navigation_menu_idle_light.png"
+        },
+        {
+          "state": "item_focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/navigation_menu_item_focused_light.png"
+        }
+      ]
+    },
+    {
+      "id": "table",
+      "title": "Table",
+      "description": "A responsive data table with a bordered header and hairline row separators.",
+      "category": "data-and-layout",
+      "family": "layout",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/table_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/table_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "pagination",
+      "title": "Pagination",
+      "description": "Page-number navigation with Previous/Next controls and ellipsis gaps.",
+      "category": "data-and-layout",
+      "family": "layout",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/pagination_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/pagination_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "scroll-area",
+      "title": "Scroll Area",
+      "description": "A scrollable region with a slim custom scrollbar thumb instead of the native one.",
+      "category": "data-and-layout",
+      "family": "layout",
+      "isNew": false,
+      "properties": {
+        "ShadcnScrollAreaOrientation": [
+          "Vertical",
+          "Horizontal",
+          "Both"
+        ]
+      },
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/scroll_area_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/scroll_area_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "chart",
+      "title": "Chart",
+      "description": "A config-driven bar/line chart. Real shadcn/ui's chart.tsx wraps Recharts; since there is no Compose Multiplatform equivalent, this draws directly via Canvas.",
+      "category": "data-and-layout",
+      "family": "data",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "bar_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chart_bar_states_dark.png"
+        },
+        {
+          "state": "bar_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chart_bar_states_light.png"
+        },
+        {
+          "state": "line_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chart_line_states_dark.png"
+        },
+        {
+          "state": "line_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chart_line_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "calendar",
+      "title": "Calendar",
+      "description": "A single-month date picker grid with a highlighted selection and today marker.",
+      "category": "data-and-layout",
+      "family": "data",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "carousel",
+      "title": "Carousel",
+      "description": "A swipeable, snap-scrolling set of slides, built directly on Compose's own Pager.",
+      "category": "data-and-layout",
+      "family": "data",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "overlap_regression",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/carousel_overlap_regression_light.png"
+        },
+        {
+          "state": "previous_isolated_size",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/carousel_previous_isolated_size_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/carousel_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/carousel_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "resizable",
+      "title": "Resizable",
+      "description": "Two panes divided by a draggable handle.",
+      "category": "data-and-layout",
+      "family": "layout",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "narrow_first",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/resizable_narrow_first_light.png"
+        },
+        {
+          "state": "sidebar_and_content",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/resizable_sidebar_and_content_dark.png"
+        },
+        {
+          "state": "sidebar_and_content",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/resizable_sidebar_and_content_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/resizable_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/resizable_states_light.png"
+        },
+        {
+          "state": "wide_first",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/resizable_wide_first_light.png"
+        }
+      ]
+    },
+    {
+      "id": "sidebar",
+      "title": "Sidebar",
+      "description": "A collapsible side navigation rail with grouped menu sections and a main content inset.",
+      "category": "data-and-layout",
+      "family": "overlay",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "app_shell",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sidebar_app_shell_dark.png"
+        },
+        {
+          "state": "app_shell",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sidebar_app_shell_light.png"
+        },
+        {
+          "state": "collapsed",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sidebar_collapsed_dark.png"
+        },
+        {
+          "state": "collapsed",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sidebar_collapsed_light.png"
+        },
+        {
+          "state": "expanded",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sidebar_expanded_dark.png"
+        },
+        {
+          "state": "expanded",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sidebar_expanded_light.png"
+        },
+        {
+          "state": "trigger_focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/sidebar_trigger_focused_light.png"
+        }
+      ]
+    },
+    {
+      "id": "message",
+      "title": "Message",
+      "description": "One chat-transcript row: avatar and content laid out side by side, mirrored for the sender's own messages.",
+      "category": "ai-elements",
+      "family": "ai",
+      "isNew": false,
+      "properties": {
+        "ShadcnMessageAlign": [
+          "Start",
+          "End"
+        ]
+      },
+      "previews": [
+        {
+          "state": "conversation_with_bubbles",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_conversation_with_bubbles_dark.png"
+        },
+        {
+          "state": "conversation_with_bubbles",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_conversation_with_bubbles_light.png"
+        },
+        {
+          "state": "end_aligned",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_end_aligned_dark.png"
+        },
+        {
+          "state": "end_aligned",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_end_aligned_light.png"
+        },
+        {
+          "state": "group",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_group_light.png"
+        },
+        {
+          "state": "scroller_button_visible",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_button_visible_light.png"
+        },
+        {
+          "state": "scroller_chat_panel",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_chat_panel_dark.png"
+        },
+        {
+          "state": "scroller_chat_panel",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_chat_panel_light.png"
+        },
+        {
+          "state": "scroller_icon_override",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_icon_override_light.png"
+        },
+        {
+          "state": "scroller_overflow_settles_at_bottom",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_overflow_settles_at_bottom_dark.png"
+        },
+        {
+          "state": "scroller_overflow_settles_at_bottom",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_overflow_settles_at_bottom_light.png"
+        },
+        {
+          "state": "scroller_short_content",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_short_content_dark.png"
+        },
+        {
+          "state": "scroller_short_content",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_short_content_light.png"
+        },
+        {
+          "state": "start_aligned",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_start_aligned_dark.png"
+        },
+        {
+          "state": "start_aligned",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_start_aligned_light.png"
+        }
+      ]
+    },
+    {
+      "id": "bubble",
+      "title": "Bubble",
+      "description": "A single chat message bubble, self-aligned to the left or right of the transcript.",
+      "category": "ai-elements",
+      "family": "ai",
+      "isNew": false,
+      "properties": {
+        "ShadcnBubbleVariant": [
+          "Default",
+          "Secondary",
+          "Muted",
+          "Outline",
+          "Ghost",
+          "Destructive"
+        ]
+      },
+      "previews": [
+        {
+          "state": "alignment",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/bubble_alignment_dark.png"
+        },
+        {
+          "state": "alignment",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/bubble_alignment_light.png"
+        },
+        {
+          "state": "conversation_with_reactions",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/bubble_conversation_with_reactions_dark.png"
+        },
+        {
+          "state": "conversation_with_reactions",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/bubble_conversation_with_reactions_light.png"
+        },
+        {
+          "state": "variants",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/bubble_variants_dark.png"
+        },
+        {
+          "state": "variants",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/bubble_variants_light.png"
+        }
+      ]
+    },
+    {
+      "id": "attachment",
+      "title": "Attachment",
+      "description": "A file-attachment chip for a chat composer's upload tray, with upload/processing/error states.",
+      "category": "ai-elements",
+      "family": "ai",
+      "isNew": false,
+      "properties": {
+        "ShadcnAttachmentState": [
+          "Idle",
+          "Uploading",
+          "Processing",
+          "Error",
+          "Done"
+        ],
+        "ShadcnAttachmentSize": [
+          "Default",
+          "Sm",
+          "Xs"
+        ],
+        "ShadcnAttachmentOrientation": [
+          "Horizontal",
+          "Vertical"
+        ]
+      },
+      "previews": [
+        {
+          "state": "composer_upload_tray",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/attachment_composer_upload_tray_dark.png"
+        },
+        {
+          "state": "composer_upload_tray",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/attachment_composer_upload_tray_light.png"
+        },
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/attachment_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/attachment_states_light.png"
+        },
+        {
+          "state": "vertical",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/attachment_vertical_dark.png"
+        },
+        {
+          "state": "vertical",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/attachment_vertical_light.png"
+        }
+      ]
+    },
+    {
+      "id": "marker",
+      "title": "Marker",
+      "description": "A labeled divider for a chat transcript, e.g. a date separator or a pinned-messages banner.",
+      "category": "ai-elements",
+      "family": "ai",
+      "isNew": false,
+      "properties": {
+        "ShadcnMarkerVariant": [
+          "Default",
+          "Separator",
+          "Border"
+        ]
+      },
+      "previews": [
+        {
+          "state": "border",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/marker_border_light.png"
+        },
+        {
+          "state": "default",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/marker_default_dark.png"
+        },
+        {
+          "state": "default",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/marker_default_light.png"
+        },
+        {
+          "state": "separator",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/marker_separator_dark.png"
+        },
+        {
+          "state": "separator",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/marker_separator_light.png"
+        }
+      ]
+    },
+    {
+      "id": "message-scroller",
+      "title": "Message Scroller",
+      "description": "A chat-transcript scroll container that follows new messages to the bottom -- but only while the reader hasn't scrolled away -- with a floating jump-to-bottom button when they have.",
+      "category": "ai-elements",
+      "family": "ai",
+      "isNew": false,
+      "properties": {
+        "ShadcnMessageScrollerDirection": [
+          "Start",
+          "End"
+        ]
+      },
+      "previews": [
+        {
+          "state": "button_visible",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_button_visible_light.png"
+        },
+        {
+          "state": "chat_panel",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_chat_panel_dark.png"
+        },
+        {
+          "state": "chat_panel",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_chat_panel_light.png"
+        },
+        {
+          "state": "icon_override",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_icon_override_light.png"
+        },
+        {
+          "state": "overflow_settles_at_bottom",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_overflow_settles_at_bottom_dark.png"
+        },
+        {
+          "state": "overflow_settles_at_bottom",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_overflow_settles_at_bottom_light.png"
+        },
+        {
+          "state": "short_content",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_short_content_dark.png"
+        },
+        {
+          "state": "short_content",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/message_scroller_short_content_light.png"
+        }
+      ]
+    },
+    {
+      "id": "shimmer",
+      "title": "Shimmer",
+      "description": "A sweeping highlight animation for \"generating response\"/\"thinking\" text states -- a modifier, not a standalone component.",
+      "category": "utils",
+      "family": "utils",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/shimmer_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/shimmer_states_light.png"
+        }
+      ]
+    },
+    {
+      "id": "scroll-fade",
+      "title": "Scroll Fade",
+      "description": "A scroll-position-aware fade at the edges of a scrollable container, hinting overflow without a hard cut -- a modifier, not a standalone component.",
+      "category": "utils",
+      "family": "utils",
+      "isNew": false,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/scroll_fade_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/scroll_fade_states_light.png"
+        }
+      ]
+    }
+  ]
+}
