@@ -52,6 +52,13 @@ must run first — the metadata generator's preview URLs point at its output
 | `stylePreset` | The one style preset (of 8 this library ships) every preview image below was captured under. Read `stylePresetNote` before assuming these previews represent "the" look of a component — swapping presets changes shape/spacing/animation. |
 | `components` | Array described below. |
 
+Beyond `stylePreset`, `ShadcnTheme` has two more independent theming axes, neither varied here:
+every preview also used `baseColor = ShadcnBaseColor.Neutral` (of 7: Neutral, Stone, Zinc, Mauve,
+Olive, Mist, Taupe) and `accent = ShadcnAccent.Base` (of 18: Base + 17 named colors, e.g. Blue,
+Emerald, Rose, Violet — `accent` only overrides `primary`/`onPrimary` on top of whichever
+`baseColor` is active). Unlike `stylePreset`, the screenshot-test harness (`ShadcnScreenshotTest`)
+doesn't even expose these as parameters, so there's no per-color variant set to link to yet.
+
 **Per component**
 
 | Field | Meaning |
