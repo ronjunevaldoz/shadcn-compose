@@ -10,7 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnThemeData
@@ -34,7 +37,13 @@ enum class ShadcnTextStyle {
  * ShadcnText("Hello world")
  * ShadcnText("Title", style = ShadcnTextStyle.TitleLarge)
  * ShadcnText("Subtitle", style = ShadcnTextStyle.BodySmall, muted = true)
+ * ShadcnText("Centered heading", style = ShadcnTextStyle.TitleLarge, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
  * ```
+ *
+ * [fontWeight]/[textAlign] override the corresponding field on the resolved
+ * [ShadcnTextStyle]'s [TextStyle] when non-null; `null` (the default) leaves the style's
+ * own value untouched -- same override-only-when-set convention the rest of this
+ * library's `Style {}` DSL uses elsewhere.
  */
 @Composable
 fun ShadcnText(
@@ -45,9 +54,11 @@ fun ShadcnText(
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
     color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
 ) {
     val theme = ShadcnTheme.LocalShadcnTheme.current
-    val resolvedStyle = resolveShadcnTypography(theme, style)
+    val resolvedStyle = resolveShadcnTypography(theme, style, fontWeight, textAlign)
 
     // Components like ShadcnButton/ShadcnBadge set an ambient `contentColor` via their own
     // Style block (styleable() + contentColor(...)) so that a plain, colorless ShadcnText
@@ -61,6 +72,51 @@ fun ShadcnText(
     // node, which (being nearer) overrides the ancestor's. The default/uncolored case stays
     // unwrapped so existing ambient-color inheritance (buttons, badges, chips, alerts, ...)
     // is untouched.
+    val hasColorOverride = color != Color.Unspecified || muted
+    val textColor = resolveShadcnTextColor(theme, color, muted)
+
+    if (hasColorOverride) {
+        val styleState = remember { MutableStyleState(interactionSource = null) }
+        val contentColorStyle = remember(textColor) { Style { contentColor(textColor) } }
+        BasicText(
+            text = text,
+            modifier = modifier.styleable(styleState, contentColorStyle),
+            style = resolvedStyle.copy(color = textColor),
+            maxLines = maxLines,
+            overflow = overflow,
+        )
+    } else {
+        BasicText(
+            text = text,
+            modifier = modifier,
+            style = resolvedStyle.copy(color = textColor),
+            maxLines = maxLines,
+            overflow = overflow,
+        )
+    }
+}
+
+/**
+ * [AnnotatedString] overload of [ShadcnText] -- for multi-line/styled text built with
+ * `buildAnnotatedString {}` (e.g. a name assembled from several optional parts, a price
+ * with a conditional discount suffix). Mirrors the [String] overload's parameters and
+ * color/style resolution exactly; see that overload's doc for the [fontWeight]/[textAlign]
+ * override behavior.
+ */
+@Composable
+fun ShadcnText(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    style: ShadcnTextStyle = ShadcnTextStyle.BodyMedium,
+    muted: Boolean = false,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip,
+    color: Color = Color.Unspecified,
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+) {
+    val theme = ShadcnTheme.LocalShadcnTheme.current
+    val resolvedStyle = resolveShadcnTypography(theme, style, fontWeight, textAlign)
     val hasColorOverride = color != Color.Unspecified || muted
     val textColor = resolveShadcnTextColor(theme, color, muted)
 
@@ -105,20 +161,32 @@ internal fun resolveShadcnTextColor(
  * Resolves the same [ShadcnTextStyle] -> [TextStyle] mapping [ShadcnText] uses, factored out so
  * [io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmojiText] can match it exactly
  * without the two composables' typography rules drifting apart over time.
+ *
+ * [fontWeight]/[textAlign] override the resolved [TextStyle]'s own field when non-null;
+ * `null` leaves the style's baked-in value untouched.
  */
 internal fun resolveShadcnTypography(
     theme: ShadcnThemeData,
     style: ShadcnTextStyle,
-): TextStyle =
-    when (style) {
-        ShadcnTextStyle.DisplayLarge -> theme.typography.displayLarge
-        ShadcnTextStyle.DisplayMedium -> theme.typography.displayMedium
-        ShadcnTextStyle.TitleLarge -> theme.typography.titleLarge
-        ShadcnTextStyle.TitleMedium -> theme.typography.titleMedium
-        ShadcnTextStyle.TitleSmall -> theme.typography.titleSmall
-        ShadcnTextStyle.BodyLarge -> theme.typography.bodyLarge
-        ShadcnTextStyle.BodyMedium -> theme.typography.bodyMedium
-        ShadcnTextStyle.BodySmall -> theme.typography.bodySmall
-        ShadcnTextStyle.LabelLarge -> theme.typography.labelLarge
-        ShadcnTextStyle.LabelSmall -> theme.typography.labelSmall
-    }
+    fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null,
+): TextStyle {
+    val base =
+        when (style) {
+            ShadcnTextStyle.DisplayLarge -> theme.typography.displayLarge
+            ShadcnTextStyle.DisplayMedium -> theme.typography.displayMedium
+            ShadcnTextStyle.TitleLarge -> theme.typography.titleLarge
+            ShadcnTextStyle.TitleMedium -> theme.typography.titleMedium
+            ShadcnTextStyle.TitleSmall -> theme.typography.titleSmall
+            ShadcnTextStyle.BodyLarge -> theme.typography.bodyLarge
+            ShadcnTextStyle.BodyMedium -> theme.typography.bodyMedium
+            ShadcnTextStyle.BodySmall -> theme.typography.bodySmall
+            ShadcnTextStyle.LabelLarge -> theme.typography.labelLarge
+            ShadcnTextStyle.LabelSmall -> theme.typography.labelSmall
+        }
+    if (fontWeight == null && textAlign == null) return base
+    return base.copy(
+        fontWeight = fontWeight ?: base.fontWeight,
+        textAlign = textAlign ?: base.textAlign,
+    )
+}

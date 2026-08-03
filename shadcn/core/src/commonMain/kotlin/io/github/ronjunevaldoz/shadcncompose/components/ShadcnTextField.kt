@@ -42,6 +42,7 @@ fun ShadcnTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    readOnly: Boolean = false,
     label: String? = null,
     placeholder: String? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
@@ -99,6 +100,7 @@ fun ShadcnTextField(
             value = value,
             onValueChange = onValueChange,
             enabled = enabled,
+            readOnly = readOnly,
             // Explicit color: BasicTextField paints its value text (and cursor) from
             // textStyle/cursorBrush, not from the ambient Style contentColor -- without
             // this the value text stays near-black in dark mode (same lesson as
