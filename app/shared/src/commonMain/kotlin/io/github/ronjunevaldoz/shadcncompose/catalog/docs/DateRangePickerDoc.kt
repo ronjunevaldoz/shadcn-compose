@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,9 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarDateRange
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarRange
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnPopover
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSelect
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSwitch
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 import io.github.ronjunevaldoz.heroicons.outline.Calendar as CalendarIcon
@@ -129,6 +132,28 @@ private val DATE_RANGE_PRESETS =
             )
         },
     )
+
+/** Linear day count (proleptic Gregorian) -- lets [previousPeriod] measure a range's length in O(1). */
+private fun toEpochDay(date: ShadcnCalendarDate): Long {
+    var days = 365L * date.year + (date.year / 4 - date.year / 100 + date.year / 400)
+    for (m in 1 until date.month) days += daysInRangeMonth(date.year, m)
+    return days + date.day
+}
+
+/**
+ * The same-length period immediately preceding [range] -- e.g. range Jan 20-Feb 9 (21 days)
+ * compares against Dec 30-Jan 19 (21 days). Mirrors the common analytics-dashboard "compare to
+ * previous period" convention (Vercel Analytics, Google Analytics, etc.); real shadcn/ui has no
+ * opinion on this, it's app-specific business logic layered on top of the plain range picker.
+ */
+private fun previousPeriod(range: ShadcnCalendarDateRange): ShadcnCalendarDateRange? {
+    val start = range.start ?: return null
+    val end = range.end ?: return null
+    val lengthDays = (toEpochDay(end) - toEpochDay(start)).toInt()
+    val comparisonEnd = addDaysToRangeDate(start, -1)
+    val comparisonStart = addDaysToRangeDate(comparisonEnd, -lengthDays)
+    return ShadcnCalendarDateRange(comparisonStart, comparisonEnd)
+}
 
 /**
  * Not a standalone registry component in real shadcn/ui either -- same "Popover + Calendar"
@@ -342,6 +367,147 @@ val dateRangePickerDoc =
                                                 options = (2024..2028).toList(),
                                                 onValueChange = { year = it },
                                             )
+                                        }
+                                        ShadcnCalendarRange(
+                                            year = year,
+                                            month = month,
+                                            onMonthChange = { y, m ->
+                                                year = y
+                                                month = m
+                                            },
+                                            range = range,
+                                            onRangeChange = { range = it },
+                                            today = today,
+                                            numberOfMonths = 2,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    },
+                ),
+                ComponentExample(
+                    title = "Compare",
+                    code =
+                        """
+                        val today = remember { ShadcnCalendarDate(2026, 3, 15) }
+                        var open by remember { mutableStateOf(false) }
+                        var year by remember { mutableStateOf(today.year) }
+                        var month by remember { mutableStateOf(today.month) }
+                        var range by remember { mutableStateOf(ShadcnCalendarDateRange(today, today)) }
+                        var compareEnabled by remember { mutableStateOf(false) }
+                        val comparisonRange = if (compareEnabled) previousPeriod(range) else null
+
+                        Box {
+                            ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
+                                Image(imageVector = CalendarIcon, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Column {
+                                    ShadcnText(formatRange(range))
+                                    if (comparisonRange != null) {
+                                        ShadcnText("vs. " + formatRange(comparisonRange), muted = true, style = ShadcnTextStyle.LabelSmall)
+                                    }
+                                }
+                            }
+                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null) {
+                                Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        ShadcnSwitch(checked = compareEnabled, onCheckedChange = { compareEnabled = it })
+                                        ShadcnText("Compare to previous period")
+                                    }
+                                    Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
+                                        Column(
+                                            modifier = Modifier.width(140.dp),
+                                            verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xxs),
+                                        ) {
+                                            DATE_RANGE_PRESETS.forEach { preset ->
+                                                val presetRange = preset.rangeFor(today)
+                                                ShadcnButton(
+                                                    onClick = {
+                                                        range = presetRange
+                                                        presetRange.start?.let { year = it.year; month = it.month }
+                                                    },
+                                                    variant = if (range == presetRange) ButtonVariant.Secondary else ButtonVariant.Ghost,
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                ) { ShadcnText(preset.label) }
+                                            }
+                                        }
+                                        ShadcnCalendarRange(
+                                            year = year, month = month,
+                                            onMonthChange = { y, m -> year = y; month = m },
+                                            range = range, onRangeChange = { range = it },
+                                            today = today, numberOfMonths = 2,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        """.trimIndent(),
+                    preview = {
+                        val today = remember { ShadcnCalendarDate(2026, 3, 15) }
+                        var open by remember { mutableStateOf(false) }
+                        var year by remember { mutableStateOf(today.year) }
+                        var month by remember { mutableStateOf(today.month) }
+                        var range by remember { mutableStateOf(ShadcnCalendarDateRange(today, today)) }
+                        var compareEnabled by remember { mutableStateOf(true) }
+                        val comparisonRange = if (compareEnabled) previousPeriod(range) else null
+                        Box {
+                            ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
+                                Image(
+                                    imageVector = CalendarIcon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    colorFilter = ColorFilter.tint(shadcnTheme.colors.onSurface),
+                                )
+                                Column {
+                                    ShadcnText(formatRange(range))
+                                    if (comparisonRange != null) {
+                                        ShadcnText(
+                                            "vs. " + formatRange(comparisonRange),
+                                            muted = true,
+                                            style = ShadcnTextStyle.LabelSmall,
+                                        )
+                                    }
+                                }
+                            }
+                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null) {
+                                Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        ShadcnSwitch(
+                                            checked = compareEnabled,
+                                            onCheckedChange = { compareEnabled = it },
+                                        )
+                                        ShadcnText("Compare to previous period")
+                                    }
+                                    Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
+                                        Column(
+                                            modifier = Modifier.width(140.dp),
+                                            verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xxs),
+                                        ) {
+                                            DATE_RANGE_PRESETS.forEach { preset ->
+                                                val presetRange = preset.rangeFor(today)
+                                                ShadcnButton(
+                                                    onClick = {
+                                                        range = presetRange
+                                                        presetRange.start?.let {
+                                                            year = it.year
+                                                            month = it.month
+                                                        }
+                                                    },
+                                                    variant =
+                                                        if (range == presetRange) {
+                                                            ButtonVariant.Secondary
+                                                        } else {
+                                                            ButtonVariant.Ghost
+                                                        },
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                ) { ShadcnText(preset.label) }
+                                            }
                                         }
                                         ShadcnCalendarRange(
                                             year = year,
