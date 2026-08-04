@@ -42,6 +42,7 @@ val componentDocsById: Map<String, ComponentDoc> =
         comboboxDoc,
         selectDoc,
         datePickerDoc,
+        dateRangePickerDoc,
         commandDoc,
         menubarDoc,
         navigationMenuDoc,

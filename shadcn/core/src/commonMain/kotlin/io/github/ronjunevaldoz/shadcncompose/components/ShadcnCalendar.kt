@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
 import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
@@ -40,6 +41,16 @@ data class ShadcnCalendarDate(val year: Int, val month: Int, val day: Int) : Com
         return day - other.day
     }
 }
+
+/**
+ * A `start`/`end` pair for [ShadcnCalendarRange], matching real shadcn/ui's `DateRange`
+ * (`react-day-picker`'s range-mode value). Both null before any pick; `start` only once
+ * the first day is picked; both set once a full range is picked.
+ */
+data class ShadcnCalendarDateRange(
+    val start: ShadcnCalendarDate? = null,
+    val end: ShadcnCalendarDate? = null,
+)
 
 private val MONTH_NAMES =
     listOf(
@@ -159,6 +170,171 @@ fun ShadcnCalendar(
     }
 }
 
+/**
+ * A range-select month grid, matching real shadcn/ui's `calendar.tsx` `mode="range"` --
+ * tapping picks a start day, then an end day, with the days between filled as a connected
+ * band (rounded caps at the start/end, flat in between). A third tap starts a new range.
+ *
+ * [numberOfMonths] mirrors real Calendar's own prop of the same name -- real shadcn's
+ * actual date-range-picker recipe passes `numberOfMonths={2}` so both the start and end
+ * month are visible without navigating (see [io.github.ronjunevaldoz.shadcncompose.catalog.docs.dateRangePickerDoc]
+ * in the catalog app); the plain single-month default (`1`) matches Calendar's own real
+ * default so single-month range selection still works with no extra config. When more
+ * than one month is shown, only the leftmost gets a "previous" chevron and only the
+ * rightmost gets a "next" chevron -- the months in between are caption-only, matching
+ * real shadcn's dual-calendar layout exactly.
+ *
+ * Real shadcn/Radix also live-previews the in-progress range on pointer hover before the
+ * end day is picked; this only implements the tap-to-pick range itself, not that hover
+ * preview -- a deliberate simplification (hover has no touch/mobile equivalent anyway,
+ * and per-cell hover tracking across 42 cells isn't worth it for a preview-only effect).
+ *
+ * Usage:
+ * ```
+ * var year by remember { mutableStateOf(2026) }
+ * var month by remember { mutableStateOf(3) }
+ * var range by remember { mutableStateOf(ShadcnCalendarDateRange()) }
+ * ShadcnCalendarRange(
+ *     year = year, month = month,
+ *     onMonthChange = { y, m -> year = y; month = m },
+ *     range = range, onRangeChange = { range = it },
+ *     numberOfMonths = 2,
+ * )
+ * ```
+ */
+@Composable
+fun ShadcnCalendarRange(
+    year: Int,
+    month: Int,
+    onMonthChange: (year: Int, month: Int) -> Unit,
+    range: ShadcnCalendarDateRange,
+    onRangeChange: (ShadcnCalendarDateRange) -> Unit,
+    modifier: Modifier = Modifier,
+    today: ShadcnCalendarDate? = null,
+    numberOfMonths: Int = 1,
+) {
+    var focusedDate by remember(range.start, range.end) { mutableStateOf(range.end ?: range.start ?: today) }
+
+    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.lg)) {
+        var monthCursor = year to month
+        for (index in 0 until numberOfMonths) {
+            val (monthYear, monthNum) = monthCursor
+            RangeCalendarMonth(
+                year = monthYear,
+                month = monthNum,
+                showPrevButton = index == 0,
+                showNextButton = index == numberOfMonths - 1,
+                onPrevClick = {
+                    val (y, m) = previousMonth(year, month)
+                    onMonthChange(y, m)
+                },
+                onNextClick = {
+                    val (y, m) = nextMonth(year, month)
+                    onMonthChange(y, m)
+                },
+                range = range,
+                today = today,
+                focusedDate = focusedDate,
+                onDayClick = { date ->
+                    focusedDate = date
+                    onRangeChange(nextRange(range, date))
+                },
+            )
+            monthCursor = nextMonth(monthYear, monthNum)
+        }
+    }
+}
+
+@Composable
+private fun RangeCalendarMonth(
+    year: Int,
+    month: Int,
+    showPrevButton: Boolean,
+    showNextButton: Boolean,
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
+    range: ShadcnCalendarDateRange,
+    today: ShadcnCalendarDate?,
+    focusedDate: ShadcnCalendarDate?,
+    onDayClick: (ShadcnCalendarDate) -> Unit,
+) {
+    Column(
+        modifier = Modifier.padding(shadcnTheme.spacing.md),
+        verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
+    ) {
+        RangeCalendarHeader(year, month, showPrevButton, showNextButton, onPrevClick, onNextClick)
+        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.size(CELL_SIZE * 7, CELL_SIZE)) {
+            WEEKDAY_LABELS.forEach { label ->
+                Box(modifier = Modifier.size(CELL_SIZE), contentAlignment = Alignment.Center) {
+                    ShadcnText(label, style = ShadcnTextStyle.LabelSmall, muted = true)
+                }
+            }
+        }
+        val weeks = remember(year, month) { buildMonthGrid(year, month) }
+        weeks.forEach { week ->
+            Row {
+                week.forEach { cell ->
+                    val date = cell.date
+                    val isRangeStart = range.start != null && date == range.start
+                    val isRangeEnd = range.end != null && date == range.end
+                    val isInRange = range.start != null && range.end != null && date > range.start && date < range.end
+                    CalendarDayCell(
+                        cell = cell,
+                        isSelected = isRangeStart || isRangeEnd,
+                        isToday = today != null && date == today,
+                        isFocused = date == focusedDate,
+                        isRangeStart = isRangeStart,
+                        isRangeEnd = isRangeEnd,
+                        isInRange = isInRange,
+                        onClick = { onDayClick(date) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun RangeCalendarHeader(
+    year: Int,
+    month: Int,
+    showPrevButton: Boolean,
+    showNextButton: Boolean,
+    onPrevClick: () -> Unit,
+    onNextClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.size(CELL_SIZE * 7, CELL_SIZE),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (showPrevButton) {
+            CalendarNavButton(pointingLeft = true, onClick = onPrevClick)
+        } else {
+            Box(modifier = Modifier.size(28.dp))
+        }
+        ShadcnText("${MONTH_NAMES[month - 1]} $year", style = ShadcnTextStyle.LabelLarge)
+        if (showNextButton) {
+            CalendarNavButton(pointingLeft = false, onClick = onNextClick)
+        } else {
+            Box(modifier = Modifier.size(28.dp))
+        }
+    }
+}
+
+private fun nextRange(
+    current: ShadcnCalendarDateRange,
+    clicked: ShadcnCalendarDate,
+): ShadcnCalendarDateRange =
+    if (current.start == null || current.end != null) {
+        // No range in progress, or a full range already picked -- start a new one.
+        ShadcnCalendarDateRange(start = clicked, end = null)
+    } else {
+        // One end already picked -- complete the range, normalizing so start <= end
+        // regardless of which day the second tap lands on.
+        ShadcnCalendarDateRange(start = minOf(current.start, clicked), end = maxOf(current.start, clicked))
+    }
+
 private val CELL_SIZE = 36.dp
 
 private data class CalendarCell(val date: ShadcnCalendarDate, val inCurrentMonth: Boolean)
@@ -242,15 +418,23 @@ private fun CalendarDayCell(
     isToday: Boolean,
     isFocused: Boolean,
     onClick: () -> Unit,
+    isRangeStart: Boolean = false,
+    isRangeEnd: Boolean = false,
+    isInRange: Boolean = false,
 ) {
     val theme = shadcnTheme
     val interactionSource = remember { MutableInteractionSource() }
     val styleState = remember { MutableStyleState(interactionSource) }
+    // Range cells touch edge-to-edge (no gap) so the fill reads as one connected band with
+    // rounded caps only at the start/end -- single-mode/non-range cells keep their gap.
+    val cellShape = rangeAwareCellShape(theme.shapes.md, isRangeStart, isRangeEnd, isInRange)
     val cellStyle =
         Style {
-            shape(RoundedCornerShape(theme.shapes.md))
+            shape(cellShape)
             if (isSelected) {
                 background(theme.colors.primary)
+            } else if (isInRange) {
+                background(theme.colors.muted)
             } else if (isToday) {
                 borderWidth(1.dp)
                 borderColor(theme.colors.border)
@@ -265,8 +449,8 @@ private fun CalendarDayCell(
         modifier =
             Modifier
                 .size(CELL_SIZE)
-                .padding(2.dp)
-                .clip(RoundedCornerShape(shadcnTheme.shapes.md))
+                .padding(if (isRangeStart || isRangeEnd || isInRange) 0.dp else 2.dp)
+                .clip(cellShape)
                 .styleable(styleState, cellStyle)
                 .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -279,3 +463,17 @@ private fun CalendarDayCell(
         )
     }
 }
+
+private fun rangeAwareCellShape(
+    radius: Dp,
+    isRangeStart: Boolean,
+    isRangeEnd: Boolean,
+    isInRange: Boolean,
+): RoundedCornerShape =
+    when {
+        isRangeStart && isRangeEnd -> RoundedCornerShape(radius) // single-day range
+        isRangeStart -> RoundedCornerShape(topStart = radius, bottomStart = radius, topEnd = 0.dp, bottomEnd = 0.dp)
+        isRangeEnd -> RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = radius, bottomEnd = radius)
+        isInRange -> RoundedCornerShape(0.dp)
+        else -> RoundedCornerShape(radius)
+    }

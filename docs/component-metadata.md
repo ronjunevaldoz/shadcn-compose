@@ -86,7 +86,7 @@ actual UX for that pattern, regardless of which of those three specific componen
 | Family | Components |
 |---|---|
 | `action` | button, button-group |
-| `field` | text-field, textarea, select, dropdown-menu, popover, input-group, input-otp, combobox, date-picker, slider, field |
+| `field` | text-field, textarea, select, dropdown-menu, popover, input-group, input-otp, combobox, date-picker, date-range-picker, slider, field |
 | `overlay` | dialog, tooltip, sheet, sidebar, context-menu, drawer, alert-dialog, hover-card |
 | `selection` | tabs, radio-group, switch, command, menubar, navigation-menu, toggle, toggle-group, checkbox, stepper |
 | `feedback` | alert, progress, skeleton, spinner, toast |

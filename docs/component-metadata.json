@@ -1559,6 +1559,28 @@
       ]
     },
     {
+      "id": "date-range-picker",
+      "title": "Date Range Picker",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/date-picker",
+      "description": "A date range picker built by composing Popover and Calendar's range mode -- not a standalone component in real shadcn/ui either.",
+      "category": "overlays-and-navigation",
+      "family": "field",
+      "isNew": true,
+      "properties": {},
+      "previews": [
+        {
+          "state": "states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/date_range_picker_states_dark.png"
+        },
+        {
+          "state": "states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/date_range_picker_states_light.png"
+        }
+      ]
+    },
+    {
       "id": "command",
       "title": "Command",
       "referenceUrl": "https://ui.shadcn.com/docs/components/base/command",
@@ -1743,6 +1765,26 @@
       "isNew": false,
       "properties": {},
       "previews": [
+        {
+          "state": "range_dual_month_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_range_dual_month_states_dark.png"
+        },
+        {
+          "state": "range_dual_month_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_range_dual_month_states_light.png"
+        },
+        {
+          "state": "range_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_range_states_dark.png"
+        },
+        {
+          "state": "range_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_range_states_light.png"
+        },
         {
           "state": "states",
           "theme": "dark",

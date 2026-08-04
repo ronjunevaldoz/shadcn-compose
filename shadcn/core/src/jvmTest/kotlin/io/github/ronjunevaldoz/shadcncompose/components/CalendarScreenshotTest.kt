@@ -20,4 +20,47 @@ class CalendarScreenshotTest : ShadcnScreenshotTest() {
     @Test fun states_light() = states(darkTheme = false)
 
     @Test fun states_dark() = states(darkTheme = true)
+
+    private fun rangeStates(darkTheme: Boolean) {
+        snapshot("calendar_range_states", darkTheme = darkTheme) {
+            ShadcnCalendarRange(
+                year = 2026,
+                month = 3,
+                onMonthChange = { _, _ -> },
+                range =
+                    ShadcnCalendarDateRange(
+                        start = ShadcnCalendarDate(2026, 3, 10),
+                        end = ShadcnCalendarDate(2026, 3, 15),
+                    ),
+                onRangeChange = {},
+                today = ShadcnCalendarDate(2026, 3, 15),
+            )
+        }
+    }
+
+    @Test fun range_states_light() = rangeStates(darkTheme = false)
+
+    @Test fun range_states_dark() = rangeStates(darkTheme = true)
+
+    private fun rangeDualMonthStates(darkTheme: Boolean) {
+        snapshot("calendar_range_dual_month_states", darkTheme = darkTheme) {
+            ShadcnCalendarRange(
+                year = 2026,
+                month = 3,
+                onMonthChange = { _, _ -> },
+                range =
+                    ShadcnCalendarDateRange(
+                        start = ShadcnCalendarDate(2026, 3, 25),
+                        end = ShadcnCalendarDate(2026, 4, 5),
+                    ),
+                onRangeChange = {},
+                today = ShadcnCalendarDate(2026, 3, 15),
+                numberOfMonths = 2,
+            )
+        }
+    }
+
+    @Test fun range_dual_month_states_light() = rangeDualMonthStates(darkTheme = false)
+
+    @Test fun range_dual_month_states_dark() = rangeDualMonthStates(darkTheme = true)
 }

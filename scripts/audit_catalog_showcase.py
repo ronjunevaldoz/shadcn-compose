@@ -36,9 +36,13 @@ NO_REAL_REFERENCE_EQUIVALENT = {"chip", "stepper", "shimmer", "scroll-fade"}
 
 
 def parse_registry_ids():
+    """`\\s*` after `CatalogEntry\\(` tolerates both the single-line form and the
+    multi-line form ktlint wraps a call into once its args exceed the max line length
+    (e.g. once `isNew = true` pushes it over) -- see the matching note in
+    generate_component_metadata.py's parse_catalog_entries()."""
     text = CATALOG_REGISTRY.read_text()
     ids = set()
-    for m in re.finditer(r'CatalogEntry\(id = "([^"]+)"', text):
+    for m in re.finditer(r'CatalogEntry\(\s*id\s*=\s*"([^"]+)"', text):
         if m.group(1) not in GETTING_STARTED_IDS:
             ids.add(m.group(1))
     return ids

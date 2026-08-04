@@ -87,6 +87,7 @@ components against this one) — see [`component-metadata.json`](component-metad
 | `ShadcnCombobox` | Searchable/filterable single-select dropdown | combobox, searchable dropdown, autocomplete, filterable select |
 | `ShadcnSelect` | Plain (non-searchable) dropdown select | select, dropdown, picker, plain select list |
 | Date Picker (recipe: `ShadcnPopover` + `ShadcnCalendar`) | Pick a date via a calendar popup | date picker, calendar picker, choose a date |
+| Date Range Picker (recipe: `ShadcnPopover` + `ShadcnCalendarRange`) | Pick a start/end date range via a calendar popup | date range picker, range calendar, start and end date, booking dates |
 | `ShadcnCommand` | Searchable/filterable action list (⌘K palette building block) | command palette, cmd+k, quick actions, fuzzy search menu |
 | `ShadcnMenubar` | Desktop-app-style "File Edit View" horizontal menu bar | menubar, app menu bar, desktop menu |
 | `ShadcnNavigationMenu` | Top-level site nav with optional flyout panels | navigation menu, nav bar, mega menu |

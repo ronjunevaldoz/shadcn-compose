@@ -52,7 +52,7 @@ FAMILY_BY_ID = {
     # field-family -- lets the user pick or enter a value
     "text-field": "field", "textarea": "field", "select": "field", "dropdown-menu": "field",
     "popover": "field", "input-group": "field", "input-otp": "field", "combobox": "field",
-    "date-picker": "field", "slider": "field", "field": "field",
+    "date-picker": "field", "date-range-picker": "field", "slider": "field", "field": "field",
     # overlay-family -- blocking/anchored surface layered over the page
     "dialog": "overlay", "tooltip": "overlay", "sheet": "overlay", "sidebar": "overlay",
     "context-menu": "overlay", "drawer": "overlay", "alert-dialog": "overlay", "hover-card": "overlay",
@@ -113,10 +113,15 @@ PROPERTY_TYPES_BY_ID = {
 
 
 def parse_catalog_entries():
+    """Matches both the single-line `CatalogEntry(id = "x", title = "Y", category = ...)`
+    form and the multi-line form ktlint wraps a call into once its args exceed the max
+    line length (e.g. once `isNew = true` pushes it over) -- `\\s*` between fields tolerates
+    either, including a trailing comma before the closing paren in the wrapped form."""
     text = CATALOG_REGISTRY.read_text()
     entries = []
     for m in re.finditer(
-        r'CatalogEntry\(id = "([^"]+)", title = "([^"]+)", category = CatalogCategory\.(\w+)(?:, isNew = (true|false))?\)',
+        r'CatalogEntry\(\s*id\s*=\s*"([^"]+)",\s*title\s*=\s*"([^"]+)",\s*'
+        r'category\s*=\s*CatalogCategory\.(\w+),?\s*(?:isNew\s*=\s*(true|false),?\s*)?\)',
         text,
     ):
         entry_id, title, category, is_new = m.groups()
