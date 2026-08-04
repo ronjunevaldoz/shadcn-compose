@@ -178,7 +178,7 @@ val dateRangePickerDoc =
                 ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
                     ShadcnText(formatRange(range), muted = range.start == null)
                 }
-                ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null) {
+                ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null, contentPadding = 0.dp) {
                     ShadcnCalendarRange(
                         year = year, month = month, onMonthChange = { y, m -> year = y; month = m },
                         range = range,
@@ -208,7 +208,7 @@ val dateRangePickerDoc =
                                 )
                                 ShadcnText(formatRange(range), muted = range.start == null)
                             }
-                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null) {
+                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null, contentPadding = 0.dp) {
                                 ShadcnCalendarRange(
                                     year = year,
                                     month = month,
@@ -238,7 +238,12 @@ val dateRangePickerDoc =
                                 )
                                 ShadcnText(formatRange(range), muted = range.start == null)
                             }
-                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null) {
+                            ShadcnPopover(
+                                expanded = open,
+                                onDismissRequest = { open = false },
+                                width = null,
+                                contentPadding = 0.dp,
+                            ) {
                                 ShadcnCalendarRange(
                                     year = year,
                                     month = month,

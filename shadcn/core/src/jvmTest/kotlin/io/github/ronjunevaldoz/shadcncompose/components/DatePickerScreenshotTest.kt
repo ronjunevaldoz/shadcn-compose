@@ -3,6 +3,7 @@
 package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import kotlin.test.Test
@@ -21,7 +22,7 @@ class DatePickerScreenshotTest : ShadcnScreenshotTest() {
                 ShadcnButton(onClick = {}, variant = ButtonVariant.Outline) {
                     ShadcnText("Pick a date", muted = true)
                 }
-                ShadcnPopover(expanded = true, onDismissRequest = {}) {
+                ShadcnPopover(expanded = true, onDismissRequest = {}, width = null, contentPadding = 0.dp) {
                     ShadcnCalendar(
                         year = 2026,
                         month = 1,

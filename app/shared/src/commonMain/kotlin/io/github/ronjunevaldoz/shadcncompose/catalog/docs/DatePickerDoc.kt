@@ -52,7 +52,7 @@ val datePickerDoc =
                 ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
                     ShadcnText(selected?.let(::formatDate) ?: "Pick a date", muted = selected == null)
                 }
-                ShadcnPopover(expanded = open, onDismissRequest = { open = false }) {
+                ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null, contentPadding = 0.dp) {
                     ShadcnCalendar(
                         year = year, month = month, onMonthChange = { y, m -> year = y; month = m },
                         selected = selected, onSelectedChange = { selected = it; open = false },
@@ -80,7 +80,7 @@ val datePickerDoc =
                                 )
                                 ShadcnText(selected?.let(::formatDate) ?: "Pick a date", muted = selected == null)
                             }
-                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }) {
+                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null, contentPadding = 0.dp) {
                                 ShadcnCalendar(
                                     year = year,
                                     month = month,
@@ -109,7 +109,12 @@ val datePickerDoc =
                                 )
                                 ShadcnText(selected?.let(::formatDate) ?: "Pick a date", muted = selected == null)
                             }
-                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }) {
+                            ShadcnPopover(
+                                expanded = open,
+                                onDismissRequest = { open = false },
+                                width = null,
+                                contentPadding = 0.dp,
+                            ) {
                                 ShadcnCalendar(
                                     year = year,
                                     month = month,

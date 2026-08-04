@@ -24,6 +24,13 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * range picker, for one, is wider than 288dp and would otherwise get clipped). Pass
  * `width = null` for that same wrap-content sizing.
  *
+ * [contentPadding] mirrors the same real override -- that `p-0` in `"w-auto p-0"` zeroes
+ * the *popover's own* padding specifically because a hosted `Calendar` already brings its
+ * own internal padding (real's `Calendar` is `p-3`; this library's [ShadcnCalendar]/
+ * [ShadcnCalendarRange] use `spacing.md`), so the default `spacing.lg` here would otherwise
+ * stack on top of it for a visibly over-padded result. Pass `contentPadding = 0.dp` (and
+ * `width = null`) together when hosting a calendar, matching real's `w-auto p-0` exactly.
+ *
  * Usage:
  * ```
  * var open by remember { mutableStateOf(false) }
@@ -42,6 +49,7 @@ fun ShadcnPopover(
     modifier: Modifier = Modifier,
     placement: ShadcnPopupPlacement = ShadcnPopupPlacement.Bottom,
     width: Dp? = 288.dp,
+    contentPadding: Dp = shadcnTheme.spacing.lg,
     content: @Composable () -> Unit,
 ) {
     ShadcnAnchoredPopup(expanded = expanded, onDismissRequest = onDismissRequest, placement = placement) {
@@ -51,7 +59,7 @@ fun ShadcnPopover(
                     .let { if (width != null) it.width(width) else it }
                     .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                     .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
-                    .padding(shadcnTheme.spacing.lg),
+                    .padding(contentPadding),
         ) {
             content()
         }
