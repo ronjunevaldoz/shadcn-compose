@@ -2,6 +2,10 @@
 
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +33,9 @@ import io.github.ronjunevaldoz.shadcncompose.icons.X
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnModalOverlay
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+
+/** Matches real's `data-[state=open]:animate-in ... duration-200` on Dialog/AlertDialog content. */
+internal const val SHADCN_DIALOG_ENTER_DURATION_MS = 200
 
 /**
  * A modal dialog. Matches real shadcn/ui's `dialog.tsx` shell (`rounded-lg border
@@ -71,23 +78,33 @@ fun ShadcnDialog(
         onDismissRequest = onDismissRequest,
         dismissOnClickOutside = dismissOnClickOutside,
     ) {
-        Box(
-            modifier =
-                modifier
-                    .width(400.dp)
-                    .background(shadcnTheme.colors.background, RoundedCornerShape(shadcnTheme.shapes.lg))
-                    .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.lg))
-                    .padding(shadcnTheme.spacing.xxl),
+        // Entrance only, matching real's fade-in+zoom-in-95 -- see ShadcnSheet's doc comment
+        // for why an exit animation isn't achievable (ShadcnModalOverlay tears the whole Popup
+        // down as soon as `visible` goes false, leaving no window to animate an exit inside of).
+        AnimatedVisibility(
+            visible = visible,
+            enter =
+                fadeIn(tween(SHADCN_DIALOG_ENTER_DURATION_MS)) +
+                    scaleIn(initialScale = 0.95f, animationSpec = tween(SHADCN_DIALOG_ENTER_DURATION_MS)),
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.lg)) {
-                content()
-            }
-            if (showCloseButton) {
-                DialogCloseButton(
-                    onClick = onDismissRequest,
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    icon = closeIcon,
-                )
+            Box(
+                modifier =
+                    modifier
+                        .width(400.dp)
+                        .background(shadcnTheme.colors.background, RoundedCornerShape(shadcnTheme.shapes.lg))
+                        .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.lg))
+                        .padding(shadcnTheme.spacing.xxl),
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.lg)) {
+                    content()
+                }
+                if (showCloseButton) {
+                    DialogCloseButton(
+                        onClick = onDismissRequest,
+                        modifier = Modifier.align(Alignment.TopEnd),
+                        icon = closeIcon,
+                    )
+                }
             }
         }
     }
