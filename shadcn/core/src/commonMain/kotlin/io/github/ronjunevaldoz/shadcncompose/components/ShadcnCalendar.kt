@@ -59,9 +59,9 @@ private val MONTH_NAMES =
     )
 private val WEEKDAY_LABELS = listOf("Su", "Mo", "Tu", "We", "Th", "Fr", "Sa")
 
-private fun isLeapYear(year: Int) = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
+internal fun isLeapYear(year: Int) = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
 
-private fun daysInMonth(
+internal fun daysInMonth(
     year: Int,
     month: Int,
 ): Int =

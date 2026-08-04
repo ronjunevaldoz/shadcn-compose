@@ -23,6 +23,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarDate
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarDateRange
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarRange
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnDateInput
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnPopover
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSelect
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSwitch
@@ -134,26 +135,24 @@ private val DATE_RANGE_PRESETS =
         },
     )
 
-/** Linear day count (proleptic Gregorian) -- lets [previousPeriod] measure a range's length in O(1). */
-private fun toEpochDay(date: ShadcnCalendarDate): Long {
-    var days = 365L * date.year + (date.year / 4 - date.year / 100 + date.year / 400)
-    for (m in 1 until date.month) days += daysInRangeMonth(date.year, m)
-    return days + date.day
+private fun shiftYear(
+    date: ShadcnCalendarDate,
+    delta: Int,
+): ShadcnCalendarDate {
+    val newYear = date.year + delta
+    return ShadcnCalendarDate(newYear, date.month, date.day.coerceAtMost(daysInRangeMonth(newYear, date.month)))
 }
 
 /**
- * The same-length period immediately preceding [range] -- e.g. range Jan 20-Feb 9 (21 days)
- * compares against Dec 30-Jan 19 (21 days). Mirrors the common analytics-dashboard "compare to
- * previous period" convention (Vercel Analytics, Google Analytics, etc.); real shadcn/ui has no
- * opinion on this, it's app-specific business logic layered on top of the plain range picker.
+ * The default comparison range shown the moment "Compare" is first toggled on -- matches the
+ * real reference's convention (`date-range-picker-for-shadcn`'s `date-range-picker.tsx`).
+ * After this, the calendar never edits the comparison range again -- only the [ShadcnDateInput]
+ * fields below can, per that same reference's exact interaction model.
  */
-private fun previousPeriod(range: ShadcnCalendarDateRange): ShadcnCalendarDateRange? {
+private fun samePeriodLastYear(range: ShadcnCalendarDateRange): ShadcnCalendarDateRange? {
     val start = range.start ?: return null
     val end = range.end ?: return null
-    val lengthDays = (toEpochDay(end) - toEpochDay(start)).toInt()
-    val comparisonEnd = addDaysToRangeDate(start, -1)
-    val comparisonStart = addDaysToRangeDate(comparisonEnd, -lengthDays)
-    return ShadcnCalendarDateRange(comparisonStart, comparisonEnd)
+    return ShadcnCalendarDateRange(shiftYear(start, -1), shiftYear(end, -1))
 }
 
 /**
@@ -404,15 +403,17 @@ val dateRangePickerDoc =
                         var month by remember { mutableStateOf(today.month) }
                         var range by remember { mutableStateOf(ShadcnCalendarDateRange(today, today)) }
                         var compareEnabled by remember { mutableStateOf(false) }
-                        val comparisonRange = if (compareEnabled) previousPeriod(range) else null
+                        // Independent state, not derived from `range` -- once Compare is toggled
+                        // on, the calendar never edits this again, only the fields below can.
+                        var comparisonRange by remember { mutableStateOf<ShadcnCalendarDateRange?>(null) }
 
                         Box {
                             ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
                                 Image(imageVector = CalendarIcon, contentDescription = null, modifier = Modifier.size(16.dp))
                                 Column {
                                     ShadcnText(formatRange(range))
-                                    if (comparisonRange != null) {
-                                        ShadcnText("vs. " + formatRange(comparisonRange), muted = true, style = ShadcnTextStyle.LabelSmall)
+                                    comparisonRange?.let {
+                                        ShadcnText("vs. " + formatRange(it), muted = true, style = ShadcnTextStyle.LabelSmall)
                                     }
                                 }
                             }
@@ -422,8 +423,30 @@ val dateRangePickerDoc =
                                         horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
-                                        ShadcnSwitch(checked = compareEnabled, onCheckedChange = { compareEnabled = it })
-                                        ShadcnText("Compare to previous period")
+                                        ShadcnSwitch(
+                                            checked = compareEnabled,
+                                            onCheckedChange = { checked ->
+                                                compareEnabled = checked
+                                                comparisonRange = if (checked) samePeriodLastYear(range) else null
+                                            },
+                                        )
+                                        ShadcnText("Compare to same period last year")
+                                    }
+                                    comparisonRange?.let { compRange ->
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            ShadcnDateInput(
+                                                value = compRange.start ?: today,
+                                                onValueChange = { comparisonRange = compRange.copy(start = it) },
+                                            )
+                                            ShadcnText("-", muted = true)
+                                            ShadcnDateInput(
+                                                value = compRange.end ?: today,
+                                                onValueChange = { comparisonRange = compRange.copy(end = it) },
+                                            )
+                                        }
                                     }
                                     Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
                                         Column(
@@ -469,7 +492,8 @@ val dateRangePickerDoc =
                         var month by remember { mutableStateOf(today.month) }
                         var range by remember { mutableStateOf(ShadcnCalendarDateRange(today, today)) }
                         var compareEnabled by remember { mutableStateOf(true) }
-                        val comparisonRange = if (compareEnabled) previousPeriod(range) else null
+                        var comparisonRange by
+                            remember { mutableStateOf(samePeriodLastYear(ShadcnCalendarDateRange(today, today))) }
                         Box {
                             ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
                                 Image(
@@ -480,9 +504,9 @@ val dateRangePickerDoc =
                                 )
                                 Column {
                                     ShadcnText(formatRange(range))
-                                    if (comparisonRange != null) {
+                                    comparisonRange?.let {
                                         ShadcnText(
-                                            "vs. " + formatRange(comparisonRange),
+                                            "vs. " + formatRange(it),
                                             muted = true,
                                             style = ShadcnTextStyle.LabelSmall,
                                         )
@@ -497,9 +521,28 @@ val dateRangePickerDoc =
                                     ) {
                                         ShadcnSwitch(
                                             checked = compareEnabled,
-                                            onCheckedChange = { compareEnabled = it },
+                                            onCheckedChange = { checked ->
+                                                compareEnabled = checked
+                                                comparisonRange = if (checked) samePeriodLastYear(range) else null
+                                            },
                                         )
-                                        ShadcnText("Compare to previous period")
+                                        ShadcnText("Compare to same period last year")
+                                    }
+                                    comparisonRange?.let { compRange ->
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            ShadcnDateInput(
+                                                value = compRange.start ?: today,
+                                                onValueChange = { comparisonRange = compRange.copy(start = it) },
+                                            )
+                                            ShadcnText("-", muted = true)
+                                            ShadcnDateInput(
+                                                value = compRange.end ?: today,
+                                                onValueChange = { comparisonRange = compRange.copy(end = it) },
+                                            )
+                                        }
                                     }
                                     Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
                                         Column(

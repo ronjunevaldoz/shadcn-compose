@@ -1821,6 +1821,36 @@
       "properties": {},
       "previews": [
         {
+          "state": "comparison_custom_color_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_comparison_custom_color_states_dark.png"
+        },
+        {
+          "state": "comparison_custom_color_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_comparison_custom_color_states_light.png"
+        },
+        {
+          "state": "comparison_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_comparison_states_dark.png"
+        },
+        {
+          "state": "comparison_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_comparison_states_light.png"
+        },
+        {
+          "state": "disabled_states",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_disabled_states_dark.png"
+        },
+        {
+          "state": "disabled_states",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_disabled_states_light.png"
+        },
+        {
           "state": "range_dual_month_states",
           "theme": "dark",
           "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/calendar_range_dual_month_states_dark.png"
