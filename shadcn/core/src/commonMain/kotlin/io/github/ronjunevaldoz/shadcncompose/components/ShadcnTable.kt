@@ -18,6 +18,13 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * left-aligned with consistent padding. Rows are plain [Row]s (`cells` receives a
  * [RowScope]) so callers can freely use `Modifier.weight` per column.
  *
+ * [ShadcnTableHeaderRow]/[ShadcnTableRow]/[ShadcnTableCaption] are plain top-level
+ * composables, not [ColumnScope] extensions -- none of their bodies actually use the
+ * scope, it was only ever a compile-time "must be inside a Column" gate, which also
+ * blocked using them inside other containers (e.g. a `LazyGridItemScope` item) that
+ * have no `ColumnScope` of their own. Still fine to call inside [ShadcnTable]'s
+ * `content` block as before; this only removes an unnecessary restriction.
+ *
  * Usage:
  * ```
  * ShadcnTable {
@@ -35,7 +42,7 @@ fun ShadcnTable(
 }
 
 @Composable
-fun ColumnScope.ShadcnTableHeaderRow(
+fun ShadcnTableHeaderRow(
     modifier: Modifier = Modifier,
     cells: @Composable RowScope.() -> Unit,
 ) {
@@ -51,7 +58,7 @@ fun ColumnScope.ShadcnTableHeaderRow(
 }
 
 @Composable
-fun ColumnScope.ShadcnTableRow(
+fun ShadcnTableRow(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     isLast: Boolean = false,
@@ -96,7 +103,7 @@ fun RowScope.ShadcnTableCell(
 
 /** A caption below a [ShadcnTable], matching real shadcn/ui's `TableCaption`. */
 @Composable
-fun ColumnScope.ShadcnTableCaption(
+fun ShadcnTableCaption(
     text: String,
     modifier: Modifier = Modifier,
 ) {
