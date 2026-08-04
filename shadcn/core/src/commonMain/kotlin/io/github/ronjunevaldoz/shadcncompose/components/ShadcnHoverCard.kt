@@ -10,13 +10,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnPopupPlacement
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import kotlinx.coroutines.delay
+
+private const val HOVER_CARD_OPEN_DELAY_MS = 700L
+private const val HOVER_CARD_CLOSE_DELAY_MS = 300L
 
 /**
  * A hover-triggered panel for richer preview content (unlike [ShadcnTooltip], which is
@@ -39,11 +46,20 @@ fun ShadcnHoverCard(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
+    var expanded by remember { mutableStateOf(false) }
+
+    // Real Radix/shadcn defaults: openDelay=700ms, closeDelay=300ms -- that delay is the whole
+    // reason HoverCard exists as distinct from Tooltip (which opens instantly). Relaunching on
+    // every isHovered flip cancels a pending open/close if the pointer moves back in time.
+    LaunchedEffect(isHovered) {
+        delay(if (isHovered) HOVER_CARD_OPEN_DELAY_MS else HOVER_CARD_CLOSE_DELAY_MS)
+        expanded = isHovered
+    }
 
     Box(modifier = modifier.hoverable(interactionSource)) {
         trigger()
         ShadcnAnchoredPopup(
-            expanded = isHovered,
+            expanded = expanded,
             onDismissRequest = {},
             placement = placement,
             dismissOnClickOutside = false,
