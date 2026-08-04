@@ -63,4 +63,23 @@ class CalendarScreenshotTest : ShadcnScreenshotTest() {
     @Test fun range_dual_month_states_light() = rangeDualMonthStates(darkTheme = false)
 
     @Test fun range_dual_month_states_dark() = rangeDualMonthStates(darkTheme = true)
+
+    private fun disabledStates(darkTheme: Boolean) {
+        snapshot("calendar_disabled_states", darkTheme = darkTheme) {
+            ShadcnCalendar(
+                year = 2026,
+                month = 3,
+                onMonthChange = { _, _ -> },
+                selected = ShadcnCalendarDate(2026, 3, 18),
+                onSelectedChange = {},
+                today = ShadcnCalendarDate(2026, 3, 18),
+                // Saturdays in this fixed month, matching the reference demo's every-Saturday pattern.
+                disabled = { it.day in setOf(7, 14, 21, 28) },
+            )
+        }
+    }
+
+    @Test fun disabled_states_light() = disabledStates(darkTheme = false)
+
+    @Test fun disabled_states_dark() = disabledStates(darkTheme = true)
 }

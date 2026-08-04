@@ -105,6 +105,9 @@ private fun nextMonth(
  * [year]/[month] (the *displayed* month, 1-indexed) are hoisted separately from
  * [selected] so navigating months doesn't require a selection.
  *
+ * [disabled] matches real shadcn/ui's `disabled` matcher prop -- days it returns `true`
+ * for render muted and non-interactive (real's `disabled:opacity-50 disabled:pointer-events-none`).
+ *
  * Usage:
  * ```
  * var year by remember { mutableStateOf(2026) }
@@ -126,6 +129,7 @@ fun ShadcnCalendar(
     onSelectedChange: (ShadcnCalendarDate) -> Unit,
     modifier: Modifier = Modifier,
     today: ShadcnCalendarDate? = null,
+    disabled: (ShadcnCalendarDate) -> Boolean = { false },
 ) {
     // Real shadcn's calendar (react-day-picker) tracks a roving keyboard-focus cursor
     // separately from the selected date -- the ring you see on a freshly-opened
@@ -159,6 +163,7 @@ fun ShadcnCalendar(
                         isSelected = selected != null && cell.date == selected,
                         isToday = today != null && cell.date == today,
                         isFocused = cell.date == focusedDate,
+                        isDisabled = disabled(cell.date),
                         onClick = {
                             onSelectedChange(cell.date)
                             focusedDate = cell.date
@@ -189,6 +194,9 @@ fun ShadcnCalendar(
  * preview -- a deliberate simplification (hover has no touch/mobile equivalent anyway,
  * and per-cell hover tracking across 42 cells isn't worth it for a preview-only effect).
  *
+ * [disabled] matches real shadcn/ui's `disabled` matcher prop -- see [ShadcnCalendar]'s
+ * own doc comment.
+ *
  * Usage:
  * ```
  * var year by remember { mutableStateOf(2026) }
@@ -212,6 +220,7 @@ fun ShadcnCalendarRange(
     modifier: Modifier = Modifier,
     today: ShadcnCalendarDate? = null,
     numberOfMonths: Int = 1,
+    disabled: (ShadcnCalendarDate) -> Boolean = { false },
 ) {
     var focusedDate by remember(range.start, range.end) { mutableStateOf(range.end ?: range.start ?: today) }
 
@@ -235,6 +244,7 @@ fun ShadcnCalendarRange(
                 range = range,
                 today = today,
                 focusedDate = focusedDate,
+                disabled = disabled,
                 onDayClick = { date ->
                     focusedDate = date
                     onRangeChange(nextRange(range, date))
@@ -256,6 +266,7 @@ private fun RangeCalendarMonth(
     range: ShadcnCalendarDateRange,
     today: ShadcnCalendarDate?,
     focusedDate: ShadcnCalendarDate?,
+    disabled: (ShadcnCalendarDate) -> Boolean,
     onDayClick: (ShadcnCalendarDate) -> Unit,
 ) {
     Column(
@@ -292,6 +303,7 @@ private fun RangeCalendarMonth(
                         isSelected = isRangeStart || isRangeEnd,
                         isToday = today != null && date == today,
                         isFocused = date == focusedDate,
+                        isDisabled = disabled(date),
                         isInRange = isMiddle[index],
                         isRunLeftEdge = isMiddle[index] && (index == 0 || !isMiddle[index - 1]),
                         isRunRightEdge = isMiddle[index] && (index == week.lastIndex || !isMiddle[index + 1]),
@@ -427,6 +439,7 @@ private fun CalendarDayCell(
     isToday: Boolean,
     isFocused: Boolean,
     onClick: () -> Unit,
+    isDisabled: Boolean = false,
     isInRange: Boolean = false,
     isRunLeftEdge: Boolean = false,
     isRunRightEdge: Boolean = false,
@@ -470,13 +483,21 @@ private fun CalendarDayCell(
                 .padding(if (isInRange) 0.dp else 2.dp)
                 .clip(cellShape)
                 .styleable(styleState, cellStyle)
-                .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
+                // Matches real shadcn's `disabled:opacity-50 disabled:pointer-events-none` --
+                // a disabled day is muted (via the Text's own `muted` below) and inert, not
+                // just visually dimmed.
+                .clickable(
+                    interactionSource = interactionSource,
+                    indication = null,
+                    enabled = !isDisabled,
+                    onClick = onClick,
+                ),
         contentAlignment = Alignment.Center,
     ) {
         ShadcnText(
             cell.date.day.toString(),
             style = ShadcnTextStyle.BodySmall,
-            muted = !cell.inCurrentMonth,
+            muted = !cell.inCurrentMonth || isDisabled,
             color = if (isSelected) shadcnTheme.colors.onPrimary else Color.Unspecified,
         )
     }
