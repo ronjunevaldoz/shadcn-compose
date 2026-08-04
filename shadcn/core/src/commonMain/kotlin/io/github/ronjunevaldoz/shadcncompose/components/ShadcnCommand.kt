@@ -42,10 +42,13 @@ data class ShadcnCommandGroup(
 
 /**
  * A searchable/filterable action list -- real shadcn/ui's `command.tsx` (built on
- * `cmdk`), the shared building block behind both a standalone command palette and
- * (composed with a trigger + popover) a [ShadcnCombobox]. Filters each group's items
- * by case-insensitive substring match against `label` as the user types, dropping
- * groups left with no matches.
+ * `cmdk`), the shared building block behind a standalone command palette. Filters
+ * each group's items by case-insensitive substring match against `label` as the
+ * user types, dropping groups left with no matches.
+ *
+ * Note: unlike real cmdk (where `command.tsx` also backs the combobox pattern),
+ * [ShadcnCombobox] does *not* compose this component -- it reimplements its own
+ * filtering from scratch. Don't assume changes here propagate to Combobox.
  *
  * Groups use a plain data model rather than a slot API (unlike [ShadcnDropdownMenu])
  * because filtering needs to inspect every item's label up front -- a freely-composed

@@ -14,6 +14,7 @@ import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.styles.AlertVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
@@ -58,7 +59,22 @@ fun ShadcnAlert(
         Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xxs)) {
             ShadcnText(title, style = ShadcnTextStyle.LabelLarge)
             if (description != null) {
-                ShadcnText(description, style = ShadcnTextStyle.BodySmall, muted = true)
+                // Destructive's Style sets an ambient contentColor(colors.error) on the Row above --
+                // `muted = true` would win over that ambient color (it's a nearer styleable() node,
+                // see ShadcnText's own comment), rendering the same neutral gray as Default in every
+                // theme. Real shadcn dims the description to `text-destructive/90`, not gray.
+                val descriptionColor =
+                    if (variant == AlertVariant.Destructive) {
+                        shadcnTheme.colors.error.copy(alpha = 0.9f)
+                    } else {
+                        Color.Unspecified
+                    }
+                ShadcnText(
+                    description,
+                    style = ShadcnTextStyle.BodySmall,
+                    color = descriptionColor,
+                    muted = descriptionColor == Color.Unspecified,
+                )
             }
         }
     }
