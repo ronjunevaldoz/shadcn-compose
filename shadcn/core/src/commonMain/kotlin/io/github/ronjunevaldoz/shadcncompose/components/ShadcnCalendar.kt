@@ -2,6 +2,7 @@
 
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.MutableStyleState
@@ -26,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
 import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
@@ -425,16 +427,19 @@ private fun CalendarDayCell(
     val theme = shadcnTheme
     val interactionSource = remember { MutableInteractionSource() }
     val styleState = remember { MutableStyleState(interactionSource) }
-    // Range cells touch edge-to-edge (no gap) so the fill reads as one connected band with
-    // rounded caps only at the start/end -- single-mode/non-range cells keep their gap.
-    val cellShape = rangeAwareCellShape(theme.shapes.md, isRangeStart, isRangeEnd, isInRange)
-    val cellStyle =
+    val isRangeCap = isRangeStart || isRangeEnd
+    val isFilled = isSelected || isRangeCap
+    // Real shadcn draws the continuous range fill as a flat, edge-to-edge band -- no rounding
+    // anywhere on it, even at the cell holding the absolute start/end day -- with a separate,
+    // fully circular "cap" layered on top of just the start/end day. Not a half-rounded-rect
+    // shape: the band and the circle are two independent layers. Single-day selection (no
+    // range in progress) reuses the same circular cap, just with no band underneath it.
+    val capShape = if (isFilled) CircleShape else RoundedCornerShape(theme.shapes.md)
+    val capStyle =
         Style {
-            shape(cellShape)
-            if (isSelected) {
+            shape(capShape)
+            if (isFilled) {
                 background(theme.colors.primary)
-            } else if (isInRange) {
-                background(theme.colors.muted)
             } else if (isToday) {
                 borderWidth(1.dp)
                 borderColor(theme.colors.border)
@@ -445,35 +450,26 @@ private fun CalendarDayCell(
                 dropShadow(theme.focusRingShadow())
             }
         }
-    Box(
-        modifier =
-            Modifier
-                .size(CELL_SIZE)
-                .padding(if (isRangeStart || isRangeEnd || isInRange) 0.dp else 2.dp)
-                .clip(cellShape)
-                .styleable(styleState, cellStyle)
-                .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        ShadcnText(
-            cell.date.day.toString(),
-            style = ShadcnTextStyle.BodySmall,
-            muted = !cell.inCurrentMonth,
-            color = if (isSelected) shadcnTheme.colors.onPrimary else Color.Unspecified,
-        )
+    Box(modifier = Modifier.size(CELL_SIZE), contentAlignment = Alignment.Center) {
+        if (isInRange || isRangeCap) {
+            Box(modifier = Modifier.fillMaxSize().background(theme.colors.muted))
+        }
+        Box(
+            modifier =
+                Modifier
+                    .size(CELL_SIZE)
+                    .padding(2.dp)
+                    .clip(capShape)
+                    .styleable(styleState, capStyle)
+                    .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            ShadcnText(
+                cell.date.day.toString(),
+                style = ShadcnTextStyle.BodySmall,
+                muted = !cell.inCurrentMonth,
+                color = if (isFilled) shadcnTheme.colors.onPrimary else Color.Unspecified,
+            )
+        }
     }
 }
-
-private fun rangeAwareCellShape(
-    radius: Dp,
-    isRangeStart: Boolean,
-    isRangeEnd: Boolean,
-    isInRange: Boolean,
-): RoundedCornerShape =
-    when {
-        isRangeStart && isRangeEnd -> RoundedCornerShape(radius) // single-day range
-        isRangeStart -> RoundedCornerShape(topStart = radius, bottomStart = radius, topEnd = 0.dp, bottomEnd = 0.dp)
-        isRangeEnd -> RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = radius, bottomEnd = radius)
-        isInRange -> RoundedCornerShape(0.dp)
-        else -> RoundedCornerShape(radius)
-    }
