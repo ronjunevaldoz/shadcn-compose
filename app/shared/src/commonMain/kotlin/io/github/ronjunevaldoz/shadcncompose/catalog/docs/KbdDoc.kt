@@ -6,6 +6,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnKbdGroup
 val kbdDoc =
     ComponentDoc(
         id = "kbd",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/kbd",
         title = "Kbd",
         description = "A keyboard-shortcut label.",
         usageCode =

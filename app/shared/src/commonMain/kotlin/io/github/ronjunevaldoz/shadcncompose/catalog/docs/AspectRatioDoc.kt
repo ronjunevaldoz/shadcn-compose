@@ -15,6 +15,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 val aspectRatioDoc =
     ComponentDoc(
         id = "aspect-ratio",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/aspect-ratio",
         title = "Aspect Ratio",
         description = "Constrains content to a fixed width/height ratio.",
         usageCode =

@@ -10,6 +10,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSkeleton
 val skeletonDoc =
     ComponentDoc(
         id = "skeleton",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/skeleton",
         title = "Skeleton",
         description = "A pulsing placeholder block shown while content is loading.",
         usageCode =

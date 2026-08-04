@@ -23,6 +23,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextField
 val drawerDoc =
     ComponentDoc(
         id = "drawer",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/drawer",
         title = "Drawer",
         description =
             "A modal panel that slides in from a screen edge and can be swiped back toward that edge to " +

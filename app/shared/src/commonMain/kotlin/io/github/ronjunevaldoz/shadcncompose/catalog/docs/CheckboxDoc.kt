@@ -16,6 +16,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnFieldOrientation
 val checkboxDoc =
     ComponentDoc(
         id = "checkbox",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/checkbox",
         title = "Checkbox",
         description = "A tri-state input control: unchecked, checked, or indeterminate.",
         usageCode =

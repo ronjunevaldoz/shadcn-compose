@@ -20,6 +20,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 val dropdownMenuDoc =
     ComponentDoc(
         id = "dropdown-menu",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/dropdown-menu",
         title = "Dropdown Menu",
         description = "An anchored list of actions, optionally grouped under labels and separators.",
         usageCode =

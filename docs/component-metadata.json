@@ -5,6 +5,7 @@
     {
       "id": "button",
       "title": "Button",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/button",
       "description": "Triggers an action or event. Supports six variants and five sizes.",
       "category": "core-primitives",
       "family": "action",
@@ -112,6 +113,7 @@
     {
       "id": "card",
       "title": "Card",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/card",
       "description": "Displays content in a bordered container, with optional header and footer slots.",
       "category": "core-primitives",
       "family": "layout",
@@ -158,6 +160,7 @@
     {
       "id": "badge",
       "title": "Badge",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/badge",
       "description": "A small label used to highlight status, counts, or metadata.",
       "category": "core-primitives",
       "family": "text",
@@ -187,6 +190,7 @@
     {
       "id": "chip",
       "title": "Chip",
+      "referenceUrl": null,
       "description": "A selectable tag, commonly used for filters or multi-select choices.",
       "category": "core-primitives",
       "family": "text",
@@ -224,6 +228,7 @@
     {
       "id": "text-field",
       "title": "Text Field",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/input",
       "description": "A single-line or multi-line input with label, placeholder, and error states.",
       "category": "core-primitives",
       "family": "field",
@@ -266,6 +271,7 @@
     {
       "id": "text",
       "title": "Text",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/typography",
       "description": "Renders text using the design system's type scale, with an optional muted tone.",
       "category": "core-primitives",
       "family": "text",
@@ -300,6 +306,7 @@
     {
       "id": "label",
       "title": "Label",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/label",
       "description": "A form-field label, optionally marked required.",
       "category": "forms-and-inputs",
       "family": "text",
@@ -321,6 +328,7 @@
     {
       "id": "checkbox",
       "title": "Checkbox",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/checkbox",
       "description": "A tri-state input control: unchecked, checked, or indeterminate.",
       "category": "forms-and-inputs",
       "family": "selection",
@@ -352,6 +360,7 @@
     {
       "id": "radio-group",
       "title": "Radio Group",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/radio-group",
       "description": "A set of mutually exclusive options. Combine ShadcnRadioButton items inside ShadcnRadioGroup.",
       "category": "forms-and-inputs",
       "family": "selection",
@@ -383,6 +392,7 @@
     {
       "id": "switch",
       "title": "Switch",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/switch",
       "description": "An on/off control for a single setting, applied immediately.",
       "category": "forms-and-inputs",
       "family": "selection",
@@ -414,6 +424,7 @@
     {
       "id": "toggle",
       "title": "Toggle",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/toggle",
       "description": "A two-state button, commonly used for toolbar toggles like bold or italic.",
       "category": "forms-and-inputs",
       "family": "selection",
@@ -460,6 +471,7 @@
     {
       "id": "slider",
       "title": "Slider",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/slider",
       "description": "An input for selecting a value from within a range by dragging a thumb.",
       "category": "forms-and-inputs",
       "family": "field",
@@ -491,6 +503,7 @@
     {
       "id": "toggle-group",
       "title": "Toggle Group",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/toggle-group",
       "description": "A segmented row of toggles for single- or multi-select, e.g. text formatting.",
       "category": "forms-and-inputs",
       "family": "selection",
@@ -512,6 +525,7 @@
     {
       "id": "stepper",
       "title": "Stepper",
+      "referenceUrl": null,
       "description": "A numbered multi-step progress indicator for wizards, onboarding, and checkout flows.",
       "category": "forms-and-inputs",
       "family": "selection",
@@ -558,6 +572,7 @@
     {
       "id": "input-group",
       "title": "Input Group",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/input-group",
       "description": "Groups a text field with leading or trailing addons -- icons, static text, or buttons.",
       "category": "forms-and-inputs",
       "family": "field",
@@ -609,6 +624,7 @@
     {
       "id": "button-group",
       "title": "Button Group",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/button-group",
       "description": "Visually joins a row of buttons into a single segmented control.",
       "category": "forms-and-inputs",
       "family": "action",
@@ -655,6 +671,7 @@
     {
       "id": "textarea",
       "title": "Textarea",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/textarea",
       "description": "A multi-line text input, sharing the same border/focus spec as Text Field.",
       "category": "forms-and-inputs",
       "family": "field",
@@ -686,6 +703,7 @@
     {
       "id": "field",
       "title": "Field",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/field",
       "description": "A labeled control + description layout for building forms. Real shadcn/ui's form.tsx is a thin wrapper of these same primitives around react-hook-form; this library has no form-state dependency, so compose Field directly with your own hoisted state.",
       "category": "forms-and-inputs",
       "family": "field",
@@ -722,6 +740,7 @@
     {
       "id": "input-otp",
       "title": "Input OTP",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/input-otp",
       "description": "A one-time-passcode input with boxed slots that fill left-to-right.",
       "category": "forms-and-inputs",
       "family": "field",
@@ -768,6 +787,7 @@
     {
       "id": "avatar",
       "title": "Avatar",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/avatar",
       "description": "A circular user/entity image container with an initials fallback.",
       "category": "data-display",
       "family": "text",
@@ -798,6 +818,7 @@
     {
       "id": "aspect-ratio",
       "title": "Aspect Ratio",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/aspect-ratio",
       "description": "Constrains content to a fixed width/height ratio.",
       "category": "data-display",
       "family": "layout",
@@ -819,6 +840,7 @@
     {
       "id": "separator",
       "title": "Separator",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/separator",
       "description": "A thin line for visually or semantically separating content. Matches real shadcn/ui: it has no built-in margin, so surrounding spacing is always the caller's responsibility -- via Arrangement.spacedBy or explicit padding, as shown in the examples below.",
       "category": "data-display",
       "family": "layout",
@@ -845,6 +867,7 @@
     {
       "id": "kbd",
       "title": "Kbd",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/kbd",
       "description": "A keyboard-shortcut label.",
       "category": "data-display",
       "family": "text",
@@ -866,6 +889,7 @@
     {
       "id": "item",
       "title": "Item",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/item",
       "description": "A single row in a list of interactive/informational rows.",
       "category": "data-display",
       "family": "text",
@@ -897,6 +921,7 @@
     {
       "id": "empty",
       "title": "Empty",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/empty",
       "description": "A centered placeholder for an empty list, search result, or state.",
       "category": "data-display",
       "family": "text",
@@ -918,6 +943,7 @@
     {
       "id": "alert",
       "title": "Alert",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/alert",
       "description": "A short, prominent callout for important information.",
       "category": "feedback",
       "family": "feedback",
@@ -954,6 +980,7 @@
     {
       "id": "progress",
       "title": "Progress",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/progress",
       "description": "A linear progress bar.",
       "category": "feedback",
       "family": "feedback",
@@ -975,6 +1002,7 @@
     {
       "id": "skeleton",
       "title": "Skeleton",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/skeleton",
       "description": "A pulsing placeholder block shown while content is loading.",
       "category": "feedback",
       "family": "feedback",
@@ -996,6 +1024,7 @@
     {
       "id": "spinner",
       "title": "Spinner",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/spinner",
       "description": "A spinning loading indicator.",
       "category": "feedback",
       "family": "feedback",
@@ -1017,6 +1046,7 @@
     {
       "id": "toast",
       "title": "Toast",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/toast",
       "description": "A stackable, auto-dismissing notification queue. Real shadcn/ui's sonner.tsx wraps the separate `sonner` npm library; since there's no Compose Multiplatform equivalent, ShadcnToastState + ShadcnToaster reimplement that queue directly.",
       "category": "feedback",
       "family": "feedback",
@@ -1046,6 +1076,7 @@
     {
       "id": "collapsible",
       "title": "Collapsible",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/collapsible",
       "description": "An expand/collapse container for showing or hiding content.",
       "category": "disclosure-and-navigation",
       "family": "disclosure",
@@ -1077,6 +1108,7 @@
     {
       "id": "accordion",
       "title": "Accordion",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/accordion",
       "description": "A vertically-stacked set of collapsible sections.",
       "category": "disclosure-and-navigation",
       "family": "disclosure",
@@ -1123,6 +1155,7 @@
     {
       "id": "tabs",
       "title": "Tabs",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/tabs",
       "description": "A segmented control for switching between related views.",
       "category": "disclosure-and-navigation",
       "family": "selection",
@@ -1149,6 +1182,7 @@
     {
       "id": "breadcrumb",
       "title": "Breadcrumb",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/breadcrumb",
       "description": "A row of navigation links showing the current page's location in a hierarchy.",
       "category": "disclosure-and-navigation",
       "family": "disclosure",
@@ -1175,6 +1209,7 @@
     {
       "id": "tooltip",
       "title": "Tooltip",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/tooltip",
       "description": "A small hover-triggered label for an interactive element.",
       "category": "overlays-and-navigation",
       "family": "overlay",
@@ -1196,6 +1231,7 @@
     {
       "id": "popover",
       "title": "Popover",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/popover",
       "description": "A click-triggered anchored panel for rich content.",
       "category": "overlays-and-navigation",
       "family": "field",
@@ -1227,6 +1263,7 @@
     {
       "id": "hover-card",
       "title": "Hover Card",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/hover-card",
       "description": "A hover-triggered panel for richer preview content than a Tooltip.",
       "category": "overlays-and-navigation",
       "family": "overlay",
@@ -1248,12 +1285,23 @@
     {
       "id": "dropdown-menu",
       "title": "Dropdown Menu",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/dropdown-menu",
       "description": "An anchored list of actions, optionally grouped under labels and separators.",
       "category": "overlays-and-navigation",
       "family": "field",
       "isNew": false,
       "properties": {},
       "previews": [
+        {
+          "state": "checkbox_and_radio",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/dropdown_menu_checkbox_and_radio_dark.png"
+        },
+        {
+          "state": "checkbox_and_radio",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/dropdown_menu_checkbox_and_radio_light.png"
+        },
         {
           "state": "states",
           "theme": "dark",
@@ -1269,6 +1317,7 @@
     {
       "id": "context-menu",
       "title": "Context Menu",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/context-menu",
       "description": "A menu triggered by right-click, opened at the cursor.",
       "category": "overlays-and-navigation",
       "family": "overlay",
@@ -1290,6 +1339,7 @@
     {
       "id": "dialog",
       "title": "Dialog",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/dialog",
       "description": "A modal window layered over the page.",
       "category": "overlays-and-navigation",
       "family": "overlay",
@@ -1316,6 +1366,7 @@
     {
       "id": "alert-dialog",
       "title": "Alert Dialog",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/alert-dialog",
       "description": "A Dialog that can't be dismissed by clicking outside -- requires an explicit choice.",
       "category": "overlays-and-navigation",
       "family": "overlay",
@@ -1337,6 +1388,7 @@
     {
       "id": "sheet",
       "title": "Sheet",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/sheet",
       "description": "A modal panel that slides in from a screen edge.",
       "category": "overlays-and-navigation",
       "family": "overlay",
@@ -1375,6 +1427,7 @@
     {
       "id": "drawer",
       "title": "Drawer",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/drawer",
       "description": "A modal panel that slides in from a screen edge and can be swiped back toward that edge to dismiss. Distinct from Sheet: same sliding-panel shape, but with real drag-to-dismiss physics.",
       "category": "overlays-and-navigation",
       "family": "overlay",
@@ -1423,6 +1476,7 @@
     {
       "id": "combobox",
       "title": "Combobox",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/combobox",
       "description": "A select with a filterable/searchable option list.",
       "category": "overlays-and-navigation",
       "family": "field",
@@ -1444,6 +1498,7 @@
     {
       "id": "select",
       "title": "Select",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/select",
       "description": "A plain (non-searchable) dropdown select. Unlike Combobox, the option list isn't filterable by typing.",
       "category": "overlays-and-navigation",
       "family": "field",
@@ -1484,6 +1539,7 @@
     {
       "id": "date-picker",
       "title": "Date Picker",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/date-picker",
       "description": "A date picker built by composing Popover and Calendar -- not a standalone component in real shadcn/ui either.",
       "category": "overlays-and-navigation",
       "family": "field",
@@ -1505,6 +1561,7 @@
     {
       "id": "command",
       "title": "Command",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/command",
       "description": "A searchable/filterable action list -- the building block behind a command palette.",
       "category": "overlays-and-navigation",
       "family": "selection",
@@ -1526,6 +1583,7 @@
     {
       "id": "menubar",
       "title": "Menubar",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/menubar",
       "description": "A horizontal row of menu triggers, desktop-app style.",
       "category": "overlays-and-navigation",
       "family": "selection",
@@ -1547,6 +1605,7 @@
     {
       "id": "navigation-menu",
       "title": "Navigation Menu",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/navigation-menu",
       "description": "A horizontal top-level site navigation row where some items open a panel of related links.",
       "category": "overlays-and-navigation",
       "family": "selection",
@@ -1573,6 +1632,7 @@
     {
       "id": "table",
       "title": "Table",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/table",
       "description": "A responsive data table with a bordered header and hairline row separators.",
       "category": "data-and-layout",
       "family": "layout",
@@ -1594,6 +1654,7 @@
     {
       "id": "pagination",
       "title": "Pagination",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/pagination",
       "description": "Page-number navigation with Previous/Next controls and ellipsis gaps.",
       "category": "data-and-layout",
       "family": "layout",
@@ -1615,6 +1676,7 @@
     {
       "id": "scroll-area",
       "title": "Scroll Area",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/scroll-area",
       "description": "A scrollable region with a slim custom scrollbar thumb instead of the native one.",
       "category": "data-and-layout",
       "family": "layout",
@@ -1642,6 +1704,7 @@
     {
       "id": "chart",
       "title": "Chart",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/chart",
       "description": "A config-driven bar/line chart. Real shadcn/ui's chart.tsx wraps Recharts; since there is no Compose Multiplatform equivalent, this draws directly via Canvas.",
       "category": "data-and-layout",
       "family": "data",
@@ -1673,6 +1736,7 @@
     {
       "id": "calendar",
       "title": "Calendar",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/calendar",
       "description": "A single-month date picker grid with a highlighted selection and today marker.",
       "category": "data-and-layout",
       "family": "data",
@@ -1694,6 +1758,7 @@
     {
       "id": "carousel",
       "title": "Carousel",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/carousel",
       "description": "A swipeable, snap-scrolling set of slides, built directly on Compose's own Pager.",
       "category": "data-and-layout",
       "family": "data",
@@ -1725,6 +1790,7 @@
     {
       "id": "resizable",
       "title": "Resizable",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/resizable",
       "description": "Two panes divided by a draggable handle.",
       "category": "data-and-layout",
       "family": "layout",
@@ -1766,6 +1832,7 @@
     {
       "id": "sidebar",
       "title": "Sidebar",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/sidebar",
       "description": "A collapsible side navigation rail with grouped menu sections and a main content inset.",
       "category": "data-and-layout",
       "family": "overlay",
@@ -1812,6 +1879,7 @@
     {
       "id": "message",
       "title": "Message",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/message",
       "description": "One chat-transcript row: avatar and content laid out side by side, mirrored for the sender's own messages.",
       "category": "ai-elements",
       "family": "ai",
@@ -1903,6 +1971,7 @@
     {
       "id": "bubble",
       "title": "Bubble",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/bubble",
       "description": "A single chat message bubble, self-aligned to the left or right of the transcript.",
       "category": "ai-elements",
       "family": "ai",
@@ -1953,6 +2022,7 @@
     {
       "id": "attachment",
       "title": "Attachment",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/attachment",
       "description": "A file-attachment chip for a chat composer's upload tray, with upload/processing/error states.",
       "category": "ai-elements",
       "family": "ai",
@@ -2011,6 +2081,7 @@
     {
       "id": "marker",
       "title": "Marker",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/marker",
       "description": "A labeled divider for a chat transcript, e.g. a date separator or a pinned-messages banner.",
       "category": "ai-elements",
       "family": "ai",
@@ -2053,6 +2124,7 @@
     {
       "id": "message-scroller",
       "title": "Message Scroller",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/message-scroller",
       "description": "A chat-transcript scroll container that follows new messages to the bottom -- but only while the reader hasn't scrolled away -- with a floating jump-to-bottom button when they have.",
       "category": "ai-elements",
       "family": "ai",
@@ -2109,6 +2181,7 @@
     {
       "id": "shimmer",
       "title": "Shimmer",
+      "referenceUrl": null,
       "description": "A sweeping highlight animation for \"generating response\"/\"thinking\" text states -- a modifier, not a standalone component.",
       "category": "utils",
       "family": "utils",
@@ -2130,6 +2203,7 @@
     {
       "id": "scroll-fade",
       "title": "Scroll Fade",
+      "referenceUrl": null,
       "description": "A scroll-position-aware fade at the edges of a scrollable container, hinting overflow without a hard cut -- a modifier, not a standalone component.",
       "category": "utils",
       "family": "utils",

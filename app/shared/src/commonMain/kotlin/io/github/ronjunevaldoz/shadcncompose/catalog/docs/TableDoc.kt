@@ -20,6 +20,7 @@ private val sampleInvoices =
 val tableDoc =
     ComponentDoc(
         id = "table",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/table",
         title = "Table",
         description = "A responsive data table with a bordered header and hairline row separators.",
         usageCode =

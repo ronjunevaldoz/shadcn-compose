@@ -39,6 +39,7 @@ private val sidebarItems =
 val sidebarDoc =
     ComponentDoc(
         id = "sidebar",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/sidebar",
         title = "Sidebar",
         description = "A collapsible side navigation rail with grouped menu sections and a main content inset.",
         usageCode =

@@ -15,6 +15,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 val resizableDoc =
     ComponentDoc(
         id = "resizable",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/resizable",
         title = "Resizable",
         description = "Two panes divided by a draggable handle.",
         usageCode =

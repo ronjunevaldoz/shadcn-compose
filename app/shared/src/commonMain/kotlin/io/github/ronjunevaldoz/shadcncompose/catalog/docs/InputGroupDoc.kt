@@ -23,6 +23,7 @@ import io.github.ronjunevaldoz.heroicons.outline.Plus
 val inputGroupDoc =
     ComponentDoc(
         id = "input-group",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/input-group",
         title = "Input Group",
         description = "Groups a text field with leading or trailing addons -- icons, static text, or buttons.",
         usageCode =

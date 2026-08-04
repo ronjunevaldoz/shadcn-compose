@@ -29,6 +29,7 @@ import io.github.ronjunevaldoz.heroicons.outline.ChevronRight
 val carouselDoc =
     ComponentDoc(
         id = "carousel",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/carousel",
         title = "Carousel",
         description = "A swipeable, snap-scrolling set of slides, built directly on Compose's own Pager.",
         usageCode =

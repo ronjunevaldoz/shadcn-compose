@@ -29,6 +29,7 @@ private val chartData =
 val chartDoc =
     ComponentDoc(
         id = "chart",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/chart",
         title = "Chart",
         description =
             "A config-driven bar/line chart. Real shadcn/ui's chart.tsx wraps Recharts; " +

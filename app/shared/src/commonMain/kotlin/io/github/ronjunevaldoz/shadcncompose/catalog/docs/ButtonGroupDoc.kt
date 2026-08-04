@@ -17,6 +17,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 val buttonGroupDoc =
     ComponentDoc(
         id = "button-group",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/button-group",
         title = "Button Group",
         description = "Visually joins a row of buttons into a single segmented control.",
         usageCode =

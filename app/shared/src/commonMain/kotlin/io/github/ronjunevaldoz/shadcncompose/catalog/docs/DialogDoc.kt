@@ -26,6 +26,7 @@ import io.github.ronjunevaldoz.heroicons.outline.XMark
 val dialogDoc =
     ComponentDoc(
         id = "dialog",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/dialog",
         title = "Dialog",
         description = "A modal window layered over the page.",
         usageCode =

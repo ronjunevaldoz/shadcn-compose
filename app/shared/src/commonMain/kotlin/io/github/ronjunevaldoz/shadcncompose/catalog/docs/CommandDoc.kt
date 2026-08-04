@@ -7,6 +7,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCommandItem
 val commandDoc =
     ComponentDoc(
         id = "command",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/command",
         title = "Command",
         description = "A searchable/filterable action list -- the building block behind a command palette.",
         usageCode =

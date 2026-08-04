@@ -19,6 +19,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 val hoverCardDoc =
     ComponentDoc(
         id = "hover-card",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/hover-card",
         title = "Hover Card",
         description = "A hover-triggered panel for richer preview content than a Tooltip.",
         usageCode =

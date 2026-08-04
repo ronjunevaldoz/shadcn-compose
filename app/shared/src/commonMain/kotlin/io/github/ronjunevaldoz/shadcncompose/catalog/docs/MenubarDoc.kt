@@ -8,6 +8,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnMenubarMenu
 val menubarDoc =
     ComponentDoc(
         id = "menubar",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/menubar",
         title = "Menubar",
         description = "A horizontal row of menu triggers, desktop-app style.",
         usageCode =

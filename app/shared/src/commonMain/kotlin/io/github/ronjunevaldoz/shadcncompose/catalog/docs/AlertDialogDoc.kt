@@ -18,6 +18,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 val alertDialogDoc =
     ComponentDoc(
         id = "alert-dialog",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/alert-dialog",
         title = "Alert Dialog",
         description = "A Dialog that can't be dismissed by clicking outside -- requires an explicit choice.",
         usageCode =

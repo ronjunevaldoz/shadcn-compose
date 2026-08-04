@@ -11,6 +11,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextField
 val textFieldDoc =
     ComponentDoc(
         id = "text-field",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/input",
         title = "Text Field",
         description = "A single-line or multi-line input with label, placeholder, and error states.",
         usageCode =

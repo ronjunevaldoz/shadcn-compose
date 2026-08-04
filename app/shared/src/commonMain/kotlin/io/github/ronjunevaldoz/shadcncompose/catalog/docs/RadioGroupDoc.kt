@@ -17,6 +17,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnRadioGroup
 val radioGroupDoc =
     ComponentDoc(
         id = "radio-group",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/radio-group",
         title = "Radio Group",
         description = "A set of mutually exclusive options. Combine ShadcnRadioButton items inside ShadcnRadioGroup.",
         usageCode =

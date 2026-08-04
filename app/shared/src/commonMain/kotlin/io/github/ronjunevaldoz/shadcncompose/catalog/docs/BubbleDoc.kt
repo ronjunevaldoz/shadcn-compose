@@ -15,6 +15,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 val bubbleDoc =
     ComponentDoc(
         id = "bubble",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/bubble",
         title = "Bubble",
         description = "A single chat message bubble, self-aligned to the left or right of the transcript.",
         usageCode =

@@ -26,6 +26,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.CardVariant
 val cardDoc =
     ComponentDoc(
         id = "card",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/card",
         title = "Card",
         description = "Displays content in a bordered container, with optional header and footer slots.",
         usageCode =

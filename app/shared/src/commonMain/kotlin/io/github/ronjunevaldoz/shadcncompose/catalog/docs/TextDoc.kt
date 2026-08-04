@@ -7,6 +7,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 val textDoc =
     ComponentDoc(
         id = "text",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/typography",
         title = "Text",
         description = "Renders text using the design system's type scale, with an optional muted tone.",
         usageCode =

@@ -16,6 +16,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 val itemDoc =
     ComponentDoc(
         id = "item",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/item",
         title = "Item",
         description = "A single row in a list of interactive/informational rows.",
         usageCode =

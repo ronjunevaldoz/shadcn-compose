@@ -26,6 +26,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 val popoverDoc =
     ComponentDoc(
         id = "popover",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/popover",
         title = "Popover",
         description = "A click-triggered anchored panel for rich content.",
         usageCode =

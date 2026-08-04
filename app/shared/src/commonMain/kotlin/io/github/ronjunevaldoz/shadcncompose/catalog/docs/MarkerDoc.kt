@@ -10,6 +10,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 val markerDoc =
     ComponentDoc(
         id = "marker",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/marker",
         title = "Marker",
         description = "A labeled divider for a chat transcript, e.g. a date separator or a pinned-messages banner.",
         usageCode =

@@ -9,6 +9,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnBreadcrumbSeparato
 val breadcrumbDoc =
     ComponentDoc(
         id = "breadcrumb",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/breadcrumb",
         title = "Breadcrumb",
         description = "A row of navigation links showing the current page's location in a hierarchy.",
         usageCode =

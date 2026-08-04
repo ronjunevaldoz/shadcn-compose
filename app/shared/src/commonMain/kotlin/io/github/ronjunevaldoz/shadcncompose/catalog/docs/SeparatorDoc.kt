@@ -14,6 +14,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 val separatorDoc =
     ComponentDoc(
         id = "separator",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/separator",
         title = "Separator",
         description =
             "A thin line for visually or semantically separating content. Matches real " +

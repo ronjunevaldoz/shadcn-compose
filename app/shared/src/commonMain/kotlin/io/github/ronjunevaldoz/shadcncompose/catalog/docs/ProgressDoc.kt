@@ -8,6 +8,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnProgress
 val progressDoc =
     ComponentDoc(
         id = "progress",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/progress",
         title = "Progress",
         description = "A linear progress bar.",
         usageCode =

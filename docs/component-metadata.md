@@ -27,6 +27,7 @@ must run first — the metadata generator's preview URLs point at its output
     {
       "id": "button",
       "title": "Button",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/button",
       "description": "Triggers an action or event. Supports six variants and five sizes.",
       "category": "core-primitives",
       "family": "action",
@@ -65,6 +66,7 @@ doesn't even expose these as parameters, so there's no per-color variant set to 
 |---|---|
 | `id` | Stable slug, matches the catalog app's URL/route for this component. |
 | `title` | Display name. |
+| `referenceUrl` | The real `ui.shadcn.com/docs/components/base/<slug>` page this component is modeled on — verified live, not guessed. `null` for components genuinely original to this library (e.g. `chip`, `stepper`) or utility modifiers with no dedicated real component page (`shimmer`, `scroll-fade`). |
 | `description` | One-line summary, taken verbatim from the catalog doc page. |
 | `category` | This library's own UI-navigation grouping (sidebar section) — `core-primitives`, `forms-and-inputs`, `data-display`, `feedback`, `disclosure-and-navigation`, `overlays-and-navigation`, `data-and-layout`, `ai-elements`, `utils`. |
 | `family` | A *different*, curated grouping by interaction pattern, meant specifically for cross-library parity comparison — not the same as `category`. See below. |

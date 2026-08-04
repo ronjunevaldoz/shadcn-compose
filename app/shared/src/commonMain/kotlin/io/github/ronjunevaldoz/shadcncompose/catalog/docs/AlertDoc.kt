@@ -12,6 +12,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.AlertVariant
 val alertDoc =
     ComponentDoc(
         id = "alert",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/alert",
         title = "Alert",
         description = "A short, prominent callout for important information.",
         usageCode =

@@ -12,6 +12,7 @@ import io.github.ronjunevaldoz.heroicons.outline.ChevronDown
 val selectDoc =
     ComponentDoc(
         id = "select",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/select",
         title = "Select",
         description =
             "A plain (non-searchable) dropdown select. Unlike Combobox, the option list isn't filterable by typing.",

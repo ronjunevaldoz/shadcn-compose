@@ -32,6 +32,7 @@ import io.github.ronjunevaldoz.heroicons.outline.XMark
 val attachmentDoc =
     ComponentDoc(
         id = "attachment",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/attachment",
         title = "Attachment",
         description = "A file-attachment chip for a chat composer's upload tray, with upload/processing/error states.",
         usageCode =

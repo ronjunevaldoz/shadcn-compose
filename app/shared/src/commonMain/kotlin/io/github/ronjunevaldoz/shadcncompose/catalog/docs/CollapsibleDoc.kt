@@ -14,6 +14,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 val collapsibleDoc =
     ComponentDoc(
         id = "collapsible",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/collapsible",
         title = "Collapsible",
         description = "An expand/collapse container for showing or hiding content.",
         usageCode =

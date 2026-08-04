@@ -9,6 +9,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTooltip
 val tooltipDoc =
     ComponentDoc(
         id = "tooltip",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/tooltip",
         title = "Tooltip",
         description = "A small hover-triggered label for an interactive element.",
         usageCode =

@@ -14,6 +14,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 val tabsDoc =
     ComponentDoc(
         id = "tabs",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/tabs",
         title = "Tabs",
         description = "A segmented control for switching between related views.",
         usageCode =

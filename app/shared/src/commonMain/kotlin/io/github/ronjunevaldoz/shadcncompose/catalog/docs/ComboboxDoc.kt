@@ -10,6 +10,7 @@ import io.github.ronjunevaldoz.heroicons.outline.ChevronDown
 val comboboxDoc =
     ComponentDoc(
         id = "combobox",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/combobox",
         title = "Combobox",
         description = "A select with a filterable/searchable option list.",
         usageCode =

@@ -12,6 +12,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 val scrollAreaDoc =
     ComponentDoc(
         id = "scroll-area",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/scroll-area",
         title = "Scroll Area",
         description = "A scrollable region with a slim custom scrollbar thumb instead of the native one.",
         usageCode =

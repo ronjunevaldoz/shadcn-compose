@@ -10,6 +10,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnPaginationItem
 val paginationDoc =
     ComponentDoc(
         id = "pagination",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/pagination",
         title = "Pagination",
         description = "Page-number navigation with Previous/Next controls and ellipsis gaps.",
         usageCode =

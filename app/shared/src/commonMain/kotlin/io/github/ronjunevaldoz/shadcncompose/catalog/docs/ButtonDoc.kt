@@ -11,6 +11,7 @@ import io.github.ronjunevaldoz.heroicons.outline.Check
 val buttonDoc =
     ComponentDoc(
         id = "button",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/button",
         title = "Button",
         description = "Triggers an action or event. Supports six variants and five sizes.",
         usageCode =

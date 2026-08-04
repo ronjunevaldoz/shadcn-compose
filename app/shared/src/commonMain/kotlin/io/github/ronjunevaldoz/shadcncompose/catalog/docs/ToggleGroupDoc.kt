@@ -20,6 +20,7 @@ private val demoItems =
 val toggleGroupDoc =
     ComponentDoc(
         id = "toggle-group",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/toggle-group",
         title = "Toggle Group",
         description = "A segmented row of toggles for single- or multi-select, e.g. text formatting.",
         usageCode =

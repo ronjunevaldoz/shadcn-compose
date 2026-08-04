@@ -23,6 +23,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextField
 val sheetDoc =
     ComponentDoc(
         id = "sheet",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/sheet",
         title = "Sheet",
         description = "A modal panel that slides in from a screen edge.",
         usageCode =

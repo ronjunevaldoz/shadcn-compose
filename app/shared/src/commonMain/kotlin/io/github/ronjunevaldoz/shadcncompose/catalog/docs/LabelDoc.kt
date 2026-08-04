@@ -14,6 +14,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnLabel
 val labelDoc =
     ComponentDoc(
         id = "label",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/label",
         title = "Label",
         description = "A form-field label, optionally marked required.",
         usageCode =

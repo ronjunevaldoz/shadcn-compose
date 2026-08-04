@@ -24,6 +24,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextStyle
 val messageDoc =
     ComponentDoc(
         id = "message",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/message",
         title = "Message",
         description =
             "One chat-transcript row: avatar and content laid out side by side, mirrored for the sender's own " +

@@ -122,6 +122,7 @@ private const val THINKING_DELAY_MILLIS = 500L
 val messageScrollerDoc =
     ComponentDoc(
         id = "message-scroller",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/message-scroller",
         title = "Message Scroller",
         description =
             "A chat-transcript scroll container that follows new messages to the bottom -- but only while " +

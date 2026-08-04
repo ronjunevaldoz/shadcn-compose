@@ -16,6 +16,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 val contextMenuDoc =
     ComponentDoc(
         id = "context-menu",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/context-menu",
         title = "Context Menu",
         description = "A menu triggered by right-click, opened at the cursor.",
         usageCode =

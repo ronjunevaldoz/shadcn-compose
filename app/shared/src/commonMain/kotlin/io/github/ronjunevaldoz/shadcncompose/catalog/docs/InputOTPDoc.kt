@@ -14,6 +14,7 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 val inputOTPDoc =
     ComponentDoc(
         id = "input-otp",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/input-otp",
         title = "Input OTP",
         description = "A one-time-passcode input with boxed slots that fill left-to-right.",
         usageCode =

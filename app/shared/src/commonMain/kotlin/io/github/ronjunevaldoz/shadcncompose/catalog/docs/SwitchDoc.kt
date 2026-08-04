@@ -11,6 +11,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSwitch
 val switchDoc =
     ComponentDoc(
         id = "switch",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/switch",
         title = "Switch",
         description = "An on/off control for a single setting, applied immediately.",
         usageCode =

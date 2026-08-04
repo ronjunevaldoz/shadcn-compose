@@ -13,6 +13,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.ToggleVariant
 val toggleDoc =
     ComponentDoc(
         id = "toggle",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/toggle",
         title = "Toggle",
         description = "A two-state button, commonly used for toolbar toggles like bold or italic.",
         usageCode =

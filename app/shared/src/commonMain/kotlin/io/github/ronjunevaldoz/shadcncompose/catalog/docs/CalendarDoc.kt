@@ -10,6 +10,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarDate
 val calendarDoc =
     ComponentDoc(
         id = "calendar",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/calendar",
         title = "Calendar",
         description = "A single-month date picker grid with a highlighted selection and today marker.",
         usageCode =

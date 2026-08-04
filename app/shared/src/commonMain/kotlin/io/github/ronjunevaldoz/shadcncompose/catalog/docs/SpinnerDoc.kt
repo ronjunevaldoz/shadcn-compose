@@ -8,6 +8,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSpinner
 val spinnerDoc =
     ComponentDoc(
         id = "spinner",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/spinner",
         title = "Spinner",
         description = "A spinning loading indicator.",
         usageCode =

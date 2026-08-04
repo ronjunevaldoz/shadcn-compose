@@ -16,6 +16,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 val emptyDoc =
     ComponentDoc(
         id = "empty",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/empty",
         title = "Empty",
         description = "A centered placeholder for an empty list, search result, or state.",
         usageCode =

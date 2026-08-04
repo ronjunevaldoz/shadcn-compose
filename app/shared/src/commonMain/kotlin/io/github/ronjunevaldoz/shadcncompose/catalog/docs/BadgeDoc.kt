@@ -9,6 +9,7 @@ import io.github.ronjunevaldoz.shadcncompose.styles.BadgeVariant
 val badgeDoc =
     ComponentDoc(
         id = "badge",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/badge",
         title = "Badge",
         description = "A small label used to highlight status, counts, or metadata.",
         usageCode =

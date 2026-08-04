@@ -12,6 +12,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.rememberShadcnToastState
 val toastDoc =
     ComponentDoc(
         id = "toast",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/toast",
         title = "Toast",
         description =
             "A stackable, auto-dismissing notification queue. Real shadcn/ui's sonner.tsx wraps the separate " +

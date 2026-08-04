@@ -33,6 +33,7 @@ private fun NavMenuPanel(links: List<NavLink>) {
 val navigationMenuDoc =
     ComponentDoc(
         id = "navigation-menu",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/navigation-menu",
         title = "Navigation Menu",
         description = "A horizontal top-level site navigation row where some items open a panel of related links.",
         usageCode =

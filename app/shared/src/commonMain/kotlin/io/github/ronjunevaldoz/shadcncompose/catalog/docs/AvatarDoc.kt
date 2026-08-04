@@ -10,6 +10,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnAvatarSize
 val avatarDoc =
     ComponentDoc(
         id = "avatar",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/avatar",
         title = "Avatar",
         description = "A circular user/entity image container with an initials fallback.",
         usageCode =

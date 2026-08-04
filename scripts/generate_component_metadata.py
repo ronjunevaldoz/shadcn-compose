@@ -150,6 +150,19 @@ def find_description(component_id):
     return ""
 
 
+def find_reference_url(component_id):
+    """The real shadcn/ui docs page this component is modeled on, if one exists --
+    see ComponentDoc.kt's own doc comment. `None` for this library's own additions
+    (Chip, Stepper, ...), verified live against ui.shadcn.com, not guessed."""
+    for doc_file in DOCS_DIR.glob("*Doc.kt"):
+        text = doc_file.read_text()
+        if f'id = "{component_id}"' not in text:
+            continue
+        m = re.search(r'referenceUrl\s*=\s*"([^"]+)"', text)
+        return m.group(1) if m else None
+    return None
+
+
 def extract_enum_values(type_name):
     """Finds `enum class Name { A, B, C }` / `enum class Name(...) { A(...), B(...) }` /
     `sealed interface Name { data object A : Name ... }` wherever it's declared, across
@@ -220,6 +233,7 @@ def build_metadata():
         components.append({
             "id": component_id,
             "title": entry["title"],
+            "referenceUrl": find_reference_url(component_id),
             "description": find_description(component_id),
             "category": CATEGORY_SLUGS[entry["category"]],
             "family": FAMILY_BY_ID.get(component_id, "uncategorized"),

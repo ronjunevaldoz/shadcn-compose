@@ -19,6 +19,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextarea
 val fieldDoc =
     ComponentDoc(
         id = "field",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/field",
         title = "Field",
         description =
             "A labeled control + description layout for building forms. Real shadcn/ui's form.tsx is a thin " +

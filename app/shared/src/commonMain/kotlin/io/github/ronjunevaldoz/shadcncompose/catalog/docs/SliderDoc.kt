@@ -11,6 +11,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSlider
 val sliderDoc =
     ComponentDoc(
         id = "slider",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/slider",
         title = "Slider",
         description = "An input for selecting a value from within a range by dragging a thumb.",
         usageCode =

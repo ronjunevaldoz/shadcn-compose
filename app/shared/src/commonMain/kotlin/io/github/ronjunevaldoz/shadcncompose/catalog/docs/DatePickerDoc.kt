@@ -37,6 +37,7 @@ private fun formatDate(date: ShadcnCalendarDate): String = "${monthNames[date.mo
 val datePickerDoc =
     ComponentDoc(
         id = "date-picker",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/date-picker",
         title = "Date Picker",
         description =
             "A date picker built by composing Popover and Calendar -- not a standalone component in real " +

@@ -11,6 +11,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnTextarea
 val textareaDoc =
     ComponentDoc(
         id = "textarea",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/textarea",
         title = "Textarea",
         description = "A multi-line text input, sharing the same border/focus spec as Text Field.",
         usageCode =

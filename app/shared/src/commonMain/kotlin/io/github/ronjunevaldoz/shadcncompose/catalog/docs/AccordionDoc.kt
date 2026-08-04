@@ -15,6 +15,7 @@ import io.github.ronjunevaldoz.heroicons.outline.ChevronDown
 val accordionDoc =
     ComponentDoc(
         id = "accordion",
+        referenceUrl = "https://ui.shadcn.com/docs/components/base/accordion",
         title = "Accordion",
         description = "A vertically-stacked set of collapsible sections.",
         usageCode =
