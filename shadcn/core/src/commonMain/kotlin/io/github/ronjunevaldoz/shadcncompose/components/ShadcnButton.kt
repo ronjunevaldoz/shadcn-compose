@@ -32,6 +32,12 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * follows the final resolved `shape()`, not just whatever this composable's own
  * variant style declares.
  *
+ * [contentAlignment] defaults to centered, matching real shadcn's own default button
+ * (content is naturally narrow, so centering vs. start-aligning rarely differs visually).
+ * Override it to [Alignment.CenterStart] for the common "full-width, left-aligned label"
+ * pattern real shadcn achieves with `className="justify-start"` (a preset/menu-style list
+ * of buttons, for one -- see the catalog app's Date Range Picker "Presets" example).
+ *
  * Usage:
  * ```
  * ShadcnButton(onClick = {}) { ShadcnText("Click me") }
@@ -48,6 +54,7 @@ fun ShadcnButton(
     variant: ButtonVariant = ButtonVariant.Default,
     size: ButtonSize = ButtonSize.Md,
     style: Style = Style,
+    contentAlignment: Alignment = Alignment.Center,
     content: @Composable () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -67,7 +74,7 @@ fun ShadcnButton(
                     onClick = onClick,
                 )
                 .styleable(styleState, variant.rememberStyle() then size.rememberStyle(), style),
-        contentAlignment = Alignment.Center,
+        contentAlignment = contentAlignment,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),

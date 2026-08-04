@@ -206,14 +206,27 @@ fun ShadcnCalendar(
  * library exposes a rendering hook for, the same way [ShadcnCalendarDateRange] itself has
  * no opinion on *why* a range was picked. If a day falls in both ranges, [range] wins.
  *
- * [comparisonColor] defaults to [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.secondary]
- * -- a deliberately low-contrast neutral tone in shadcn's own token system (real shadcn's
- * `secondary` is meant to be "quiet", not a second brand color), so it reads clearly in
- * dark themes but can look subtle in the default light theme. Override it (and
- * [onComparisonColor] to match, for correct text contrast on the filled start/end days)
- * with a bolder color -- there's no separate "accent" token in [ShadcnColors] to fall back
- * on automatically, so this is deliberately a per-call override rather than a second fixed
- * default.
+ * [comparisonColor]/[onComparisonColor] follow the same `color`/`onColor` semantic-token
+ * pairing this library's own [ShadcnColors] and real Jetpack Compose Material3's own
+ * `ColorScheme` both use throughout (`primary`/`onPrimary`, `secondary`/`onSecondary`, ...)
+ * -- default to [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.secondary]/
+ * `onSecondary`, a deliberately low-contrast neutral pair in shadcn's own token system
+ * (real shadcn's `secondary` is meant to be "quiet", not a second brand color), so it
+ * reads clearly in dark themes but can look subtle in the default light theme. Override
+ * both together with a bolder color -- there's no separate "accent" token in [ShadcnColors]
+ * to fall back on automatically, so this is deliberately a per-call override.
+ *
+ * [comparisonContainerColor] is the low-emphasis fill for every *non*-endpoint day in the
+ * comparison range (the equivalent of [comparisonColor]'s own `Container` variant, matching
+ * Material3's real `primaryContainer`/`secondaryContainer` naming). Defaults to
+ * `comparisonColor.copy(alpha = 0.2f)` for convenience when you only care about overriding
+ * [comparisonColor] -- but note the *primary* range's equivalent fill
+ * ([io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.muted]) is a wholly independent,
+ * purpose-picked token, not an alpha-derived tint of `primary`. An alpha blend over `primary`
+ * doesn't always land on a token deliberately tuned for that theme's background the way a
+ * real container color does, so pass [comparisonContainerColor] explicitly (independent of
+ * [comparisonColor]) for a more correct, Material3-equivalent result rather than relying on
+ * the alpha-derived default.
  *
  * Usage:
  * ```
@@ -242,6 +255,7 @@ fun ShadcnCalendarRange(
     comparisonRange: ShadcnCalendarDateRange? = null,
     comparisonColor: Color = shadcnTheme.colors.secondary,
     onComparisonColor: Color = shadcnTheme.colors.onSecondary,
+    comparisonContainerColor: Color = comparisonColor.copy(alpha = 0.2f),
 ) {
     var focusedDate by remember(range.start, range.end) { mutableStateOf(range.end ?: range.start ?: today) }
 
@@ -266,6 +280,7 @@ fun ShadcnCalendarRange(
                 comparisonRange = comparisonRange,
                 comparisonColor = comparisonColor,
                 onComparisonColor = onComparisonColor,
+                comparisonContainerColor = comparisonContainerColor,
                 today = today,
                 focusedDate = focusedDate,
                 disabled = disabled,
@@ -328,6 +343,7 @@ private fun RangeCalendarMonth(
     comparisonRange: ShadcnCalendarDateRange?,
     comparisonColor: Color,
     onComparisonColor: Color,
+    comparisonContainerColor: Color,
     today: ShadcnCalendarDate?,
     focusedDate: ShadcnCalendarDate?,
     disabled: (ShadcnCalendarDate) -> Boolean,
@@ -371,6 +387,7 @@ private fun RangeCalendarMonth(
                         isComparisonRunRightEdge = comparison?.isRunRightEdge == true,
                         comparisonColor = comparisonColor,
                         onComparisonColor = onComparisonColor,
+                        comparisonContainerColor = comparisonContainerColor,
                         onClick = { onDayClick(date) },
                     )
                 }
@@ -517,6 +534,7 @@ private fun CalendarDayCell(
     isComparisonRunRightEdge: Boolean = false,
     comparisonColor: Color = shadcnTheme.colors.secondary,
     onComparisonColor: Color = shadcnTheme.colors.onSecondary,
+    comparisonContainerColor: Color = comparisonColor.copy(alpha = 0.2f),
 ) {
     val theme = shadcnTheme
     val interactionSource = remember { MutableInteractionSource() }
@@ -542,7 +560,7 @@ private fun CalendarDayCell(
                 isSelected -> background(theme.colors.primary)
                 isComparisonSelected -> background(comparisonColor)
                 isInRange -> background(theme.colors.muted)
-                isComparisonInRange -> background(comparisonColor.copy(alpha = 0.2f))
+                isComparisonInRange -> background(comparisonContainerColor)
                 isToday -> {
                     borderWidth(1.dp)
                     borderColor(theme.colors.border)

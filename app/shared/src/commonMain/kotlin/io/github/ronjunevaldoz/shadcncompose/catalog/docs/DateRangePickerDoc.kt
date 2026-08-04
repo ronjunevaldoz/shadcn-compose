@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton
@@ -292,6 +293,7 @@ val dateRangePickerDoc =
                                                 },
                                                 variant = if (range == presetRange) ButtonVariant.Secondary else ButtonVariant.Ghost,
                                                 modifier = Modifier.fillMaxWidth(),
+                                                contentAlignment = Alignment.CenterStart,
                                             ) { ShadcnText(preset.label) }
                                         }
                                     }
@@ -356,6 +358,7 @@ val dateRangePickerDoc =
                                                         ButtonVariant.Ghost
                                                     },
                                                 modifier = Modifier.fillMaxWidth(),
+                                                contentAlignment = Alignment.CenterStart,
                                             ) { ShadcnText(preset.label) }
                                         }
                                     }
@@ -436,6 +439,7 @@ val dateRangePickerDoc =
                                                     },
                                                     variant = if (range == presetRange) ButtonVariant.Secondary else ButtonVariant.Ghost,
                                                     modifier = Modifier.fillMaxWidth(),
+                                                contentAlignment = Alignment.CenterStart,
                                                 ) { ShadcnText(preset.label) }
                                             }
                                         }
@@ -445,6 +449,13 @@ val dateRangePickerDoc =
                                             range = range, onRangeChange = { range = it },
                                             today = today, numberOfMonths = 2,
                                             comparisonRange = comparisonRange,
+                                            // Bold blue, unmistakably distinct from the
+                                            // primary range's black/gray in either theme --
+                                            // the default secondary color is intentionally
+                                            // subtle in light mode, see ShadcnCalendarRange's
+                                            // own doc comment.
+                                            comparisonColor = Color(0xFF2563EB),
+                                            onComparisonColor = Color.White,
                                         )
                                     }
                                 }
@@ -512,6 +523,7 @@ val dateRangePickerDoc =
                                                             ButtonVariant.Ghost
                                                         },
                                                     modifier = Modifier.fillMaxWidth(),
+                                                    contentAlignment = Alignment.CenterStart,
                                                 ) { ShadcnText(preset.label) }
                                             }
                                         }
@@ -527,6 +539,13 @@ val dateRangePickerDoc =
                                             today = today,
                                             numberOfMonths = 2,
                                             comparisonRange = comparisonRange,
+                                            // Bold blue, unmistakably distinct from the
+                                            // primary range's black/gray in either theme --
+                                            // the default secondary color is intentionally
+                                            // subtle in light mode, see ShadcnCalendarRange's
+                                            // own doc comment.
+                                            comparisonColor = Color(0xFF2563EB),
+                                            onComparisonColor = Color.White,
                                         )
                                     }
                                 }
