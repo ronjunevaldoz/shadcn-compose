@@ -34,6 +34,7 @@ components against this one) — see [`component-metadata.json`](component-metad
 | `ShadcnToggle` | Pressable two-state button (bold/italic-style toolbar buttons) | toggle button, pressed state, formatting toolbar button |
 | `ShadcnSlider` | Drag a thumb to pick a value/range on a track | slider, range input, volume slider, value picker |
 | `ShadcnToggleGroup` | A row of `Toggle`s where selection is mutually exclusive (or multi-select) | toggle group, segmented control, button group toggle |
+| `ShadcnStepper` | Numbered multi-step progress indicator (each step a circle + title + optional description) | stepper, step indicator, wizard steps, progress steps, multi-step form |
 | `ShadcnInputGroup` | Text field with leading/trailing addons (icon, button, unit label) | input group, input with icon, prefixed input, input addon |
 | `ShadcnButtonGroup` | Visually joined row of buttons with shared/flush corners | button group, split button, joined buttons, toolbar |
 | `ShadcnTextarea` | Multi-line text input | textarea, multiline input, comment box, message box |
