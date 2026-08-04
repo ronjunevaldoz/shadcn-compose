@@ -6,6 +6,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -16,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
+import io.github.ronjunevaldoz.shadcncompose.icons.X
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnModalOverlay
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -47,6 +50,11 @@ fun ShadcnSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     side: ShadcnSheetSide = ShadcnSheetSide.End,
+    showCloseButton: Boolean = true,
+    // See ShadcnDialog's closeIcon doc -- same self-generated-vector, no icon-dependency reasoning.
+    closeIcon: @Composable () -> Unit = {
+        ShadcnGlyphIcon(X, tint = shadcnTheme.colors.onSurfaceVariant, small = true)
+    },
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val alignment =
@@ -73,16 +81,24 @@ fun ShadcnSheet(
                     ShadcnSheetSide.Top, ShadcnSheetSide.Bottom -> Modifier.fillMaxWidth()
                     ShadcnSheetSide.Start, ShadcnSheetSide.End -> Modifier.fillMaxHeight().width(320.dp)
                 }
-            Column(
+            Box(
                 modifier =
                     modifier
                         .then(sizeModifier)
                         .background(shadcnTheme.colors.background)
                         .border(1.dp, shadcnTheme.colors.border)
                         .padding(shadcnTheme.spacing.xxl),
-                verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.lg),
             ) {
-                content()
+                Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.lg)) {
+                    content()
+                }
+                if (showCloseButton) {
+                    DialogCloseButton(
+                        onClick = onDismissRequest,
+                        modifier = Modifier.align(Alignment.TopEnd),
+                        icon = closeIcon,
+                    )
+                }
             }
         }
     }

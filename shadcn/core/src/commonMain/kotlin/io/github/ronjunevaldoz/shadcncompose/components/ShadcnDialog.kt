@@ -93,8 +93,9 @@ fun ShadcnDialog(
     }
 }
 
+/** Shared with [ShadcnSheet], which shows the same top-end close affordance. */
 @Composable
-private fun DialogCloseButton(
+internal fun DialogCloseButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: @Composable () -> Unit,
