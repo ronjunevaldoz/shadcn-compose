@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -403,9 +404,24 @@ val dateRangePickerDoc =
                         var month by remember { mutableStateOf(today.month) }
                         var range by remember { mutableStateOf(ShadcnCalendarDateRange(today, today)) }
                         var compareEnabled by remember { mutableStateOf(false) }
-                        // Independent state, not derived from `range` -- once Compare is toggled
-                        // on, the calendar never edits this again, only the fields below can.
+                        var comparisonTouched by remember { mutableStateOf(false) }
                         var comparisonRange by remember { mutableStateOf<ShadcnCalendarDateRange?>(null) }
+
+                        // Reactive until manually edited: tracks "same period last year" of the
+                        // primary range on every change, unless the fields below were touched --
+                        // then it locks and only those fields can move it, until Compare is
+                        // toggled off and back on again.
+                        LaunchedEffect(range, compareEnabled) {
+                            comparisonRange =
+                                when {
+                                    !compareEnabled -> {
+                                        comparisonTouched = false
+                                        null
+                                    }
+                                    comparisonTouched -> comparisonRange
+                                    else -> samePeriodLastYear(range)
+                                }
+                        }
 
                         Box {
                             ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
@@ -423,13 +439,7 @@ val dateRangePickerDoc =
                                         horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
-                                        ShadcnSwitch(
-                                            checked = compareEnabled,
-                                            onCheckedChange = { checked ->
-                                                compareEnabled = checked
-                                                comparisonRange = if (checked) samePeriodLastYear(range) else null
-                                            },
-                                        )
+                                        ShadcnSwitch(checked = compareEnabled, onCheckedChange = { compareEnabled = it })
                                         ShadcnText("Compare to same period last year")
                                     }
                                     comparisonRange?.let { compRange ->
@@ -439,12 +449,18 @@ val dateRangePickerDoc =
                                         ) {
                                             ShadcnDateInput(
                                                 value = compRange.start ?: today,
-                                                onValueChange = { comparisonRange = compRange.copy(start = it) },
+                                                onValueChange = {
+                                                    comparisonTouched = true
+                                                    comparisonRange = compRange.copy(start = it)
+                                                },
                                             )
                                             ShadcnText("-", muted = true)
                                             ShadcnDateInput(
                                                 value = compRange.end ?: today,
-                                                onValueChange = { comparisonRange = compRange.copy(end = it) },
+                                                onValueChange = {
+                                                    comparisonTouched = true
+                                                    comparisonRange = compRange.copy(end = it)
+                                                },
                                             )
                                         }
                                     }
@@ -492,8 +508,21 @@ val dateRangePickerDoc =
                         var month by remember { mutableStateOf(today.month) }
                         var range by remember { mutableStateOf(ShadcnCalendarDateRange(today, today)) }
                         var compareEnabled by remember { mutableStateOf(true) }
-                        var comparisonRange by
-                            remember { mutableStateOf(samePeriodLastYear(ShadcnCalendarDateRange(today, today))) }
+                        var comparisonTouched by remember { mutableStateOf(false) }
+                        var comparisonRange by remember { mutableStateOf<ShadcnCalendarDateRange?>(null) }
+
+                        LaunchedEffect(range, compareEnabled) {
+                            comparisonRange =
+                                when {
+                                    !compareEnabled -> {
+                                        comparisonTouched = false
+                                        null
+                                    }
+                                    comparisonTouched -> comparisonRange
+                                    else -> samePeriodLastYear(range)
+                                }
+                        }
+
                         Box {
                             ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
                                 Image(
@@ -521,10 +550,7 @@ val dateRangePickerDoc =
                                     ) {
                                         ShadcnSwitch(
                                             checked = compareEnabled,
-                                            onCheckedChange = { checked ->
-                                                compareEnabled = checked
-                                                comparisonRange = if (checked) samePeriodLastYear(range) else null
-                                            },
+                                            onCheckedChange = { compareEnabled = it },
                                         )
                                         ShadcnText("Compare to same period last year")
                                     }
@@ -535,12 +561,18 @@ val dateRangePickerDoc =
                                         ) {
                                             ShadcnDateInput(
                                                 value = compRange.start ?: today,
-                                                onValueChange = { comparisonRange = compRange.copy(start = it) },
+                                                onValueChange = {
+                                                    comparisonTouched = true
+                                                    comparisonRange = compRange.copy(start = it)
+                                                },
                                             )
                                             ShadcnText("-", muted = true)
                                             ShadcnDateInput(
                                                 value = compRange.end ?: today,
-                                                onValueChange = { comparisonRange = compRange.copy(end = it) },
+                                                onValueChange = {
+                                                    comparisonTouched = true
+                                                    comparisonRange = compRange.copy(end = it)
+                                                },
                                             )
                                         }
                                     }
