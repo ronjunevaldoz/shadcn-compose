@@ -22,7 +22,7 @@ Published to Maven Central.
 ```toml
 # gradle/libs.versions.toml
 [versions]
-shadcn-compose = "0.2.4"
+shadcn-compose = "0.2.6"
 
 [libraries]
 shadcn-compose = { module = "io.github.ronjunevaldoz:shadcn-compose", version.ref = "shadcn-compose" }
@@ -43,6 +43,26 @@ Every file that references a component's `style` parameter needs an opt-in:
 
 ```kotlin
 @file:OptIn(ExperimentalFoundationStyleApi::class)
+```
+
+## Claude Code Skills
+
+Using shadcn-compose with an AI coding agent? Two [Claude Code](https://claude.com/claude-code)
+skills document real, source-verified usage — not guessed from analogy to other component
+libraries:
+
+- **`kmp-shadcn-compose`** — Maven Central setup, `ShadcnTheme`, and individual component
+  signatures, verified against this repo's own source.
+- **`kmp-shadcn-compose-layouts`** — composes components into full page layouts (login/auth
+  forms, generic forms, data table screens, admin/dashboard shells), plus an audit script
+  (`scan_shadcn_layout_gaps.py`) that flags hand-rolled form fields, hand-rolled tables, and
+  admin shells missing `ShadcnSidebar` in an existing project, suggesting the specific migration.
+
+Install both (and the rest of the [kmp-agent-skills](https://github.com/ronjunevaldoz/kmp-agent-skills)
+collection) into a project:
+
+```bash
+npx skills add ronjunevaldoz/kmp-agent-skills
 ```
 
 ## Registry parity

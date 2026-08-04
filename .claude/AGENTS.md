@@ -64,17 +64,18 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
 
 | Topic | Skill |
 |---|---|
-| New design system component | `kotlin-multiplatform-design-system` / `kotlin-multiplatform-design-system-extended` |
-| Publishing to Maven Central | `kotlin-multiplatform-library-publishing` |
-| iOS / SPM distribution | `kotlin-multiplatform-xcframework-spm` |
-| API surface management | `kotlin-multiplatform-library-publishing` (apiCheck / apiDump — not yet wired, see Notes) |
-| Platform-specific implementations | `kotlin-multiplatform-expect-actual` |
-| Catalog app navigation | `kotlin-multiplatform-navigation` |
-| Unit / integration tests | `kotlin-multiplatform-unit-testing` (not yet wired, see Notes) |
-| Code quality (detekt, ktlint) | `kotlin-multiplatform-code-quality` |
-| CI automation | `kotlin-multiplatform-ci-github-actions` |
-| Architecture audit | `kotlin-multiplatform-audit` |
-| Harvest consumer lessons | `kotlin-multiplatform-audit` (`--harvest` mode via `/kmm-harvest-lessons`) |
+| New design system component | `kmp-compose-design-system` / `kmp-compose-design-system-extended` |
+| Publishing to Maven Central | `kmp-library-publishing` |
+| iOS / SPM distribution | `kmp-xcframework-spm` |
+| API surface management | `kmp-library-publishing` (apiCheck / apiDump — not yet wired, see Notes) |
+| Platform-specific implementations | `kmp-expect-actual` |
+| Catalog app navigation | `kmp-navigation` |
+| Unit / integration tests | `kmp-unit-testing` (not yet wired, see Notes) |
+| Code quality (detekt, ktlint) | `kmp-code-quality` |
+| CI automation | `kmp-ci-github-actions` |
+| Architecture audit | `kmp-audit` |
+| Harvest consumer lessons | `kmp-audit` (`--harvest` mode via `/kmm-harvest-lessons`) |
+| Building/auditing layouts (forms, tables, admin/dashboard shells) with shadcn-compose | `kmp-shadcn-compose-layouts` |
 
 ## Module graph
 
@@ -95,7 +96,7 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
 ## API surface rules
 
 - No `binary-compatibility-validator` wired yet -- consider adding it via
-  `kotlin-multiplatform-library-publishing` before the first real Maven Central release,
+  `kmp-library-publishing` before the first real Maven Central release,
   so accidental public API breaks are caught in CI.
 - Until then, treat any signature change to a public `Shadcn*` component or `styles/*Variant`
   sealed interface as a breaking change requiring a version bump.
@@ -154,7 +155,7 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
    fresh render under either theme alone.
    **This is now an enforced rule, not just documentation:**
    `scripts/check_style_block_theme_reads.sh` scans every `Style { }` block under
-   `library/src`/`app/shared/src` (brace-matched, comment-aware -- won't false-positive
+   `shadcn/core/src`/`app/shared/src` (brace-matched, comment-aware -- won't false-positive
    on a doc comment or a tutorial page's illustrative code string) and fails if any of
    them read `shadcnTheme.` directly inside their own body. Wired into CI's `lint` job.
    Run it locally with `./scripts/check_style_block_theme_reads.sh` before adding any
@@ -419,7 +420,7 @@ don't show up when only checking the components registry. `shimmer` and `scroll-
 were missed for exactly this reason (only found once the user pointed at
 `ui.shadcn.com/docs/utils/shimmer` and `.../scroll-fade` directly) -- implemented as
 `Modifier.shadcnShimmer()`/`Modifier.shadcnScrollFade()` in
-`library/src/commonMain/kotlin/.../styles/`, cataloged under a new `UTILS`
+`shadcn/core/src/commonMain/kotlin/.../styles/`, cataloged under a new `UTILS`
 `CatalogCategory`. `shadcnScrollFade` is wired directly into `ShadcnMessageScroller`'s
 internal scroll container (real shadcn's own message-scroller demo uses it), and
 `shadcnShimmer` powers a "Thinking…" placeholder in the message-scroller catalog demo
@@ -430,13 +431,13 @@ real site and easy to miss entirely.
 
 ## Notes for future sessions
 
-- **The Compose Styles API does not match what the `kotlin-multiplatform-design-system`
+- **The Compose Styles API does not match what the `kmp-compose-design-system`
   skill assumes.** The real annotation in Compose Multiplatform 1.11.1 is
   `androidx.compose.foundation.style.ExperimentalFoundationStyleApi`, not
   `ExperimentalStylesApi`. `padding()` does not exist on `StyleScope` -- use
   `contentPadding(...)`. Verify any new Style API usage against the real jar
   (`~/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.foundation/`) with a
-  compile spike before writing component code, the same way `library/build.gradle.kts`'s
+  compile spike before writing component code, the same way `shadcn/core/build.gradle.kts`'s
   history did -- don't trust the skill's code samples verbatim for this API surface.
 - **Focus rings are drawn with the Style API's own `dropShadow()`, not a hand-rolled
   `Stroke` modifier.** An earlier version of this file claimed the opposite -- that
@@ -458,7 +459,7 @@ real site and easy to miss entirely.
   The same rule applies to `components.json` fields (`tailwind.baseColor`, `style`) --
   see item 8 above for a case where this was skipped and a fabricated-sounding but
   actually-real set of custom base colors got documented as "official" when it isn't.
-- Roborazzi screenshot tests are wired (`library/src/jvmTest/`, Robolectric-less
+- Roborazzi screenshot tests are wired (`shadcn/core/src/jvmTest/`, Robolectric-less
   JVM/Desktop capture, see `docs/visual-testing.md`) and compile/pass cleanly (verified
   2026-07-08 via `./gradlew :shadcn:core:verifyRoborazziJvm`). Plain `:shadcn:core:jvmTest` does
   *not* pixel-compare against the committed goldens (`captureRoboImage` is a no-op writer

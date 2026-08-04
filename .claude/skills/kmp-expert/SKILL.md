@@ -212,7 +212,7 @@ versions when the local repo can be checked directly.
 
 ---
 
-## The 68 Skills and What They Own
+## The 69 Skills and What They Own
 
 ### Layer 0 — Architecture Contract
 | Skill | Owns |
@@ -289,6 +289,7 @@ versions when the local repo can be checked directly.
 | `kmp-compose-design-system` | Tokens (colors, typography, shapes, spacing), dark mode, 6 core components, no Material dependency |
 | `kmp-compose-design-system-extended` | 27 additional components: Dialog, Sheet, Toast, Tabs, TopAppBar, Checkbox, etc. |
 | `kmp-shadcn-compose` | Published-library alternative to `design-system` — Maven Central setup, `ShadcnTheme`, 70+ components. Gated to explicit user choice (`/kmp-new-project` Step 6a); never suggested unprompted — carries a real experimental-API dependency risk |
+| `kmp-shadcn-compose-layouts` | Composes shadcn-compose components into full page layouts — login/auth forms, generic forms, data table screens, admin/dashboard shells — plus `scan_shadcn_layout_gaps.py` auditing for hand-rolled fields/tables/shells that should migrate to `ShadcnField`/`ShadcnTable`/`ShadcnSidebar` |
 | `kmp-compose-adaptive-layout` | WindowSizeClass, Compact/Medium/Expanded breakpoints, list-detail split, adaptive navigation, cross-session pattern consistency |
 | `kmp-compose-slot-api` | `@Composable () -> Unit` slots, scoped slots, CompositionLocal, component API shape |
 | `kmp-compose-state-hoisting` | Hoist-until-shared rule, controlled components, stateless vs stateful composables |
@@ -625,7 +626,7 @@ When the user asks about one of these topics, invoke the corresponding skill:
 | User asks about | Invoke skill |
 |---|---|
 | "layer contract", "clean architecture", "which layer", ":model vs :api", "internal visibility" | `kmp-clean-architecture` |
-| "composition over inheritance", "abstract class in commonMain", "extensible base class", "agent over-abstracting", "requires consumer to extend", "AbstractClassCanBeInterface" | `kmp-clean-architecture` |
+| "composition over inheritance", "abstract class in commonMain", "extensible base class", "agent over-abstracting", "requires consumer to extend", "UnnecessaryAbstractClass" | `kmp-clean-architecture` |
 | "set up a new KMP project", "create feature module", "6-layer scaffold" | `kmp-feature-scaffold` |
 | "presenter module", "ViewModel no Compose", "MVI ViewModel", "UiState UiIntent" | `kmp-presenter-module` |
 | "Koin", "dependency injection", "manual modules", "annotated mode" | `kmp-dependency-injection` |
@@ -669,6 +670,7 @@ When the user asks about one of these topics, invoke the corresponding skill:
 | "adaptive layout", "WindowSizeClass", "tablet layout", "desktop layout", "mobile layout", "phone layout", "list detail", "detail split", "split screen", "navigation rail", "Compact Medium Expanded", "responsive UI", "master detail", "multi-pane", "different layout phone tablet", "different layout phone desktop", "screen size breakpoint", "pane layout", "layout per screen size", "layout phone desktop" | `kmp-compose-adaptive-layout` |
 | "dialog", "bottom sheet", "toast", "tabs", "TopAppBar", "Checkbox" | `kmp-compose-design-system-extended` |
 | "shadcn-compose", "ShadcnButton", "ShadcnTheme", "ShadcnCard", "shadcn ui kotlin", "shadcn compose multiplatform", "ExperimentalFoundationStyleApi", "shadcn kmp" | `kmp-shadcn-compose` |
+| "shadcn login form", "shadcn admin layout", "shadcn dashboard", "shadcn data table", "ShadcnField", "ShadcnFieldGroup", "ShadcnTable", "ShadcnSidebar", "shadcn compose form", "admin shell compose multiplatform" | `kmp-shadcn-compose-layouts` |
 | "mimic api", "api mimicry", "clone api shape", "inspired by jetpack compose", "custom dsl engine", "from-scratch renderer", "vulkan ui", "metal ui", "port api ergonomics", "reimplement compose-like dsl", "non-compose renderer", "engine-agnostic dsl", "own compiler-free dsl", "api shape porting" | `kmp-api-mimicry` |
 | "slot API", "content lambda", "composable parameter", "scoped slot" | `kmp-compose-slot-api` |
 | "state hoisting", "hoist state", "controlled component", "where does state go" | `kmp-compose-state-hoisting` |
