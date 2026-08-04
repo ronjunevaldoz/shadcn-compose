@@ -1,0 +1,108 @@
+# /kmp-vectorize $ARGUMENTS
+
+**KMP Agent Skills** — compile a raster image or SVG into a Kotlin `ImageVector`,
+replacing pixel assets and hand-written vector paths.
+
+`$ARGUMENTS`: `<image path> [--name PascalName] [--color-mode semantic|literal] [--viewport N]`
+
+---
+
+## Hard rule
+
+**Never hand-write `ImageVector.Builder` path data.** All coordinates come from the
+script. If it refuses (photo or node budget), relay the refusal — do not approximate
+paths manually. The audit flags hand-written builders (`handwritten imagevector [HIGH]`).
+Arc commands (`A`/`a`) are NOT a refusal reason — the script flattens them into cubic
+Beziers automatically (most icon sets, including Heroicons, use arcs for rounded shapes).
+
+---
+
+## Step 1 — Classify the input
+
+- `.svg`, filled paths (`fill="..."`, no `stroke`) → convert directly (zero dependencies)
+- `.svg`, stroke-based (`fill="none"` + `stroke="..."` — Heroicons **Outline**, Feather,
+  Lucide, Tabler, Material Symbols Outlined all draw icons this way) → the converter
+  auto-detects this and normalizes via picosvg (`pip install picosvg` if not already
+  present). Never skip this — filling a stroke's centerline directly produces a wrong
+  icon with a normal-looking success report, not an error.
+- `.png` / `.jpg` / `.webp` **flat art** (logo, icon, illustration) → trace then convert
+- **Photograph** → STOP. Photos stay raster under `assets/photos/`. Tell the user.
+- Full-screen mockup → ask the user to crop the individual asset first (or crop it
+  yourself if the bounds are obvious), then convert the crop
+- **Remote icon (e.g. "the Heroicons bell icon, solid mini")** → fetch the raw SVG to a
+  local file first (never point the converter at a live URL, never scrape a rendered
+  icon-browser page like heroicons.com itself). For Heroicons, validate the name and
+  variant against `skills/kmp-imagevector-generator/references/heroicons-catalog.md`,
+  then:
+  ```bash
+  curl -sL "https://raw.githubusercontent.com/tailwindlabs/heroicons/master/optimized/<size>/<style>/<name>.svg" \
+    -o /tmp/<name>.svg
+  ```
+  where `<size>/<style>` is `24/outline`, `24/solid`, `20/solid` (Mini), or `16/solid` (Micro).
+  Then continue at Step 2 with `/tmp/<name>.svg` as the input.
+
+## Step 2 — Choose the color mode
+
+| Asset | Mode | Why |
+|---|---|---|
+| Icon (tintable) | `--color-mode semantic` (default choice) | Single color-agnostic layer; tinted via `AppTheme.colors.X` — adapts to dark mode free |
+| Brand logo / multi-color art | `--color-mode literal` | Colors are brand-fixed, must not follow the theme |
+
+## Step 3 — Run the converter
+
+If the project does **not** use the `kmp-compose-design-system` skill's
+`:core:designsystem` module layout, pass `--package` explicitly — the default package
+(`<group-id>.core.designsystem.icons`) is that skill's own convention, not universal.
+Never hand-edit the generated file's package line instead.
+
+```bash
+python3 ~/.claude/skills/kmp-imagevector-generator/scripts/convert_image_to_imagevector.py \
+  <input> --name <PascalName> --group-id <group.id> --color-mode <mode> \
+  [--package <full.kotlin.package>] \
+  --output <ui module>/core/designsystem/icons
+```
+
+If the script is not at `~/.claude/skills/` (Codex, Gemini CLI, or a repo-relative install),
+use the path relative to wherever the skill was installed, e.g.:
+```bash
+python3 skills/kmp-imagevector-generator/scripts/convert_image_to_imagevector.py \
+  <input> --name <PascalName> --group-id <group.id> --color-mode <mode> \
+  [--package <full.kotlin.package>] \
+  --output <ui module>/core/designsystem/icons
+```
+
+Read **only the report line** (layers / nodes / viewport / color-mode). Never open the
+generated `.kt` to inspect path data — it is an opaque artifact.
+
+If raster tracing is unavailable, the script prints install hints
+(`pip install vtracer` preferred; `brew install potrace` + Pillow fallback). Relay them.
+
+## Step 4 — Wire the reference
+
+```kotlin
+Icon(imageVector = BrandLogo, contentDescription = "Logo")                       // literal
+Icon(imageVector = Search, contentDescription = null,
+     tint = AppTheme.colors.onSurfaceVariant)                                    // semantic
+```
+
+If the project has an `AppIcons` object, register it there so call sites use `AppIcons.Search`.
+
+## Step 5 — Verify visually
+
+```
+/kmp-record-design-baselines   ← golden capture of the icon at 24/48 dp
+/kmp-audit-screenshots         ← vision check of fidelity vs the source
+```
+
+## Step 6 — Clean up the raster (if replacing)
+
+If this replaced a PNG/JPG in `commonMain/composeResources`, delete the raster after the
+golden confirms fidelity — `raster asset in commonMain [MEDIUM]` flags leftovers.
+
+---
+
+## Notes
+
+- Node budget defaults to 400 (`--max-nodes`); the script refuses bloated vectors — reduce `--colors` or simplify the source art
+- Photographs are rejected by an entropy gate — this pipeline is for flat art only
+- Generated files carry a `// GENERATED by convert_image_to_imagevector` header; edit by re-tracing, never by hand
