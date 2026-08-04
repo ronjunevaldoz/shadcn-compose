@@ -197,6 +197,15 @@ fun ShadcnCalendar(
  * [disabled] matches real shadcn/ui's `disabled` matcher prop -- see [ShadcnCalendar]'s
  * own doc comment.
  *
+ * [comparisonRange] renders a second range simultaneously -- e.g. "compare to previous
+ * period" in an analytics dashboard (see the catalog app's Date Range Picker "Compare"
+ * example) -- in [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.secondary]
+ * instead of [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.primary], so the
+ * two are visually distinct at a glance. Not a real shadcn/ui concept (real Calendar only
+ * ever renders one `mode="range"` selection) -- this is app-specific business logic this
+ * library exposes a rendering hook for, the same way [ShadcnCalendarDateRange] itself has
+ * no opinion on *why* a range was picked. If a day falls in both ranges, [range] wins.
+ *
  * Usage:
  * ```
  * var year by remember { mutableStateOf(2026) }
@@ -221,6 +230,7 @@ fun ShadcnCalendarRange(
     today: ShadcnCalendarDate? = null,
     numberOfMonths: Int = 1,
     disabled: (ShadcnCalendarDate) -> Boolean = { false },
+    comparisonRange: ShadcnCalendarDateRange? = null,
 ) {
     var focusedDate by remember(range.start, range.end) { mutableStateOf(range.end ?: range.start ?: today) }
 
@@ -242,6 +252,7 @@ fun ShadcnCalendarRange(
                     onMonthChange(y, m)
                 },
                 range = range,
+                comparisonRange = comparisonRange,
                 today = today,
                 focusedDate = focusedDate,
                 disabled = disabled,
@@ -255,6 +266,43 @@ fun ShadcnCalendarRange(
     }
 }
 
+/**
+ * A range's rendering state for one day cell -- shared by [ShadcnCalendarRange]'s primary
+ * [ShadcnCalendarDateRange] and its optional `comparisonRange`, so both compute the exact
+ * same per-row-run rounding logic instead of two copies drifting apart.
+ */
+private data class RangeCellFlags(
+    val isSelected: Boolean,
+    val isInRange: Boolean,
+    val isRunLeftEdge: Boolean,
+    val isRunRightEdge: Boolean,
+)
+
+private fun rangeRowFlags(
+    week: List<CalendarCell>,
+    range: ShadcnCalendarDateRange,
+): List<RangeCellFlags> {
+    // The absolute start/end day is its own isolated, fully-rounded, solid-filled badge
+    // (same treatment as a plain single-day selection) -- it is NOT part of the flush band.
+    // Every *other* in-range day joins a flush, touching band that's rounded only at each
+    // row's own local left/right edge of its contiguous run (real shadcn rounds per visible
+    // week-row segment, not just the whole range's absolute ends -- confirmed directly
+    // against a real screenshot, not assumed).
+    val isMiddle =
+        week.map { cell ->
+            range.start != null && range.end != null && cell.date > range.start && cell.date < range.end
+        }
+    return week.mapIndexed { index, cell ->
+        val date = cell.date
+        RangeCellFlags(
+            isSelected = (range.start != null && date == range.start) || (range.end != null && date == range.end),
+            isInRange = isMiddle[index],
+            isRunLeftEdge = isMiddle[index] && (index == 0 || !isMiddle[index - 1]),
+            isRunRightEdge = isMiddle[index] && (index == week.lastIndex || !isMiddle[index + 1]),
+        )
+    }
+}
+
 @Composable
 private fun RangeCalendarMonth(
     year: Int,
@@ -264,6 +312,7 @@ private fun RangeCalendarMonth(
     onPrevClick: () -> Unit,
     onNextClick: () -> Unit,
     range: ShadcnCalendarDateRange,
+    comparisonRange: ShadcnCalendarDateRange?,
     today: ShadcnCalendarDate?,
     focusedDate: ShadcnCalendarDate?,
     disabled: (ShadcnCalendarDate) -> Boolean,
@@ -283,30 +332,28 @@ private fun RangeCalendarMonth(
         }
         val weeks = remember(year, month) { buildMonthGrid(year, month) }
         weeks.forEach { week ->
-            // The absolute start/end day is its own isolated, fully-rounded, solid-filled
-            // badge (same treatment as a plain single-day selection) -- it is NOT part of the
-            // flush muted band. Every *other* in-range day joins a flush, touching band that's
-            // rounded only at each row's own local left/right edge of its contiguous run
-            // (real shadcn rounds per visible week-row segment, not just the whole range's
-            // absolute ends -- confirmed directly against a real screenshot, not assumed).
-            val isMiddle =
-                week.map { cell ->
-                    range.start != null && range.end != null && cell.date > range.start && cell.date < range.end
-                }
+            val primaryFlags = rangeRowFlags(week, range)
+            val comparisonFlags = comparisonRange?.let { rangeRowFlags(week, it) }
             Row {
                 week.forEachIndexed { index, cell ->
                     val date = cell.date
-                    val isRangeStart = range.start != null && date == range.start
-                    val isRangeEnd = range.end != null && date == range.end
+                    val primary = primaryFlags[index]
+                    val comparison = comparisonFlags?.get(index)
                     CalendarDayCell(
                         cell = cell,
-                        isSelected = isRangeStart || isRangeEnd,
+                        isSelected = primary.isSelected,
                         isToday = today != null && date == today,
                         isFocused = date == focusedDate,
                         isDisabled = disabled(date),
-                        isInRange = isMiddle[index],
-                        isRunLeftEdge = isMiddle[index] && (index == 0 || !isMiddle[index - 1]),
-                        isRunRightEdge = isMiddle[index] && (index == week.lastIndex || !isMiddle[index + 1]),
+                        isInRange = primary.isInRange,
+                        isRunLeftEdge = primary.isRunLeftEdge,
+                        isRunRightEdge = primary.isRunRightEdge,
+                        // Primary wins if a day somehow falls in both ranges -- see
+                        // ShadcnCalendarRange's own doc comment.
+                        isComparisonSelected = !primary.isSelected && comparison?.isSelected == true,
+                        isComparisonInRange = !primary.isInRange && comparison?.isInRange == true,
+                        isComparisonRunLeftEdge = comparison?.isRunLeftEdge == true,
+                        isComparisonRunRightEdge = comparison?.isRunRightEdge == true,
                         onClick = { onDayClick(date) },
                     )
                 }
@@ -443,10 +490,19 @@ private fun CalendarDayCell(
     isInRange: Boolean = false,
     isRunLeftEdge: Boolean = false,
     isRunRightEdge: Boolean = false,
+    // The comparisonRange equivalent of isSelected/isInRange/isRunLeftEdge/isRunRightEdge --
+    // rendered in colors.secondary instead of colors.primary/muted so the two ranges read as
+    // visually distinct. See ShadcnCalendarRange's own doc comment for the "primary wins"
+    // overlap rule -- callers already resolve that before these reach here.
+    isComparisonSelected: Boolean = false,
+    isComparisonInRange: Boolean = false,
+    isComparisonRunLeftEdge: Boolean = false,
+    isComparisonRunRightEdge: Boolean = false,
 ) {
     val theme = shadcnTheme
     val interactionSource = remember { MutableInteractionSource() }
     val styleState = remember { MutableStyleState(interactionSource) }
+    val hasBand = isInRange || isComparisonInRange
     // The absolute start/end day (isSelected) is an isolated, fully-rounded, padded badge --
     // the same shape/gap as a plain single-day selection, not part of the flush band at all.
     // Every other in-range day (isInRange) joins a flush, touching muted band per week-row,
@@ -455,20 +511,23 @@ private fun CalendarDayCell(
     // range's absolute ends).
     val cellShape =
         when {
-            isSelected -> RoundedCornerShape(theme.shapes.md)
+            isSelected || isComparisonSelected -> RoundedCornerShape(theme.shapes.md)
             isInRange -> rowRunShape(theme.shapes.md, isRunLeftEdge, isRunRightEdge)
+            isComparisonInRange -> rowRunShape(theme.shapes.md, isComparisonRunLeftEdge, isComparisonRunRightEdge)
             else -> RoundedCornerShape(theme.shapes.md)
         }
     val cellStyle =
         Style {
             shape(cellShape)
-            if (isSelected) {
-                background(theme.colors.primary)
-            } else if (isInRange) {
-                background(theme.colors.muted)
-            } else if (isToday) {
-                borderWidth(1.dp)
-                borderColor(theme.colors.border)
+            when {
+                isSelected -> background(theme.colors.primary)
+                isComparisonSelected -> background(theme.colors.secondary)
+                isInRange -> background(theme.colors.muted)
+                isComparisonInRange -> background(theme.colors.secondary.copy(alpha = 0.2f))
+                isToday -> {
+                    borderWidth(1.dp)
+                    borderColor(theme.colors.border)
+                }
             }
             if (isFocused) {
                 borderWidth(1.dp)
@@ -480,7 +539,7 @@ private fun CalendarDayCell(
         modifier =
             Modifier
                 .size(CELL_SIZE)
-                .padding(if (isInRange) 0.dp else 2.dp)
+                .padding(if (hasBand) 0.dp else 2.dp)
                 .clip(cellShape)
                 .styleable(styleState, cellStyle)
                 // Matches real shadcn's `disabled:opacity-50 disabled:pointer-events-none` --
@@ -498,7 +557,12 @@ private fun CalendarDayCell(
             cell.date.day.toString(),
             style = ShadcnTextStyle.BodySmall,
             muted = !cell.inCurrentMonth || isDisabled,
-            color = if (isSelected) shadcnTheme.colors.onPrimary else Color.Unspecified,
+            color =
+                when {
+                    isSelected -> shadcnTheme.colors.onPrimary
+                    isComparisonSelected -> shadcnTheme.colors.onSecondary
+                    else -> Color.Unspecified
+                },
         )
     }
 }

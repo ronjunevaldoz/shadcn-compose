@@ -82,4 +82,32 @@ class CalendarScreenshotTest : ShadcnScreenshotTest() {
     @Test fun disabled_states_light() = disabledStates(darkTheme = false)
 
     @Test fun disabled_states_dark() = disabledStates(darkTheme = true)
+
+    private fun comparisonStates(darkTheme: Boolean) {
+        snapshot("calendar_comparison_states", darkTheme = darkTheme) {
+            ShadcnCalendarRange(
+                year = 2026,
+                month = 3,
+                onMonthChange = { _, _ -> },
+                range =
+                    ShadcnCalendarDateRange(
+                        start = ShadcnCalendarDate(2026, 3, 10),
+                        end = ShadcnCalendarDate(2026, 3, 15),
+                    ),
+                onRangeChange = {},
+                today = ShadcnCalendarDate(2026, 3, 15),
+                // Same-length period immediately preceding the primary range, matching the
+                // catalog's own "Compare" example's previousPeriod() convention.
+                comparisonRange =
+                    ShadcnCalendarDateRange(
+                        start = ShadcnCalendarDate(2026, 3, 4),
+                        end = ShadcnCalendarDate(2026, 3, 9),
+                    ),
+            )
+        }
+    }
+
+    @Test fun comparison_states_light() = comparisonStates(darkTheme = false)
+
+    @Test fun comparison_states_dark() = comparisonStates(darkTheme = true)
 }

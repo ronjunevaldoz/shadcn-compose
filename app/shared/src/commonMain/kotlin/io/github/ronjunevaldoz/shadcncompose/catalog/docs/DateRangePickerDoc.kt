@@ -444,6 +444,7 @@ val dateRangePickerDoc =
                                             onMonthChange = { y, m -> year = y; month = m },
                                             range = range, onRangeChange = { range = it },
                                             today = today, numberOfMonths = 2,
+                                            comparisonRange = comparisonRange,
                                         )
                                     }
                                 }
@@ -525,6 +526,7 @@ val dateRangePickerDoc =
                                             onRangeChange = { range = it },
                                             today = today,
                                             numberOfMonths = 2,
+                                            comparisonRange = comparisonRange,
                                         )
                                     }
                                 }
