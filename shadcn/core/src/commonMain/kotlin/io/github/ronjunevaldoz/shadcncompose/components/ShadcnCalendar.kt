@@ -272,20 +272,29 @@ private fun RangeCalendarMonth(
         }
         val weeks = remember(year, month) { buildMonthGrid(year, month) }
         weeks.forEach { week ->
+            // The absolute start/end day is its own isolated, fully-rounded, solid-filled
+            // badge (same treatment as a plain single-day selection) -- it is NOT part of the
+            // flush muted band. Every *other* in-range day joins a flush, touching band that's
+            // rounded only at each row's own local left/right edge of its contiguous run
+            // (real shadcn rounds per visible week-row segment, not just the whole range's
+            // absolute ends -- confirmed directly against a real screenshot, not assumed).
+            val isMiddle =
+                week.map { cell ->
+                    range.start != null && range.end != null && cell.date > range.start && cell.date < range.end
+                }
             Row {
-                week.forEach { cell ->
+                week.forEachIndexed { index, cell ->
                     val date = cell.date
                     val isRangeStart = range.start != null && date == range.start
                     val isRangeEnd = range.end != null && date == range.end
-                    val isInRange = range.start != null && range.end != null && date > range.start && date < range.end
                     CalendarDayCell(
                         cell = cell,
                         isSelected = isRangeStart || isRangeEnd,
                         isToday = today != null && date == today,
                         isFocused = date == focusedDate,
-                        isRangeStart = isRangeStart,
-                        isRangeEnd = isRangeEnd,
-                        isInRange = isInRange,
+                        isInRange = isMiddle[index],
+                        isRunLeftEdge = isMiddle[index] && (index == 0 || !isMiddle[index - 1]),
+                        isRunRightEdge = isMiddle[index] && (index == week.lastIndex || !isMiddle[index + 1]),
                         onClick = { onDayClick(date) },
                     )
                 }
@@ -418,18 +427,25 @@ private fun CalendarDayCell(
     isToday: Boolean,
     isFocused: Boolean,
     onClick: () -> Unit,
-    isRangeStart: Boolean = false,
-    isRangeEnd: Boolean = false,
     isInRange: Boolean = false,
+    isRunLeftEdge: Boolean = false,
+    isRunRightEdge: Boolean = false,
 ) {
     val theme = shadcnTheme
     val interactionSource = remember { MutableInteractionSource() }
     val styleState = remember { MutableStyleState(interactionSource) }
-    // Range cells touch edge-to-edge (no gap) so the fill reads as one connected band with
-    // rounded caps only at the start/end -- matches real shadcn's actual `rounded-l-md`/
-    // `rounded-r-md` classes on range-start/range-end (not `rounded-full` -- confirmed this
-    // is a rounded rect, not a circle). Single-mode/non-range cells keep their gap.
-    val cellShape = rangeAwareCellShape(theme.shapes.md, isRangeStart, isRangeEnd, isInRange)
+    // The absolute start/end day (isSelected) is an isolated, fully-rounded, padded badge --
+    // the same shape/gap as a plain single-day selection, not part of the flush band at all.
+    // Every other in-range day (isInRange) joins a flush, touching muted band per week-row,
+    // rounded only at that row's own local left/right edge of its contiguous run (confirmed
+    // against a real screenshot: real shadcn rounds per visible row segment, not just the
+    // range's absolute ends).
+    val cellShape =
+        when {
+            isSelected -> RoundedCornerShape(theme.shapes.md)
+            isInRange -> rowRunShape(theme.shapes.md, isRunLeftEdge, isRunRightEdge)
+            else -> RoundedCornerShape(theme.shapes.md)
+        }
     val cellStyle =
         Style {
             shape(cellShape)
@@ -451,7 +467,7 @@ private fun CalendarDayCell(
         modifier =
             Modifier
                 .size(CELL_SIZE)
-                .padding(if (isRangeStart || isRangeEnd || isInRange) 0.dp else 2.dp)
+                .padding(if (isInRange) 0.dp else 2.dp)
                 .clip(cellShape)
                 .styleable(styleState, cellStyle)
                 .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
@@ -466,16 +482,14 @@ private fun CalendarDayCell(
     }
 }
 
-private fun rangeAwareCellShape(
+private fun rowRunShape(
     radius: Dp,
-    isRangeStart: Boolean,
-    isRangeEnd: Boolean,
-    isInRange: Boolean,
+    isRunLeftEdge: Boolean,
+    isRunRightEdge: Boolean,
 ): RoundedCornerShape =
     when {
-        isRangeStart && isRangeEnd -> RoundedCornerShape(radius) // single-day range
-        isRangeStart -> RoundedCornerShape(topStart = radius, bottomStart = radius, topEnd = 0.dp, bottomEnd = 0.dp)
-        isRangeEnd -> RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = radius, bottomEnd = radius)
-        isInRange -> RoundedCornerShape(0.dp)
-        else -> RoundedCornerShape(radius)
+        isRunLeftEdge && isRunRightEdge -> RoundedCornerShape(radius) // isolated single-day run within this row
+        isRunLeftEdge -> RoundedCornerShape(topStart = radius, bottomStart = radius, topEnd = 0.dp, bottomEnd = 0.dp)
+        isRunRightEdge -> RoundedCornerShape(topStart = 0.dp, bottomStart = 0.dp, topEnd = radius, bottomEnd = radius)
+        else -> RoundedCornerShape(0.dp)
     }
