@@ -23,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.interaction.RovingFocusOrientation
+import io.github.ronjunevaldoz.shadcncompose.interaction.rovingFocusGroup
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -61,7 +63,10 @@ fun ShadcnNavigationMenu(
 ) {
     var openIndex by remember { mutableStateOf(-1) }
 
-    Row(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs)) {
+    Row(
+        modifier = modifier.rovingFocusGroup(RovingFocusOrientation.Horizontal),
+        horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs),
+    ) {
         items.forEachIndexed { index, item ->
             val interactionSource = remember { MutableInteractionSource() }
             val isOpen = openIndex == index

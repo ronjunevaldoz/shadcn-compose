@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import io.github.ronjunevaldoz.shadcncompose.interaction.RovingFocusOrientation
+import io.github.ronjunevaldoz.shadcncompose.interaction.rovingFocusGroup
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnPointPositionProvider
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -72,7 +74,8 @@ fun ShadcnContextMenu(
                             .width(224.dp)
                             .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                             .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
-                            .padding(shadcnTheme.spacing.xxs),
+                            .padding(shadcnTheme.spacing.xxs)
+                            .rovingFocusGroup(RovingFocusOrientation.Vertical),
                 ) {
                     val scope = remember { ShadcnDropdownMenuScope(onDismissRequest = { clickPoint = null }) }
                     scope.menuContent()

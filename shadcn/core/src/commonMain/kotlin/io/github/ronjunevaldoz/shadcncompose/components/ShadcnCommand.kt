@@ -18,7 +18,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.interaction.RovingFocusIndex
 import io.github.ronjunevaldoz.shadcncompose.styles.TextFieldVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -53,6 +59,16 @@ data class ShadcnCommandGroup(
  * because filtering needs to inspect every item's label up front -- a freely-composed
  * slot API would need extra machinery to hide non-matching children mid-composition.
  *
+ * Keyboard nav: unlike every other component in this batch, this does *not* use the shared
+ * `Modifier.rovingFocusGroup` -- real cmdk keeps the search field itself focused the whole
+ * time and moves a virtual "highlighted" index instead of moving actual focus between rows
+ * (arrow keys would otherwise fight text-cursor movement inside the field). So this tracks
+ * `highlightedIndex` directly (via [RovingFocusIndex]'s wrap-around math) over the flattened,
+ * already-filtered item list, Up/Down/Home/End move it, and Enter selects the highlighted
+ * row -- same wrap-around/Home-End semantics as the shared primitive, just applied to a plain
+ * index instead of real focus. The highlight only renders once the user has actually pressed
+ * an arrow key (never on first render), so a plain screenshot of this component is unaffected.
+ *
  * Usage:
  * ```
  * ShadcnCommand(
@@ -79,6 +95,13 @@ fun ShadcnCommand(
                 .map { group -> group.copy(items = group.items.filter { it.label.contains(query, ignoreCase = true) }) }
                 .filter { it.items.isNotEmpty() }
         }
+    val flatItems = remember(filteredGroups) { filteredGroups.flatMap { it.items } }
+
+    // Reset (via the `query` remember key, not a side effect) whenever the result set changes
+    // underneath the user -- a stale highlighted index pointing past the new, shorter list
+    // would either select the wrong row or silently no-op.
+    var highlightedIndex by remember(query) { mutableStateOf(0) }
+    var keyboardActive by remember(query) { mutableStateOf(false) }
 
     Column(
         modifier =
@@ -86,7 +109,37 @@ fun ShadcnCommand(
                 .width(280.dp)
                 .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                 .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
-                .padding(shadcnTheme.spacing.sm),
+                .padding(shadcnTheme.spacing.sm)
+                .onPreviewKeyEvent { event ->
+                    if (event.type != KeyEventType.KeyDown || flatItems.isEmpty()) return@onPreviewKeyEvent false
+                    when (event.key) {
+                        Key.DirectionDown -> {
+                            highlightedIndex = RovingFocusIndex.next(highlightedIndex, flatItems.size)
+                            keyboardActive = true
+                            true
+                        }
+                        Key.DirectionUp -> {
+                            highlightedIndex = RovingFocusIndex.previous(highlightedIndex, flatItems.size)
+                            keyboardActive = true
+                            true
+                        }
+                        Key.MoveHome -> {
+                            highlightedIndex = RovingFocusIndex.first(flatItems.size)
+                            keyboardActive = true
+                            true
+                        }
+                        Key.MoveEnd -> {
+                            highlightedIndex = RovingFocusIndex.last(flatItems.size)
+                            keyboardActive = true
+                            true
+                        }
+                        Key.Enter, Key.NumPadEnter -> {
+                            if (keyboardActive) flatItems[highlightedIndex].onSelect()
+                            keyboardActive
+                        }
+                        else -> false
+                    }
+                },
     ) {
         ShadcnTextField(
             value = query,
@@ -100,6 +153,7 @@ fun ShadcnCommand(
                 ShadcnText(emptyText, style = ShadcnTextStyle.BodySmall, muted = true)
             }
         } else {
+            var rowIndex = 0
             filteredGroups.forEachIndexed { index, group ->
                 if (group.heading != null) {
                     ShadcnText(
@@ -113,7 +167,11 @@ fun ShadcnCommand(
                             ),
                     )
                 }
-                group.items.forEach { item -> CommandRow(item) }
+                group.items.forEach { item ->
+                    val isHighlighted = keyboardActive && rowIndex == highlightedIndex
+                    CommandRow(item, highlighted = isHighlighted)
+                    rowIndex++
+                }
                 if (index != filteredGroups.lastIndex) ShadcnDropdownMenuSeparator()
             }
         }
@@ -121,14 +179,20 @@ fun ShadcnCommand(
 }
 
 @Composable
-private fun CommandRow(item: ShadcnCommandItem) {
+private fun CommandRow(
+    item: ShadcnCommandItem,
+    highlighted: Boolean = false,
+) {
     val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .clickable(interactionSource = interactionSource, indication = null, onClick = item.onSelect)
-                .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.sm))
+                .background(
+                    if (highlighted) shadcnTheme.colors.secondary else shadcnTheme.colors.popover,
+                    RoundedCornerShape(shadcnTheme.shapes.sm),
+                )
                 .padding(horizontal = shadcnTheme.spacing.sm, vertical = shadcnTheme.spacing.xs),
     ) {
         ShadcnText(item.label, style = ShadcnTextStyle.BodySmall)

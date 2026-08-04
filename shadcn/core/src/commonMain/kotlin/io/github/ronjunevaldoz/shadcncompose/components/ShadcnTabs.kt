@@ -18,6 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import io.github.ronjunevaldoz.shadcncompose.interaction.RovingFocusOrientation
+import io.github.ronjunevaldoz.shadcncompose.interaction.rovingFocusGroup
 import io.github.ronjunevaldoz.shadcncompose.styles.focusRing
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
@@ -53,7 +56,8 @@ fun ShadcnTabsList(
         modifier =
             modifier
                 .background(shadcnTheme.colors.muted, RoundedCornerShape(shadcnTheme.shapes.lg))
-                .padding(shadcnTheme.spacing.xxs),
+                .padding(shadcnTheme.spacing.xxs)
+                .rovingFocusGroup(RovingFocusOrientation.Horizontal),
         horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xxs),
     ) {
         items.forEach { item ->
@@ -77,6 +81,12 @@ fun ShadcnTabsList(
                             indication = null,
                             onClick = { onSelectedChange(item.value) },
                         )
+                        // Real Radix Tabs' default `activationMode="automatic"`: arrow-key
+                        // roving focus (wired above via rovingFocusGroup) also selects the
+                        // tab it lands on, not just Enter/Space -- no separate FocusRequester
+                        // bookkeeping needed, onFocusChanged already fires exactly when
+                        // moveFocus() lands here.
+                        .onFocusChanged { if (it.isFocused) onSelectedChange(item.value) }
                         .padding(horizontal = shadcnTheme.spacing.md, vertical = shadcnTheme.spacing.xs),
                 contentAlignment = Alignment.Center,
             ) {

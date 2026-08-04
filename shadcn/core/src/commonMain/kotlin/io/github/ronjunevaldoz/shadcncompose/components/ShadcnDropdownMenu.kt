@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.icons.Check
 import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
+import io.github.ronjunevaldoz.shadcncompose.interaction.RovingFocusOrientation
+import io.github.ronjunevaldoz.shadcncompose.interaction.rovingFocusGroup
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnPopupPlacement
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -71,7 +73,8 @@ fun ShadcnDropdownMenu(
                     .width(224.dp)
                     .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                     .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
-                    .padding(shadcnTheme.spacing.xxs),
+                    .padding(shadcnTheme.spacing.xxs)
+                    .rovingFocusGroup(RovingFocusOrientation.Vertical),
         ) {
             val scope = remember(onDismissRequest) { ShadcnDropdownMenuScope(onDismissRequest) }
             scope.content()

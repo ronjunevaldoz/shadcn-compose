@@ -28,6 +28,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.icons.ChevronRight
 import io.github.ronjunevaldoz.shadcncompose.icons.ShadcnGlyphIcon
+import io.github.ronjunevaldoz.shadcncompose.interaction.RovingFocusOrientation
+import io.github.ronjunevaldoz.shadcncompose.interaction.rovingFocusGroup
 import io.github.ronjunevaldoz.shadcncompose.overlay.ShadcnAnchoredPopup
 import io.github.ronjunevaldoz.shadcncompose.styles.SelectVariant
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberPanelStyle
@@ -40,7 +42,9 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * a Material component (this library has no Material dependency). Matches real
  * shadcn/ui's `select.tsx` -- a bordered field trigger (`border-input bg-transparent`),
  * not a `Button` -- unlike [ShadcnCombobox], the option list is not filterable by typing.
- * Not a full port of shadcn/ui's Radix-based Select -- no keyboard nav or typeahead yet --
+ * Not a full port of shadcn/ui's Radix-based Select -- Up/Down/Home/End roving focus between
+ * options now works (via [io.github.ronjunevaldoz.shadcncompose.interaction.rovingFocusGroup]),
+ * Enter/Space selects the focused option same as a click, but there's still no typeahead --
  * but covers the common "pick one of N labeled options" case.
  *
  * [value] is nullable so the trigger can show [placeholder] text before anything is
@@ -116,7 +120,8 @@ fun <T> ShadcnSelect(
                         .widthIn(min = 140.dp, max = 280.dp)
                         .styleable(panelStyleState, variant.rememberPanelStyle())
                         .padding(shadcnTheme.spacing.xxs)
-                        .verticalScroll(rememberScrollState()),
+                        .verticalScroll(rememberScrollState())
+                        .rovingFocusGroup(RovingFocusOrientation.Vertical),
             ) {
                 options.forEach { option ->
                     val isSelected = option == value

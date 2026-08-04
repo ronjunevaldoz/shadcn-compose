@@ -15,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.github.ronjunevaldoz.shadcncompose.interaction.RovingFocusOrientation
+import io.github.ronjunevaldoz.shadcncompose.interaction.rovingFocusGroup
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /** One top-level menu in a [ShadcnMenubar] (e.g. "File", "Edit"), with its own dropdown content. */
@@ -55,7 +57,8 @@ fun ShadcnMenubar(
             modifier
                 .background(shadcnTheme.colors.background, RoundedCornerShape(shadcnTheme.shapes.md))
                 .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
-                .padding(shadcnTheme.spacing.xxs),
+                .padding(shadcnTheme.spacing.xxs)
+                .rovingFocusGroup(RovingFocusOrientation.Horizontal),
     ) {
         menus.forEachIndexed { index, menu ->
             val interactionSource = remember { MutableInteractionSource() }
