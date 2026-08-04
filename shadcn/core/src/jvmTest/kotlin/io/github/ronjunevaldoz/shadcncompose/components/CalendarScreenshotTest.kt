@@ -1,5 +1,6 @@
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.ui.graphics.Color
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import kotlin.test.Test
 
@@ -110,4 +111,35 @@ class CalendarScreenshotTest : ShadcnScreenshotTest() {
     @Test fun comparison_states_light() = comparisonStates(darkTheme = false)
 
     @Test fun comparison_states_dark() = comparisonStates(darkTheme = true)
+
+    private fun comparisonCustomColorStates(darkTheme: Boolean) {
+        snapshot("calendar_comparison_custom_color_states", darkTheme = darkTheme) {
+            ShadcnCalendarRange(
+                year = 2026,
+                month = 3,
+                onMonthChange = { _, _ -> },
+                range =
+                    ShadcnCalendarDateRange(
+                        start = ShadcnCalendarDate(2026, 3, 10),
+                        end = ShadcnCalendarDate(2026, 3, 15),
+                    ),
+                onRangeChange = {},
+                today = ShadcnCalendarDate(2026, 3, 15),
+                comparisonRange =
+                    ShadcnCalendarDateRange(
+                        start = ShadcnCalendarDate(2026, 3, 4),
+                        end = ShadcnCalendarDate(2026, 3, 9),
+                    ),
+                // Proves comparisonColor/onComparisonColor actually override the secondary
+                // default -- a bold blue, unmistakably distinct from the primary range's
+                // black/gray in either theme, unlike the subtle default in light mode.
+                comparisonColor = Color(0xFF2563EB),
+                onComparisonColor = Color.White,
+            )
+        }
+    }
+
+    @Test fun comparison_custom_color_states_light() = comparisonCustomColorStates(darkTheme = false)
+
+    @Test fun comparison_custom_color_states_dark() = comparisonCustomColorStates(darkTheme = true)
 }

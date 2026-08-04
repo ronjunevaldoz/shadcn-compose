@@ -199,12 +199,21 @@ fun ShadcnCalendar(
  *
  * [comparisonRange] renders a second range simultaneously -- e.g. "compare to previous
  * period" in an analytics dashboard (see the catalog app's Date Range Picker "Compare"
- * example) -- in [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.secondary]
- * instead of [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.primary], so the
+ * example) -- in [comparisonColor]/[onComparisonColor] instead of
+ * [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.primary]/`onPrimary`, so the
  * two are visually distinct at a glance. Not a real shadcn/ui concept (real Calendar only
  * ever renders one `mode="range"` selection) -- this is app-specific business logic this
  * library exposes a rendering hook for, the same way [ShadcnCalendarDateRange] itself has
  * no opinion on *why* a range was picked. If a day falls in both ranges, [range] wins.
+ *
+ * [comparisonColor] defaults to [io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors.secondary]
+ * -- a deliberately low-contrast neutral tone in shadcn's own token system (real shadcn's
+ * `secondary` is meant to be "quiet", not a second brand color), so it reads clearly in
+ * dark themes but can look subtle in the default light theme. Override it (and
+ * [onComparisonColor] to match, for correct text contrast on the filled start/end days)
+ * with a bolder color -- there's no separate "accent" token in [ShadcnColors] to fall back
+ * on automatically, so this is deliberately a per-call override rather than a second fixed
+ * default.
  *
  * Usage:
  * ```
@@ -231,6 +240,8 @@ fun ShadcnCalendarRange(
     numberOfMonths: Int = 1,
     disabled: (ShadcnCalendarDate) -> Boolean = { false },
     comparisonRange: ShadcnCalendarDateRange? = null,
+    comparisonColor: Color = shadcnTheme.colors.secondary,
+    onComparisonColor: Color = shadcnTheme.colors.onSecondary,
 ) {
     var focusedDate by remember(range.start, range.end) { mutableStateOf(range.end ?: range.start ?: today) }
 
@@ -253,6 +264,8 @@ fun ShadcnCalendarRange(
                 },
                 range = range,
                 comparisonRange = comparisonRange,
+                comparisonColor = comparisonColor,
+                onComparisonColor = onComparisonColor,
                 today = today,
                 focusedDate = focusedDate,
                 disabled = disabled,
@@ -313,6 +326,8 @@ private fun RangeCalendarMonth(
     onNextClick: () -> Unit,
     range: ShadcnCalendarDateRange,
     comparisonRange: ShadcnCalendarDateRange?,
+    comparisonColor: Color,
+    onComparisonColor: Color,
     today: ShadcnCalendarDate?,
     focusedDate: ShadcnCalendarDate?,
     disabled: (ShadcnCalendarDate) -> Boolean,
@@ -354,6 +369,8 @@ private fun RangeCalendarMonth(
                         isComparisonInRange = !primary.isInRange && comparison?.isInRange == true,
                         isComparisonRunLeftEdge = comparison?.isRunLeftEdge == true,
                         isComparisonRunRightEdge = comparison?.isRunRightEdge == true,
+                        comparisonColor = comparisonColor,
+                        onComparisonColor = onComparisonColor,
                         onClick = { onDayClick(date) },
                     )
                 }
@@ -491,13 +508,15 @@ private fun CalendarDayCell(
     isRunLeftEdge: Boolean = false,
     isRunRightEdge: Boolean = false,
     // The comparisonRange equivalent of isSelected/isInRange/isRunLeftEdge/isRunRightEdge --
-    // rendered in colors.secondary instead of colors.primary/muted so the two ranges read as
+    // rendered in comparisonColor instead of colors.primary/muted so the two ranges read as
     // visually distinct. See ShadcnCalendarRange's own doc comment for the "primary wins"
     // overlap rule -- callers already resolve that before these reach here.
     isComparisonSelected: Boolean = false,
     isComparisonInRange: Boolean = false,
     isComparisonRunLeftEdge: Boolean = false,
     isComparisonRunRightEdge: Boolean = false,
+    comparisonColor: Color = shadcnTheme.colors.secondary,
+    onComparisonColor: Color = shadcnTheme.colors.onSecondary,
 ) {
     val theme = shadcnTheme
     val interactionSource = remember { MutableInteractionSource() }
@@ -521,9 +540,9 @@ private fun CalendarDayCell(
             shape(cellShape)
             when {
                 isSelected -> background(theme.colors.primary)
-                isComparisonSelected -> background(theme.colors.secondary)
+                isComparisonSelected -> background(comparisonColor)
                 isInRange -> background(theme.colors.muted)
-                isComparisonInRange -> background(theme.colors.secondary.copy(alpha = 0.2f))
+                isComparisonInRange -> background(comparisonColor.copy(alpha = 0.2f))
                 isToday -> {
                     borderWidth(1.dp)
                     borderColor(theme.colors.border)
@@ -560,7 +579,7 @@ private fun CalendarDayCell(
             color =
                 when {
                     isSelected -> shadcnTheme.colors.onPrimary
-                    isComparisonSelected -> shadcnTheme.colors.onSecondary
+                    isComparisonSelected -> onComparisonColor
                     else -> Color.Unspecified
                 },
         )
