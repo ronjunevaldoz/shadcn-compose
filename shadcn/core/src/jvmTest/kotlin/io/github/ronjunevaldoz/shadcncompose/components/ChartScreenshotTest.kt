@@ -1,7 +1,13 @@
 package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.center
+import androidx.compose.ui.test.down
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performTouchInput
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import kotlin.test.Test
 
@@ -43,4 +49,27 @@ class ChartScreenshotTest : ShadcnScreenshotTest() {
     @Test fun line_light() = lineStates(darkTheme = false)
 
     @Test fun line_dark() = lineStates(darkTheme = true)
+
+    /**
+     * Simulates a touch press to surface the hover/tap tooltip, via `performTouchInput
+     * { down(center) }` -- not `performMouseInput { moveTo(...) }`, which hung the JVM
+     * test worker indefinitely for [TooltipScreenshotTest] (see its doc comment).
+     * `down()` is the same proven-safe pattern [ButtonScreenshotTest] already uses for
+     * its pressed state, so it's used here instead of a static-only capture.
+     */
+    @Test
+    fun bar_tooltip_light() {
+        setThemedContent(darkTheme = false) {
+            Column {
+                ShadcnChartContainer {
+                    ShadcnBarChart(data = data, config = config, modifier = Modifier.testTag("chart"))
+                }
+                ShadcnChartLegend(config = config)
+            }
+        }
+        composeRule.waitForIdle()
+        composeRule.onNodeWithTag("chart").performTouchInput { down(center) }
+        composeRule.waitForIdle()
+        captureNamed("chart_bar_tooltip", darkTheme = false)
+    }
 }

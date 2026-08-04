@@ -2,16 +2,23 @@ package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -19,8 +26,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
+import kotlin.math.roundToInt
 
 /**
  * One labeled, colored data series in a chart. Mirrors real shadcn/ui's `chart.tsx`
@@ -87,31 +98,41 @@ fun ShadcnBarChart(
     val seriesKeys = config.keys.toList()
     val maxValue = data.flatMap { it.values.values }.maxOrNull()?.coerceAtLeast(1f) ?: 1f
     val gridColor = shadcnTheme.colors.border
+    var hit by remember(data, seriesKeys) { mutableStateOf<ChartHit?>(null) }
 
-    Column(modifier = modifier) {
-        Canvas(modifier = Modifier.fillMaxWidth().weight(1f)) {
-            drawGridlines(gridColor)
-            if (data.isEmpty() || seriesKeys.isEmpty()) return@Canvas
+    Box(modifier = modifier) {
+        Column {
+            Canvas(
+                modifier =
+                    Modifier.fillMaxWidth().weight(1f)
+                        .chartHitTesting(data.isNotEmpty() && seriesKeys.isNotEmpty(), data.size, ::nearestBarIndex) {
+                            hit = it
+                        },
+            ) {
+                drawGridlines(gridColor)
+                if (data.isEmpty() || seriesKeys.isEmpty()) return@Canvas
 
-            val groupWidth = size.width / data.size
-            val barGap = groupWidth * 0.15f
-            val barWidth = (groupWidth - barGap * 2) / seriesKeys.size
+                val groupWidth = size.width / data.size
+                val barGap = groupWidth * 0.15f
+                val barWidth = (groupWidth - barGap * 2) / seriesKeys.size
 
-            data.forEachIndexed { groupIndex, point ->
-                val groupStart = groupIndex * groupWidth + barGap
-                seriesKeys.forEachIndexed { seriesIndex, key ->
-                    val value = point.values[key] ?: 0f
-                    val barHeight = (value / maxValue) * size.height
-                    val left = groupStart + seriesIndex * barWidth
-                    drawRect(
-                        color = config.getValue(key).color,
-                        topLeft = Offset(left, size.height - barHeight),
-                        size = Size(barWidth * 0.85f, barHeight),
-                    )
+                data.forEachIndexed { groupIndex, point ->
+                    val groupStart = groupIndex * groupWidth + barGap
+                    seriesKeys.forEachIndexed { seriesIndex, key ->
+                        val value = point.values[key] ?: 0f
+                        val barHeight = (value / maxValue) * size.height
+                        val left = groupStart + seriesIndex * barWidth
+                        drawRect(
+                            color = config.getValue(key).color,
+                            topLeft = Offset(left, size.height - barHeight),
+                            size = Size(barWidth * 0.85f, barHeight),
+                        )
+                    }
                 }
             }
+            ChartXAxisLabels(data.map { it.label })
         }
-        ChartXAxisLabels(data.map { it.label })
+        ChartTooltipOverlay(hit = hit, data = data, config = config)
     }
 }
 
@@ -125,32 +146,42 @@ fun ShadcnLineChart(
     val seriesKeys = config.keys.toList()
     val maxValue = data.flatMap { it.values.values }.maxOrNull()?.coerceAtLeast(1f) ?: 1f
     val gridColor = shadcnTheme.colors.border
+    var hit by remember(data, seriesKeys) { mutableStateOf<ChartHit?>(null) }
 
-    Column(modifier = modifier) {
-        Canvas(modifier = Modifier.fillMaxWidth().weight(1f)) {
-            drawGridlines(gridColor)
-            if (data.size < 2 || seriesKeys.isEmpty()) return@Canvas
+    Box(modifier = modifier) {
+        Column {
+            Canvas(
+                modifier =
+                    Modifier.fillMaxWidth().weight(1f)
+                        .chartHitTesting(data.size >= 2 && seriesKeys.isNotEmpty(), data.size, ::nearestLineIndex) {
+                            hit = it
+                        },
+            ) {
+                drawGridlines(gridColor)
+                if (data.size < 2 || seriesKeys.isEmpty()) return@Canvas
 
-            val stepX = size.width / (data.size - 1)
-            seriesKeys.forEach { key ->
-                val points =
-                    data.mapIndexed { index, point ->
-                        val value = point.values[key] ?: 0f
-                        Offset(index * stepX, size.height - (value / maxValue) * size.height)
+                val stepX = size.width / (data.size - 1)
+                seriesKeys.forEach { key ->
+                    val points =
+                        data.mapIndexed { index, point ->
+                            val value = point.values[key] ?: 0f
+                            Offset(index * stepX, size.height - (value / maxValue) * size.height)
+                        }
+                    for (i in 0 until points.lastIndex) {
+                        drawLine(
+                            color = config.getValue(key).color,
+                            start = points[i],
+                            end = points[i + 1],
+                            strokeWidth = 2.dp.toPx(),
+                            cap = StrokeCap.Round,
+                        )
                     }
-                for (i in 0 until points.lastIndex) {
-                    drawLine(
-                        color = config.getValue(key).color,
-                        start = points[i],
-                        end = points[i + 1],
-                        strokeWidth = 2.dp.toPx(),
-                        cap = StrokeCap.Round,
-                    )
+                    points.forEach { drawCircle(color = config.getValue(key).color, radius = 3.dp.toPx(), center = it) }
                 }
-                points.forEach { drawCircle(color = config.getValue(key).color, radius = 3.dp.toPx(), center = it) }
             }
+            ChartXAxisLabels(data.map { it.label })
         }
-        ChartXAxisLabels(data.map { it.label })
+        ChartTooltipOverlay(hit = hit, data = data, config = config)
     }
 }
 
@@ -167,6 +198,103 @@ private fun DrawScope.drawGridlines(color: Color) {
         )
     }
 }
+
+/** Nearest data-point index + last known pointer position, matching real `ChartTooltipContent`'s active point. */
+private data class ChartHit(val index: Int, val position: Offset)
+
+/** Bar layout puts point `i` in `[i * groupWidth, (i + 1) * groupWidth)` -- same math as the draw loop above. */
+private fun nearestBarIndex(
+    x: Float,
+    width: Float,
+    count: Int,
+): Int {
+    if (count <= 0) return -1
+    val groupWidth = width / count
+    return (x / groupWidth).toInt().coerceIn(0, count - 1)
+}
+
+/** Line layout places point `i` at `i * stepX` -- same math as the draw loop above. */
+private fun nearestLineIndex(
+    x: Float,
+    width: Float,
+    count: Int,
+): Int {
+    if (count <= 0) return -1
+    if (count == 1) return 0
+    val stepX = width / (count - 1)
+    return (x / stepX).roundToInt().coerceIn(0, count - 1)
+}
+
+/**
+ * Tracks pointer move (desktop hover) and press (touch tap/drag) over the chart's [Canvas],
+ * hit-testing the pointer's x-position against [indexForX] to find the nearest data point.
+ * Clears on pointer exit/release, matching Recharts' hover-in/hover-out tooltip behavior.
+ */
+private fun Modifier.chartHitTesting(
+    enabled: Boolean,
+    pointCount: Int,
+    indexForX: (x: Float, width: Float, count: Int) -> Int,
+    onHit: (ChartHit?) -> Unit,
+): Modifier =
+    if (!enabled) {
+        this
+    } else {
+        this.pointerInput(pointCount) {
+            awaitPointerEventScope {
+                while (true) {
+                    val event = awaitPointerEvent()
+                    when (event.type) {
+                        PointerEventType.Move, PointerEventType.Press, PointerEventType.Enter -> {
+                            val position = event.changes.first().position
+                            val index = indexForX(position.x, size.width.toFloat(), pointCount)
+                            onHit(if (index >= 0) ChartHit(index, position) else null)
+                        }
+                        PointerEventType.Exit, PointerEventType.Release -> onHit(null)
+                    }
+                }
+            }
+        }
+    }
+
+/** A floating card near the pointer, one row per series at the hit point -- matches real `ChartTooltipContent`. */
+@Composable
+private fun ChartTooltipOverlay(
+    hit: ChartHit?,
+    data: List<ShadcnChartPoint>,
+    config: ShadcnChartConfig,
+) {
+    val point = hit?.let { data.getOrNull(it.index) } ?: return
+    Box(
+        modifier =
+            Modifier
+                .offset { IntOffset(hit.position.x.roundToInt() + 12, hit.position.y.roundToInt() - 12) }
+                .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
+                .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
+                .padding(shadcnTheme.spacing.sm),
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs)) {
+            ShadcnText(point.label, style = ShadcnTextStyle.LabelSmall, color = shadcnTheme.colors.onPopover)
+            config.forEach { (key, series) ->
+                val value = point.values[key] ?: return@forEach
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xs),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(modifier = Modifier.size(8.dp).background(series.color, CircleShape))
+                    ShadcnText(series.label, style = ShadcnTextStyle.LabelSmall, color = shadcnTheme.colors.onPopover)
+                    ShadcnText(
+                        formatChartValue(value),
+                        style = ShadcnTextStyle.LabelSmall,
+                        color = shadcnTheme.colors.onPopover,
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun formatChartValue(value: Float): String =
+    if (value == value.toInt().toFloat()) value.toInt().toString() else value.toString()
 
 @Composable
 private fun ChartXAxisLabels(labels: List<String>) {
