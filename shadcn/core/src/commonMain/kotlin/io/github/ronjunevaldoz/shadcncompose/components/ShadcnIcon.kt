@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -45,6 +46,35 @@ fun ShadcnIcon(
     val size = if (small) theme.icons.smallSize else theme.icons.standardSize
     Image(
         imageVector = imageVector,
+        contentDescription = contentDescription,
+        modifier = modifier.size(size),
+        colorFilter = ColorFilter.tint(resolvedTint),
+    )
+}
+
+/**
+ * [Painter] overload of [ShadcnIcon] -- for icons loaded via `painterResource(...)` (a
+ * [org.jetbrains.compose.resources.DrawableResource]) rather than an [ImageVector]. Mirrors the
+ * [ImageVector] overload's tint resolution and sizing exactly.
+ */
+@Composable
+fun ShadcnIcon(
+    painter: Painter,
+    modifier: Modifier = Modifier,
+    tint: Color = Color.Unspecified,
+    small: Boolean = false,
+    contentDescription: String? = null,
+) {
+    val theme = shadcnTheme
+    val resolvedTint =
+        when {
+            tint != Color.Unspecified -> tint
+            LocalShadcnContentColor.current != Color.Unspecified -> LocalShadcnContentColor.current
+            else -> theme.colors.onSurface
+        }
+    val size = if (small) theme.icons.smallSize else theme.icons.standardSize
+    Image(
+        painter = painter,
         contentDescription = contentDescription,
         modifier = modifier.size(size),
         colorFilter = ColorFilter.tint(resolvedTint),
