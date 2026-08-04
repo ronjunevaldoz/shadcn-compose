@@ -3,8 +3,13 @@
 package io.github.ronjunevaldoz.shadcncompose.catalog.docs
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,6 +22,7 @@ import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarDate
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarDateRange
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnCalendarRange
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnPopover
+import io.github.ronjunevaldoz.shadcncompose.components.ShadcnSelect
 import io.github.ronjunevaldoz.shadcncompose.components.ShadcnText
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
 import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
@@ -40,6 +46,89 @@ private fun formatRange(range: ShadcnCalendarDateRange): String {
         else -> "Pick a date range"
     }
 }
+
+// Local, catalog-only date arithmetic for the "Presets" example below -- shadcn/core has no
+// kotlinx-datetime dependency and exposes none of this (ShadcnCalendar.kt's own version is
+// private), so this small, self-contained copy mirrors ShadcnCalendar.kt's own Sakamoto-based
+// day-of-week/days-in-month logic rather than pulling in a date library for one demo.
+private fun isRangeLeapYear(year: Int) = (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
+
+private fun daysInRangeMonth(
+    year: Int,
+    month: Int,
+): Int =
+    when (month) {
+        1, 3, 5, 7, 8, 10, 12 -> 31
+        4, 6, 9, 11 -> 30
+        2 -> if (isRangeLeapYear(year)) 29 else 28
+        else -> error("month must be 1..12, was $month")
+    }
+
+private fun addDaysToRangeDate(
+    date: ShadcnCalendarDate,
+    delta: Int,
+): ShadcnCalendarDate {
+    var year = date.year
+    var month = date.month
+    var day = date.day + delta
+    while (day < 1) {
+        month -= 1
+        if (month < 1) {
+            month = 12
+            year -= 1
+        }
+        day += daysInRangeMonth(year, month)
+    }
+    while (day > daysInRangeMonth(year, month)) {
+        day -= daysInRangeMonth(year, month)
+        month += 1
+        if (month > 12) {
+            month = 1
+            year += 1
+        }
+    }
+    return ShadcnCalendarDate(year, month, day)
+}
+
+private val RANGE_SAKAMOTO_OFFSETS = intArrayOf(0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4)
+
+/** Sunday = 0 .. Saturday = 6, matching ShadcnCalendar.kt's own weekday grid convention. */
+private fun rangeDayOfWeek(date: ShadcnCalendarDate): Int {
+    val y = if (date.month < 3) date.year - 1 else date.year
+    return (y + y / 4 - y / 100 + y / 400 + RANGE_SAKAMOTO_OFFSETS[date.month - 1] + date.day) % 7
+}
+
+private data class DateRangePreset(val label: String, val rangeFor: (ShadcnCalendarDate) -> ShadcnCalendarDateRange)
+
+private val DATE_RANGE_PRESETS =
+    listOf(
+        DateRangePreset("Today") { today -> ShadcnCalendarDateRange(today, today) },
+        DateRangePreset("Yesterday") { today -> addDaysToRangeDate(today, -1).let { ShadcnCalendarDateRange(it, it) } },
+        DateRangePreset("This Week") { today ->
+            ShadcnCalendarDateRange(addDaysToRangeDate(today, -rangeDayOfWeek(today)), today)
+        },
+        DateRangePreset("Last Week") { today ->
+            val end = addDaysToRangeDate(today, -rangeDayOfWeek(today) - 1)
+            ShadcnCalendarDateRange(addDaysToRangeDate(end, -6), end)
+        },
+        DateRangePreset("Last 7 Days") { today -> ShadcnCalendarDateRange(addDaysToRangeDate(today, -6), today) },
+        DateRangePreset("This Month") { today ->
+            ShadcnCalendarDateRange(ShadcnCalendarDate(today.year, today.month, 1), today)
+        },
+        DateRangePreset("Last Month") { today ->
+            val (y, m) = if (today.month == 1) today.year - 1 to 12 else today.year to today.month - 1
+            ShadcnCalendarDateRange(ShadcnCalendarDate(y, m, 1), ShadcnCalendarDate(y, m, daysInRangeMonth(y, m)))
+        },
+        DateRangePreset("This Year") { today ->
+            ShadcnCalendarDateRange(ShadcnCalendarDate(today.year, 1, 1), today)
+        },
+        DateRangePreset("Last Year") { today ->
+            ShadcnCalendarDateRange(
+                ShadcnCalendarDate(today.year - 1, 1, 1),
+                ShadcnCalendarDate(today.year - 1, 12, 31),
+            )
+        },
+    )
 
 /**
  * Not a standalone registry component in real shadcn/ui either -- same "Popover + Calendar"
@@ -139,6 +228,135 @@ val dateRangePickerDoc =
                                     },
                                     numberOfMonths = 2,
                                 )
+                            }
+                        }
+                    },
+                ),
+                ComponentExample(
+                    title = "Presets",
+                    code =
+                        """
+                        // "today" fixed for this demo -- no real device-clock dependency.
+                        val today = remember { ShadcnCalendarDate(2026, 3, 15) }
+                        var open by remember { mutableStateOf(false) }
+                        var year by remember { mutableStateOf(today.year) }
+                        var month by remember { mutableStateOf(today.month) }
+                        var range by remember { mutableStateOf(ShadcnCalendarDateRange(today, today)) }
+                        Box {
+                            ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
+                                Image(imageVector = CalendarIcon, contentDescription = null, modifier = Modifier.size(16.dp))
+                                ShadcnText(formatRange(range))
+                            }
+                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null) {
+                                Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
+                                    Column(
+                                        modifier = Modifier.width(140.dp),
+                                        verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xxs),
+                                    ) {
+                                        DATE_RANGE_PRESETS.forEach { preset ->
+                                            val presetRange = preset.rangeFor(today)
+                                            ShadcnButton(
+                                                onClick = {
+                                                    range = presetRange
+                                                    presetRange.start?.let { year = it.year; month = it.month }
+                                                },
+                                                variant = if (range == presetRange) ButtonVariant.Secondary else ButtonVariant.Ghost,
+                                                modifier = Modifier.fillMaxWidth(),
+                                            ) { ShadcnText(preset.label) }
+                                        }
+                                    }
+                                    Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
+                                        Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
+                                            ShadcnSelect(
+                                                value = month, options = (1..12).toList(),
+                                                onValueChange = { month = it }, label = { rangeMonthNames[it - 1] },
+                                            )
+                                            ShadcnSelect(
+                                                value = year, options = (2024..2028).toList(),
+                                                onValueChange = { year = it },
+                                            )
+                                        }
+                                        ShadcnCalendarRange(
+                                            year = year, month = month,
+                                            onMonthChange = { y, m -> year = y; month = m },
+                                            range = range, onRangeChange = { range = it },
+                                            today = today, numberOfMonths = 2,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        """.trimIndent(),
+                    preview = {
+                        val today = remember { ShadcnCalendarDate(2026, 3, 15) }
+                        var open by remember { mutableStateOf(false) }
+                        var year by remember { mutableStateOf(today.year) }
+                        var month by remember { mutableStateOf(today.month) }
+                        var range by remember { mutableStateOf(ShadcnCalendarDateRange(today, today)) }
+                        Box {
+                            ShadcnButton(onClick = { open = true }, variant = ButtonVariant.Outline) {
+                                Image(
+                                    imageVector = CalendarIcon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                    colorFilter = ColorFilter.tint(shadcnTheme.colors.onSurface),
+                                )
+                                ShadcnText(formatRange(range))
+                            }
+                            ShadcnPopover(expanded = open, onDismissRequest = { open = false }, width = null) {
+                                Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.md)) {
+                                    Column(
+                                        modifier = Modifier.width(140.dp),
+                                        verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.xxs),
+                                    ) {
+                                        DATE_RANGE_PRESETS.forEach { preset ->
+                                            val presetRange = preset.rangeFor(today)
+                                            ShadcnButton(
+                                                onClick = {
+                                                    range = presetRange
+                                                    presetRange.start?.let {
+                                                        year = it.year
+                                                        month = it.month
+                                                    }
+                                                },
+                                                variant =
+                                                    if (range == presetRange) {
+                                                        ButtonVariant.Secondary
+                                                    } else {
+                                                        ButtonVariant.Ghost
+                                                    },
+                                                modifier = Modifier.fillMaxWidth(),
+                                            ) { ShadcnText(preset.label) }
+                                        }
+                                    }
+                                    Column(verticalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
+                                        Row(horizontalArrangement = Arrangement.spacedBy(shadcnTheme.spacing.sm)) {
+                                            ShadcnSelect(
+                                                value = month,
+                                                options = (1..12).toList(),
+                                                onValueChange = { month = it },
+                                                label = { rangeMonthNames[it - 1] },
+                                            )
+                                            ShadcnSelect(
+                                                value = year,
+                                                options = (2024..2028).toList(),
+                                                onValueChange = { year = it },
+                                            )
+                                        }
+                                        ShadcnCalendarRange(
+                                            year = year,
+                                            month = month,
+                                            onMonthChange = { y, m ->
+                                                year = y
+                                                month = m
+                                            },
+                                            range = range,
+                                            onRangeChange = { range = it },
+                                            today = today,
+                                            numberOfMonths = 2,
+                                        )
+                                    }
+                                }
                             }
                         }
                     },
