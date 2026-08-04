@@ -71,5 +71,77 @@ val comboboxDoc =
                         )
                     },
                 ),
+                ComponentExample(
+                    title = "Clearable",
+                    code =
+                        """
+                        // Real shadcn/ui's `showClear` prop -- opt in with onClear, which
+                        // only renders once there's a value to clear.
+                        var framework by remember { mutableStateOf<String?>("Next.js") }
+                        ShadcnCombobox(
+                            value = framework,
+                            options = listOf("Next.js", "SvelteKit", "Nuxt.js", "Remix", "Astro"),
+                            onValueChange = { framework = it },
+                            onClear = { framework = null },
+                        )
+                        """.trimIndent(),
+                    preview = {
+                        var framework by remember { mutableStateOf<String?>("Next.js") }
+                        ShadcnCombobox(
+                            value = framework,
+                            options = listOf("Next.js", "SvelteKit", "Nuxt.js", "Remix", "Astro"),
+                            onValueChange = { framework = it },
+                            onClear = { framework = null },
+                        )
+                    },
+                ),
+                ComponentExample(
+                    title = "Multi-select",
+                    code =
+                        """
+                        // Real shadcn/ui's `multiple` prop + `ComboboxChips` -- picked
+                        // options render as removable chips in the trigger.
+                        var frameworks by remember { mutableStateOf(listOf("Next.js")) }
+                        ShadcnCombobox(
+                            values = frameworks,
+                            options = listOf("Next.js", "SvelteKit", "Nuxt.js", "Remix", "Astro"),
+                            onValuesChange = { frameworks = it },
+                            onClear = { frameworks = emptyList() },
+                        )
+                        """.trimIndent(),
+                    preview = {
+                        var frameworks by remember { mutableStateOf(listOf("Next.js")) }
+                        ShadcnCombobox(
+                            values = frameworks,
+                            options = listOf("Next.js", "SvelteKit", "Nuxt.js", "Remix", "Astro"),
+                            onValuesChange = { frameworks = it },
+                            onClear = { frameworks = emptyList() },
+                        )
+                    },
+                ),
+                ComponentExample(
+                    title = "Grouped",
+                    code =
+                        """
+                        // Real shadcn/ui's `ComboboxGroup`/`ComboboxLabel` -- bucket a flat
+                        // options list into headed groups with `groupOf`.
+                        var framework by remember { mutableStateOf<String?>(null) }
+                        ShadcnCombobox(
+                            value = framework,
+                            options = listOf("Next.js", "Nuxt.js", "SvelteKit", "Remix", "Astro"),
+                            onValueChange = { framework = it },
+                            groupOf = { if (it in setOf("Next.js", "Nuxt.js")) "Meta-frameworks" else "Other" },
+                        )
+                        """.trimIndent(),
+                    preview = {
+                        var framework by remember { mutableStateOf<String?>(null) }
+                        ShadcnCombobox(
+                            value = framework,
+                            options = listOf("Next.js", "Nuxt.js", "SvelteKit", "Remix", "Astro"),
+                            onValueChange = { framework = it },
+                            groupOf = { if (it in setOf("Next.js", "Nuxt.js")) "Meta-frameworks" else "Other" },
+                        )
+                    },
+                ),
             ),
     )

@@ -907,6 +907,16 @@
       },
       "previews": [
         {
+          "state": "focused",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/item_focused_dark.png"
+        },
+        {
+          "state": "focused",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/item_focused_light.png"
+        },
+        {
           "state": "states",
           "theme": "dark",
           "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/item_states_dark.png"
@@ -1484,6 +1494,26 @@
       "properties": {},
       "previews": [
         {
+          "state": "clearable",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_clearable_dark.png"
+        },
+        {
+          "state": "clearable",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_clearable_light.png"
+        },
+        {
+          "state": "grouped_open",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_grouped_open_dark.png"
+        },
+        {
+          "state": "grouped_open",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_grouped_open_light.png"
+        },
+        {
           "state": "idle",
           "theme": "dark",
           "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_idle_dark.png"
@@ -1492,6 +1522,26 @@
           "state": "idle",
           "theme": "light",
           "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_idle_light.png"
+        },
+        {
+          "state": "multi_empty",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_multi_empty_dark.png"
+        },
+        {
+          "state": "multi_empty",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_multi_empty_light.png"
+        },
+        {
+          "state": "multi_selected",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_multi_selected_dark.png"
+        },
+        {
+          "state": "multi_selected",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/combobox_multi_selected_light.png"
         }
       ]
     },
@@ -1742,6 +1792,11 @@
           "state": "bar_states",
           "theme": "light",
           "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chart_bar_states_light.png"
+        },
+        {
+          "state": "bar_tooltip",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/chart_bar_tooltip_light.png"
         },
         {
           "state": "line_states",
