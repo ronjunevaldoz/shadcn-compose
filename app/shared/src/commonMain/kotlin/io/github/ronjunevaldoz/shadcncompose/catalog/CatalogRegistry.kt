@@ -55,6 +55,12 @@ val catalogEntries: List<CatalogEntry> =
         CatalogEntry(id = "button-group", title = "Button Group", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "textarea", title = "Textarea", category = CatalogCategory.FORMS_AND_INPUTS),
         CatalogEntry(id = "field", title = "Field", category = CatalogCategory.FORMS_AND_INPUTS),
+        CatalogEntry(
+            id = "questionnaire",
+            title = "Questionnaire",
+            category = CatalogCategory.FORMS_AND_INPUTS,
+            isNew = true,
+        ),
         CatalogEntry(id = "input-otp", title = "Input OTP", category = CatalogCategory.FORMS_AND_INPUTS),
         // Data Display
         CatalogEntry(id = "avatar", title = "Avatar", category = CatalogCategory.DATA_DISPLAY),

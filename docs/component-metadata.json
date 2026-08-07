@@ -738,6 +738,33 @@
       ]
     },
     {
+      "id": "questionnaire",
+      "title": "Questionnaire",
+      "referenceUrl": "https://ui.shadcn.com/docs/components/base/questionnaire",
+      "description": "A multi-step form for single-choice, multiple-choice, and freeform questions, with progress tracking, required/skip semantics, and per-item validation.",
+      "category": "forms-and-inputs",
+      "family": "field",
+      "isNew": true,
+      "properties": {},
+      "previews": [
+        {
+          "state": "first_question",
+          "theme": "dark",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/questionnaire_first_question_dark.png"
+        },
+        {
+          "state": "first_question",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/questionnaire_first_question_light.png"
+        },
+        {
+          "state": "invalid_required",
+          "theme": "light",
+          "url": "https://raw.githubusercontent.com/ronjunevaldoz/shadcn-compose/main/docs/previews/questionnaire_invalid_required_light.png"
+        }
+      ]
+    },
+    {
       "id": "input-otp",
       "title": "Input OTP",
       "referenceUrl": "https://ui.shadcn.com/docs/components/base/input-otp",

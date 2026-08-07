@@ -55,6 +55,7 @@ val componentDocsById: Map<String, ComponentDoc> =
         chartDoc,
         sidebarDoc,
         fieldDoc,
+        questionnaireDoc,
         emptyDoc,
         itemDoc,
         inputOTPDoc,

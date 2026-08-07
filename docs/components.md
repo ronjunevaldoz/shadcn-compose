@@ -40,6 +40,7 @@ components against this one) — see [`component-metadata.json`](component-metad
 | `ShadcnTextarea` | Multi-line text input | textarea, multiline input, comment box, message box |
 | `ShadcnField` / `ShadcnFieldGroup` | Label + control + description/error layout for building forms (consolidates real shadcn's `form.tsx`) | form field, field group, form builder, validation error text |
 | `ShadcnInputOTP` | Boxed one-time-passcode input, fills left-to-right | OTP input, verification code, 2FA code, PIN input |
+| `ShadcnQuestionnaire` family | Multi-step form (progress, single/multi-select choices, freeform input, required/skip validation) -- reimplements real shadcn's headless `@shadcn/react/questionnaire` state machine as hoisted Compose state | questionnaire, multi-step form, survey, wizard form, single choice, multiple choice |
 
 ### Data display
 

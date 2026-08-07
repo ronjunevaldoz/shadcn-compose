@@ -53,6 +53,7 @@ FAMILY_BY_ID = {
     "text-field": "field", "textarea": "field", "select": "field", "dropdown-menu": "field",
     "popover": "field", "input-group": "field", "input-otp": "field", "combobox": "field",
     "date-picker": "field", "date-range-picker": "field", "slider": "field", "field": "field",
+    "questionnaire": "field",
     # overlay-family -- blocking/anchored surface layered over the page
     "dialog": "overlay", "tooltip": "overlay", "sheet": "overlay", "sidebar": "overlay",
     "context-menu": "overlay", "drawer": "overlay", "alert-dialog": "overlay", "hover-card": "overlay",
