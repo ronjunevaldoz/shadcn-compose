@@ -231,200 +231,7 @@ if (state.error != null) {
 
 ## Step 2: Compose UI Interaction Tests (commonTest)
 
-Interaction tests live in `commonTest` and run per-target via `runComposeUiTest` — the
-same test body executes under `jvmTest` (required CI gate), and optionally under
-`androidDeviceTest`, `iosSimulatorArm64Test`, `wasmJsTest` (opt-in/nightly matrix, see CI
-Integration). No JUnit4 `@get:Rule` — `runComposeUiTest` takes a lambda with a
-`ComposeUiTest` receiver that exposes the same `onNodeWithTag`/`performClick`/assert API.
-
-```kotlin
-// :feature:auth:ui/src/commonTest/kotlin/GROUP_ID/feature/auth/ui/AuthContentInteractionTest.kt
-package GROUP_ID.feature.auth.ui
-
-import androidx.compose.ui.test.*
-import GROUP_ID.core.designsystem.theme.AppTheme
-import kotlin.test.Test
-
-class AuthContentInteractionTest {
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun loginButton_isDisabled_whenLoading() = runComposeUiTest {
-        setContent {
-            AppTheme {
-                AuthContent(
-                    state = AuthContract.State(isLoading = true),
-                    onIntent = {},
-                )
-            }
-        }
-        onNodeWithTag(AuthTestTags.LOGIN_BUTTON).assertIsNotEnabled()
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun errorMessage_isDisplayed_whenErrorInState() = runComposeUiTest {
-        setContent {
-            AppTheme {
-                AuthContent(
-                    state = AuthContract.State(error = "Invalid credentials"),
-                    onIntent = {},
-                )
-            }
-        }
-        onNodeWithTag(AuthTestTags.ERROR_MESSAGE)
-            .assertIsDisplayed()
-            .assertTextContains("Invalid credentials")
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun loadingIndicator_isDisplayed_whenLoading() = runComposeUiTest {
-        setContent {
-            AppTheme {
-                AuthContent(
-                    state = AuthContract.State(isLoading = true),
-                    onIntent = {},
-                )
-            }
-        }
-        onNodeWithTag(AuthTestTags.LOADING_INDICATOR).assertIsDisplayed()
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun loginButton_firesIntent_whenClicked() = runComposeUiTest {
-        val intents = mutableListOf<AuthContract.Intent>()
-        setContent {
-            AppTheme {
-                AuthContent(
-                    state = AuthContract.State(),
-                    onIntent = { intents.add(it) },
-                )
-            }
-        }
-        onNodeWithTag(AuthTestTags.LOGIN_BUTTON).performClick()
-
-        assert(intents.contains(AuthContract.Intent.LoginClicked))
-    }
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun emailField_updatesState_onTextInput() = runComposeUiTest {
-        val intents = mutableListOf<AuthContract.Intent>()
-        setContent {
-            AppTheme {
-                AuthContent(
-                    state = AuthContract.State(),
-                    onIntent = { intents.add(it) },
-                )
-            }
-        }
-        onNodeWithTag(AuthTestTags.EMAIL_FIELD).performTextInput("user@example.com")
-
-        assert(
-            intents.filterIsInstance<AuthContract.Intent.EmailChanged>()
-                .any { it.value == "user@example.com" }
-        )
-    }
-}
-```
-
-**Key APIs (unchanged from JUnit4 — only the harness differs):**
-
-| API | Use |
-|---|---|
-| `onNodeWithTag(tag)` | Target a node by semantic tag |
-| `assertIsDisplayed()` | Node is visible on screen |
-| `assertIsNotEnabled()` | Node is disabled |
-| `assertTextContains(text)` | Node contains the given text |
-| `performClick()` | Simulate a tap |
-| `performTextInput(text)` | Type into a text field |
-| `assertDoesNotExist()` | Node is not in the composition |
-| `onNodeWithTag(tag, useUnmergedTree = true)` | Target inside a merged semantics tree |
-
-### Layout stability regression test (trigger position on toggle)
-
-A screenshot golden alone won't reliably catch a trigger button shifting a few pixels
-when toggled (collapsible/accordion chevrons, expand/collapse triggers) — diff tools
-often tolerate small deltas. Assert the trigger's bounds directly instead:
-
-```kotlin
-@OptIn(ExperimentalTestApi::class)
-@Test
-fun collapsibleTrigger_positionUnchanged_whenToggled() = runComposeUiTest {
-    setContent {
-        AppTheme { Collapsible(/* ... */) }
-    }
-    val before = onNodeWithTag(CollapsibleTestTags.TRIGGER).fetchSemanticsNode().boundsInRoot
-    onNodeWithTag(CollapsibleTestTags.TRIGGER).performClick()
-    mainClock.advanceTimeBy(250)  // past the toggle animation's tween duration
-    val after = onNodeWithTag(CollapsibleTestTags.TRIGGER).fetchSemanticsNode().boundsInRoot
-
-    assertEquals(before, after)
-}
-```
-
-This is the deterministic version of the two failure modes the `kmp-audit`
-detectors `toggle icon swap instead of rotation [MEDIUM]` and `bare conditional collapse
-[MEDIUM]` catch statically — write this test alongside any collapsible/accordion trigger,
-not just for components that already broke once.
-
-### Drag interaction test (resizable panels, custom scrollbar thumbs)
-
-`runComposeUiTest` doesn't have a `Modifier.draggable`-specific assertion — drive the
-gesture with `performTouchInput { swipe(...) }` (or `performMouseInput { press(); moveTo();
-release() }` for Desktop-only pointer drags) and assert on the resulting state, not on
-intermediate frames:
-
-```kotlin
-@OptIn(ExperimentalTestApi::class)
-@Test
-fun resizablePanelGroup_drag_resizesStartPaneWithinBounds() = runComposeUiTest {
-    setContent {
-        AppTheme { AppResizablePanelGroup(start = { StartPane() }, end = { EndPane() }) }
-    }
-    val divider = onNodeWithTag(ResizablePanelTestTags.DIVIDER)
-    val startBoundsBefore = onNodeWithTag(ResizablePanelTestTags.START_PANE)
-        .fetchSemanticsNode().boundsInRoot
-
-    divider.performTouchInput { swipe(start = center, end = center.copy(x = center.x + 100f)) }
-
-    val startBoundsAfter = onNodeWithTag(ResizablePanelTestTags.START_PANE)
-        .fetchSemanticsNode().boundsInRoot
-    assertTrue(startBoundsAfter.width > startBoundsBefore.width)
-}
-```
-
-Test the clamp explicitly, not just "dragging changes something" — swipe far past the
-divider's travel range and assert the pane width stops at `minWeight`/`maxWeight` rather
-than continuing to shrink/grow or overshooting past the container:
-
-```kotlin
-@OptIn(ExperimentalTestApi::class)
-@Test
-fun resizablePanelGroup_drag_clampsToMaxWeight() = runComposeUiTest {
-    setContent {
-        AppTheme {
-            AppResizablePanelGroup(start = { StartPane() }, end = { EndPane() }, maxWeight = 0.85f)
-        }
-    }
-    onNodeWithTag(ResizablePanelTestTags.DIVIDER)
-        .performTouchInput { swipe(start = center, end = center.copy(x = center.x + 5000f)) }
-
-    val rootWidth = onRoot().fetchSemanticsNode().boundsInRoot.width
-    val startWidth = onNodeWithTag(ResizablePanelTestTags.START_PANE).fetchSemanticsNode().boundsInRoot.width
-    assertTrue(startWidth <= rootWidth * 0.85f + 1f)  // +1f tolerance for rounding
-}
-```
-
-The same `performTouchInput { swipe(...) }` pattern applies to a custom scrollbar thumb
-built with `pointerInput` — assert the underlying `ScrollState.value` (or
-`LazyListState.firstVisibleItemIndex`) changed after the drag, not the thumb's own pixel
-position, since the thumb's position is derived from scroll state, not the other way
-around.
-
----
+Full content: `references/step2-compose-ui-interaction-tests.md`.
 
 ## Step 3: Roborazzi Screenshot Tests (jvmTest only)
 
@@ -496,93 +303,7 @@ shape once, light and dark).
 
 ## Step 3b: Bounds Sidecar (exact position/size regression — no vision needed)
 
-A pixel diff on the golden PNG tells you *that* something changed, not *what*. Asking an
-agent to read the diff image and estimate "did this move 8px or 12px?" from a screenshot
-is unreliable — vision models aren't precise at exact pixel numbers. The fix isn't a
-smarter image comparison; it's to stop deriving position/size from pixels at all.
-
-`onNodeWithTag(tag).fetchSemanticsNode().boundsInRoot` (already used in the layout
-stability regression pattern above) gives exact position and size straight from the
-semantics tree. Write it to a small JSON file next to the golden PNG, and a position/size
-regression becomes a normal `git diff` line on a committed text file — exact numbers, zero
-noise for nodes that didn't move, no image analysis required:
-
-```kotlin
-// :core:testing/src/jvmTest/kotlin/GROUP_ID/core/testing/BoundsSnapshot.kt
-package GROUP_ID.core.testing
-
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
-import androidx.compose.ui.test.onNodeWithTag
-import java.io.File
-
-/**
- * Writes exact position/size for [tags] to a JSON sidecar next to the Roborazzi golden PNG
- * of the same name — a position/size regression then shows up as a plain git diff on the
- * sidecar instead of something a reviewer has to eyeball from two screenshots.
- * @receiver Must be called from inside `runDesktopComposeUiTest`, after `setContent` —
- * bounds are read from the live semantics tree at the point of the call.
- */
-@OptIn(ExperimentalTestApi::class)
-fun SemanticsNodeInteractionsProvider.captureBoundsSnapshot(
-    fileName: String,
-    vararg tags: String,
-    outputDir: File = File("src/jvmTest/snapshots"),
-) {
-    val bounds = tags.associateWith { tag -> onNodeWithTag(tag).fetchSemanticsNode().boundsInRoot }
-    val json = bounds.entries.sortedBy { it.key }.joinToString(",\n", prefix = "{\n", postfix = "\n}") { (tag, r) ->
-        "  \"$tag\": {\"left\": ${r.left}, \"top\": ${r.top}, \"width\": ${r.width}, \"height\": ${r.height}}"
-    }
-    outputDir.mkdirs()
-    File(outputDir, fileName).writeText(json + "\n")
-}
-```
-
-Call it in the same test that records the golden, using the real multiplatform-JVM
-`captureRoboImage` entry point (`onRoot().captureRoboImage(...)` inside
-`runDesktopComposeUiTest`, not the plain content-lambda form) so both come from the same
-composition pass:
-
-```kotlin
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.runDesktopComposeUiTest
-import com.github.takahirom.roborazzi.captureRoboImage
-import GROUP_ID.core.testing.captureBoundsSnapshot
-import kotlin.test.Test
-
-class AuthContentScreenshotTest {
-
-    @OptIn(ExperimentalTestApi::class)
-    @Test
-    fun authContent_default() = runDesktopComposeUiTest {
-        setContent {
-            AppTheme {
-                AuthContent(state = AuthContract.State(), onIntent = {})
-            }
-        }
-        onRoot().captureRoboImage("auth_content_default.png")
-        captureBoundsSnapshot(
-            "auth_content_default.bounds.json",
-            AuthTestTags.EMAIL_FIELD, AuthTestTags.PASSWORD_FIELD, AuthTestTags.LOGIN_BUTTON,
-        )
-    }
-}
-```
-
-This writes `auth_content_default.bounds.json` next to `auth_content_default.png` in
-`src/jvmTest/snapshots/` — commit both. On a PR, `git diff` on the `.bounds.json` file
-shows the exact change (`"top": 120.0` → `"top": 128.0`), with nothing printed for tags
-that didn't move.
-
-**What this does not replace:** border width and corner radius are not screenshot
-problems — they're literal values in `ButtonStyles.kt`/`CardStyles.kt`
-(`RoundedCornerShape(appTheme.shapes.md)`, `borderWidth(1.dp)`). A regression there is
-already a normal code diff on the Style file, partly caught statically by
-`scan_design_violations.py`. Don't add pixel-based border/corner-radius detection — it
-would be strictly less precise than the value that's already sitting in source.
-
----
+Full content: `references/step3b-bounds-sidecar.md`.
 
 ## Recording and Verifying Goldens
 
@@ -606,75 +327,15 @@ PR review — reviewers see before/after without running tests locally.
 
 ## CI Integration
 
-`jvmTest` is the **required** gate — it runs both the `commonTest` interaction tests
-(via their JVM actualization) and the `jvmTest`-only Roborazzi screenshots in one fast
-step, no emulator or simulator involved.
+Full content: `references/ci-integration.md`.
 
-```yaml
-# .github/workflows/ci.yml
-test-screenshot:
-  name: UI + Screenshot Tests (JVM)
-  runs-on: ubuntu-latest
-  needs: lint
-  steps:
-    - uses: actions/checkout@v4
+---
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'zulu'
+## References
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
-
-    - name: Run UI + screenshot tests
-      run: ./gradlew jvmTest
-
-    - name: Upload screenshot diffs on failure
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: screenshot-diffs
-        path: '**/src/jvmTest/snapshots/**/*_compare.png'
-        retention-days: 7
-```
-
-**Opt-in / nightly matrix** — runs the same `commonTest` interaction tests on real
-platform targets to catch platform-specific rendering/input bugs. Don't add this to the
-required per-PR gate; emulator and simulator boot time is real CI cost.
-
-```yaml
-# .github/workflows/nightly-ui-matrix.yml
-on:
-  schedule:
-    - cron: '0 4 * * *'   # nightly
-  workflow_dispatch: {}    # or manually, per PR label
-
-jobs:
-  ios-simulator:
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-      - run: ./gradlew iosSimulatorArm64Test
-
-  android-instrumented:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 34
-          script: ./gradlew connectedAndroidTest
-
-  wasm:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: ./gradlew wasmJsTest
-```
+Full implementation content lives in `references/*.md`: `step2-compose-ui-interaction-tests`,
+`step3b-bounds-sidecar`, `ci-integration`. Load the specific file named in the pointer
+under its matching heading above, not all of them.
 
 ---
 
@@ -762,6 +423,7 @@ When asked about UI testing, test tags, or visual regression for KMP, respond in
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split Step 2 (Compose UI Interaction Tests), Step 3b (Bounds Sidecar), and CI Integration out of SKILL.md into `references/*.md`, leaving pointer stubs plus a new References section. SKILL.md drops from 769 to 430 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as `kmp-compose-design-system`/`-extended`/`kmp-mvi`/`kmp-feature-scaffold`/`kmp-code-quality`/`kmp-library-publishing`/`kmp-expert`/`kmp-navigation`/`kmp-legal-docs` (KI-008). |
 | 2026-07-10 | Added "Step 3b: Bounds Sidecar" — `captureBoundsSnapshot()` writes exact `fetchSemanticsNode().boundsInRoot` position/size to a `.bounds.json` file next to each golden PNG, so a position/size regression is a plain `git diff` on committed text instead of something an agent has to estimate from a pixel diff image. Proven with a standalone JSON-diff test (exact delta surfaced, zero noise for unchanged nodes) before writing this into the skill. Verified the real multiplatform-JVM `captureRoboImage` entry point (`onRoot().captureRoboImage(...)` inside `runDesktopComposeUiTest`) against Roborazzi's own `sample-compose-desktop-jvm` test, since it differs from the plain content-lambda form. Wired into `/kmp-record-design-baselines` (sidecars ride along in the existing `snapshots/` copy step) and `/kmp-audit-screenshots` (new Step 2b checks sidecar diffs before falling through to vision). Explicitly out of scope: pixel-based border-width/corner-radius detection — those values already exist exactly in `Style` source, so a regression there is a normal code diff. 2 new anti-patterns, 1 new Related Skills cross-reference. |
 | 2026-07-08 | Added a "Drag interaction test" pattern — `performTouchInput { swipe(...) }` / `performMouseInput { press(); moveTo(); release() }` for resizable panel dividers and custom scrollbar thumbs, asserting resulting state (pane width, clamp bounds, scroll offset) rather than intermediate frames. |
 | 2026-07-08 | Added a "Layout stability regression test" pattern — asserting `boundsInRoot()` on a trigger before/after toggle (via `mainClock.advanceTimeBy`) to deterministically catch a collapsible/accordion trigger shifting position on toggle. Cross-links the new `kmp-audit` detectors `toggle icon swap instead of rotation` and `bare conditional collapse`. |

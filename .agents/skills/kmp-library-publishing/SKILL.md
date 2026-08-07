@@ -99,171 +99,7 @@ the vanniktech plugin handles all the boilerplate correctly.
 
 ## Step 1 — Library project structure
 
-A KMP library has **no** application plugin. The root module exposes multiplatform targets.
-
-**Clone the official JetBrains starting point first — never hand-write this from
-scratch.** `Kotlin/multiplatform-library-template` is the real, actively-maintained
-equivalent of `kmp-wizard` for a library (verified against the live repo, not assumed —
-"official project" badge, same GitHub org):
-
-```bash
-git clone --depth 1 https://github.com/Kotlin/multiplatform-library-template <PROJECT_NAME>
-cd <PROJECT_NAME> && rm -rf .git && git init
-```
-
-What it gives you out of the box: `vanniktech-mavenPublish`, the AGP 9
-`com.android.kotlin.multiplatform.library` plugin, and `jvm()`/`androidLibrary()`/
-`iosArm64()`/`iosSimulatorArm64()`/`linuxX64()` targets already wired in one `:library`
-module. Add `js()`/`wasmJs()` yourself if `PLATFORMS` includes Web — the template doesn't
-include them by default. The template's own README says explicitly what it deliberately
-leaves out: binary-compatibility tracking, `explicitApi()`, licensing, and a contribution
-guideline — that's exactly what Steps 2/5/12/13 below add on top, the same way this
-collection's own 6-layer conventions layer on top of kmp-wizard for an app.
-
-Resulting structure, once this collection's own additions (`library-testing`, `bom`,
-`sample`) are layered on. **No `build-logic/`** — the template doesn't ship one, and for
-a single `:library` module it adds nothing: there's only one `build.gradle.kts` to
-configure, so there's no duplication for a convention plugin to remove. It only earns
-its keep once Step 1a's multi-module split is in play — see that section for the real
-wiring, not asserted here as a default:
-
-```
-my-library/
-├── library/                      # Main library module (from the template)
-│   └── build.gradle.kts
-├── library-testing/              # Test helpers for consumers (optional, added by this skill)
-├── bom/                          # Bill of Materials (optional, added by this skill)
-├── sample/                       # Sample app that consumes the library (added by this skill)
-│   └── build.gradle.kts          # Has com.android.application — only here
-├── gradle/
-│   └── libs.versions.toml
-├── settings.gradle.kts
-└── build.gradle.kts              # Root: coordinates + publishing config
-```
-
-`settings.gradle.kts` for a library:
-
-```kotlin
-rootProject.name = "my-library"
-
-include(":library")
-include(":library-testing")    // optional
-include(":bom")                // optional
-include(":sample:androidApp")  // sample only — no maven-publish applied here
-```
-
-For a library small enough to fit in one `:library` module, that's the whole structure.
-Once `:library` itself grows past a handful of files covering genuinely separate
-concerns, `kmp-clean-architecture`'s 6-layer contract applies to a
-library's own internals the same way it does to an app's — `:model`/`:api` split,
-`internal` visibility between layers — the difference is only that the *outermost*
-public surface is what `explicitApi()`/`apiCheck` above govern, not an app's UI layer.
-
-### Step 1a — Splitting into multiple published modules
-
-Split when a sub-feature has a genuinely independent consumer surface — some consumers
-shouldn't have to pull another facet's transitive deps. Not the default, and not just
-because the code is "big" (that's what Step 1's internal 6-layer split is for, inside
-one module).
-
-Prefix every module and artifact with the library's own `PROJECT_NAME` — never the
-literal word "library." This matches the `<PROJECT_NAME>-bom` convention already used
-in Step 4 below, and real published multi-module libraries (Coil's `coil-core` /
-`coil-compose` / `coil-network`, not `library-core`):
-
-```
-<PROJECT_NAME>/
-├── <PROJECT_NAME>-core/       # io.github.you:<PROJECT_NAME>-core      — no Compose dep
-│   └── build.gradle.kts
-├── <PROJECT_NAME>-compose/    # io.github.you:<PROJECT_NAME>-compose   — depends on -core + Compose
-│   └── build.gradle.kts
-├── <PROJECT_NAME>-testing/    # io.github.you:<PROJECT_NAME>-testing   — fakes/test doubles, depends on -core only
-│   └── build.gradle.kts
-├── bom/                        # io.github.you:<PROJECT_NAME>-bom       — version-aligns all three
-├── sample/
-└── settings.gradle.kts
-```
-
-```kotlin
-// settings.gradle.kts
-includeBuild("build-logic")
-include(":<PROJECT_NAME>-core")
-include(":<PROJECT_NAME>-compose")
-include(":<PROJECT_NAME>-testing")
-include(":bom")
-include(":sample:androidApp")
-```
-
-**This is where `build-logic/` actually earns its keep** — three-plus modules that all
-need the same `explicitApi()`/AGP/`apiCheck` configuration is real duplication a
-convention plugin removes. Single-module libraries (Step 1 above) skip this entirely.
-
-```kotlin
-// build-logic/build.gradle.kts
-plugins { `kotlin-dsl` }
-dependencies {
-    compileOnly(libs.plugins.kotlinMultiplatform.get().let { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" })
-    compileOnly(libs.plugins.vanniktech.mavenPublish.get().let { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" })
-}
-gradlePlugin {
-    plugins {
-        register("libraryModule") {
-            id = "<PROJECT_NAME>.library-module"
-            implementationClass = "LibraryModuleConventionPlugin"
-        }
-    }
-}
-```
-
-```kotlin
-// build-logic/src/main/kotlin/LibraryModuleConventionPlugin.kt — the shared config,
-// written once, applied to <PROJECT_NAME>-core/-compose/-testing's own build.gradle.kts
-class LibraryModuleConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) = with(target) {
-        pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-        pluginManager.apply("com.vanniktech.maven.publish")
-        extensions.configure<KotlinMultiplatformExtension> {
-            explicitApi()
-        }
-    }
-}
-```
-
-```kotlin
-// <PROJECT_NAME>-core/build.gradle.kts — each module applies the convention plugin,
-// then only its own module-specific bits (dependencies, its own coordinates())
-plugins {
-    id("<PROJECT_NAME>.library-module")
-}
-```
-
-Dependency direction — one-way, never circular:
-
-```
-<PROJECT_NAME>-core  ←  <PROJECT_NAME>-compose
-<PROJECT_NAME>-core  ←  <PROJECT_NAME>-testing
-```
-
-`-compose` and `-testing` may depend on `-core`; `-core` never depends on either.
-
-Each module is its own `explicitApi()` surface with its own `.api` file — `apiCheck`
-runs per module, not once for the whole repo:
-
-```bash
-./gradlew :<PROJECT_NAME>-core:apiCheck :<PROJECT_NAME>-compose:apiCheck :<PROJECT_NAME>-testing:apiCheck
-```
-
-Each gets its own `mavenPublishing { coordinates(...) }` block with its own artifactId
-(`<PROJECT_NAME>-core`, `<PROJECT_NAME>-compose`, ...) — `bom/`'s `constraints` block
-(Step 4 below) is what lets a consumer pin all of them to one version via a single BOM
-import instead of separate version numbers per artifact.
-
-**When to split vs keep one `:library`:** a genuinely separate consumer surface (core
-logic vs a Compose UI layer vs test fakes) that some consumers want without the others'
-dependencies. Splitting because it's "organized that way internally" isn't a reason —
-that's Step 1's internal 6-layer split, inside one module, no extra published artifacts.
-
----
+Full content: `references/step1-library-project-structure.md`.
 
 ## Step 2 — Dependencies
 
@@ -302,215 +138,7 @@ apiValidation {
 
 ## Step 3 — Library module `build.gradle.kts`
 
-```kotlin
-import com.vanniktech.maven.publish.SonatypeHost
-
-plugins {
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)       // only if targeting Android
-    alias(libs.plugins.vanniktech.publish)
-    alias(libs.plugins.dokka)
-}
-
-kotlin {
-    explicitApi()   // library-only — forces every public declaration to state its
-                    // visibility and return type explicitly, see below
-
-    androidTarget {
-        publishLibraryVariants("release")
-    }
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    jvm()
-    js(IR) { browser(); nodejs() }
-    wasmJs { browser() }
-    linuxX64()
-
-    sourceSets {
-        commonMain.dependencies {
-            // shared dependencies
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-            implementation(libs.kotlinx.coroutines.test)
-        }
-    }
-}
-
-mavenPublishing {
-    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)  // use OSSRH for legacy accounts
-
-    signAllPublications()   // requires GPG key in env (see Step 6)
-
-    coordinates(
-        groupId    = "io.github.yourhandle",
-        artifactId = "my-library",
-        version    = version.toString(),   // read from gradle.properties
-    )
-
-    pom {
-        name = "My Library"
-        description = "A concise description of what the library does."
-        url = "https://github.com/yourhandle/my-library"
-        inceptionYear = "2024"
-
-        licenses {
-            license {
-                name = "Apache-2.0"
-                url  = "https://www.apache.org/licenses/LICENSE-2.0"
-            }
-        }
-
-        developers {
-            developer {
-                id   = "yourhandle"
-                name = "Your Name"
-                url  = "https://github.com/yourhandle"
-            }
-        }
-
-        scm {
-            url                 = "https://github.com/yourhandle/my-library"
-            connection          = "scm:git:git://github.com/yourhandle/my-library.git"
-            developerConnection = "scm:git:ssh://git@github.com/yourhandle/my-library.git"
-        }
-    }
-}
-```
-
-`gradle.properties` (version managed here, not in build script):
-
-```properties
-GROUP=io.github.yourhandle
-POM_ARTIFACT_ID=my-library
-VERSION_NAME=0.1.0-SNAPSHOT
-```
-
-Start at `0.1.0`, not `1.0.0` — a fresh library has had zero real consumer usage yet, and
-`1.0.0` is a stability promise this skill's own pre-1.0 policy (below) says to make
-deliberately, not on the first commit. `Kotlin/multiplatform-library-template` (Step 1's
-starting clone) hardcodes `version = "1.0.0"` in its own `build.gradle.kts` — change it
-to `0.1.0` as part of the same configuration pass that sets `GROUP_ID`/coordinates, don't
-leave the template's default in place.
-
-### Per-file license headers (optional)
-
-The POM `licenses { license { ... } }` block above is the legally required, project-level
-license declaration for Maven Central — that's not optional. A per-file license header
-comment repeated at the top of every `.kt` source file is a **separate, optional** choice,
-worth it for a library specifically because each file may be vendored, copy-pasted, or
-inspected independently of the repo it came from; a project-level `LICENSE` file alone
-doesn't travel with an individual file once it's copied elsewhere. It's not needed for
-app code (see `kmp-code-quality`'s Comment & KDoc Conventions).
-
-Enforce it with Detekt's `AbsentOrWrongFileLicense` rule (off by default):
-
-```yaml
-# detekt.yml
-comments:
-  AbsentOrWrongFileLicense:
-    active: true
-    licenseTemplateFile: 'license.template.txt'
-```
-
-```
-# license.template.txt
-/*
- * Copyright 2026 Your Name or Org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- */
-```
-
-Keep the license identifier here consistent with the POM's `licenses { license { name = ... } }`
-block — a per-file header claiming a different license than the POM declares is worse
-than having no per-file header at all.
-
-### `explicitApi()` — library-only, not for app code
-
-Library code has a wider blast radius than app code: a `public` declaration nobody
-intended to expose becomes part of the API surface the moment it ships, and removing it
-later is a breaking change (exactly what `apiCheck`/binary-compatibility-validator in
-Step 5 exists to catch after the fact). `explicitApi()` catches it *before* publishing
-instead — it fails the build on any public declaration missing an explicit visibility
-modifier or return type:
-
-```kotlin
-// ❌ fails to compile under explicitApi() — implicit public visibility, inferred return type
-class UserRepository {
-    fun getUser(id: String) = api.fetchUser(id)
-}
-
-// ✓ compiles — visibility and return type both explicit
-public class UserRepository {
-    public fun getUser(id: String): User = api.fetchUser(id)
-}
-```
-
-**Don't add this to app code** — `kmp-clean-architecture`'s 6-layer
-contract already controls what's exposed between modules via `internal`, and an app has
-no external consumers to protect from an accidental public leak the way a published
-library does. `explicitApi()` on app code is pure ceremony with no corresponding benefit.
-
-Two modes: `explicitApi()` fails the build (`ExplicitApiMode.Strict`), `explicitApiWarning()`
-only warns. Use the strict form for a library that's already past its first stable
-release — a warning is easy to ignore and defeats the point of catching this before
-publishing.
-
-### No forced framework coupling in library internals
-
-`kmp-dependency-injection` recommends Koin for **app code** — a
-published library is a different situation. A consumer app might use Koin, Hilt, manual
-DI, or nothing at all; a library that hard-imports `org.koin.*` inside its own public
-classes forces that choice onto every consumer, or worse, silently requires Koin to be
-on the consumer's classpath at all.
-
-```kotlin
-// ❌ forces Koin onto every consumer of this library
-class UserRepository(scope: Scope) : KoinComponent {
-    private val api: ApiClient by inject()
-}
-
-// ✓ plain constructor injection — the consumer wires it however they want
-public class UserRepository(private val api: ApiClient) {
-    // ...
-}
-```
-
-If the library wants to *offer* Koin wiring as a convenience, ship it as a separate,
-optional artifact (`my-library-koin`) with its own `module { }` — never bake the
-dependency into the core artifact's own classes.
-
-### KDoc coverage on the public API surface
-
-`kmp-code-quality`'s Comment & KDoc Conventions section covers KDoc
-*style* — this is about *coverage*. Once `explicitApi()` forces every public declaration
-to be deliberate, an undocumented one is a real gap: a consumer sees the declaration in
-autocomplete with no explanation of what it does or when to use it.
-
-```kotlin
-// ❌ compiles under explicitApi(), but a consumer has no idea what this does
-public class RetryPolicy(public val maxAttempts: Int, public val backoffMs: Long)
-
-// ✓ the public contract is documented, not just the visibility
-/**
- * Controls retry behavior for transient network failures.
- * @property maxAttempts stop retrying after this many attempts, including the first
- * @property backoffMs delay between attempts, doubled after each failure
- */
-public class RetryPolicy(public val maxAttempts: Int, public val backoffMs: Long)
-```
-
-`kmp-audit`'s `_detect_undocumented_public_api` flags a public
-declaration with no preceding KDoc block, but only in a project that already uses
-`explicitApi()` — without it, "public" isn't a deliberate signal worth checking.
-
----
+Full content: `references/step3-library-module-build-gradle.md`.
 
 ## Step 4 — BOM (Bill of Materials) for multi-artifact libraries
 
@@ -558,67 +186,7 @@ dependencies {
 
 ## Step 5 — Binary compatibility validator
 
-The `binary-compatibility-validator` plugin generates `.api` dump files that track
-every public symbol. A CI check (`apiCheck`) fails if a release PR accidentally removes
-or changes a public API.
-
-**One-time setup (after configuring the plugin in root build):**
-
-```bash
-./gradlew apiDump   # generates library/api/library.api
-git add library/api/
-git commit -m "chore: initial API dump"
-```
-
-**On every PR:**
-
-```bash
-./gradlew apiCheck  # fails if public API changed without a matching apiDump
-```
-
-**When intentionally changing the API:**
-
-```bash
-./gradlew apiDump   # regenerate the dump
-git add library/api/
-git commit -m "feat!: add Foo.bar() to public API"
-```
-
-**Marking internal APIs** (excluded from dump):
-
-```kotlin
-@RequiresOptIn(level = RequiresOptIn.Level.ERROR)
-@Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
-annotation class InternalApi
-```
-
-Add `InternalApi` to `nonPublicMarkers` in `apiValidation { }` (Step 2).
-
-### `apiCheck` catches *that* the API changed, not *whether the version bump matches*
-
-`apiCheck` fails on any `.api` diff, forcing a deliberate `apiDump` — but it has no
-concept of semver. It passes identically whether the diff is a source-compatible
-addition (minor-worthy) or a signature change/removal that breaks every consumer
-(major-worthy). Nothing currently blocks tagging a *breaking* diff as a minor release.
-
-This isn't mechanically enforceable from the `.api` file alone — the file lists symbols,
-not which specific lines changed *how* between two dumps, and "is this actually
-source/binary breaking" needs a real diff, not just a checksum mismatch. Treat it as a
-review-time discipline instead: before tagging, `git diff` the previous `library.api`
-against the new one and classify every change —
-
-| Change | Semver bump |
-|---|---|
-| New public class/function/property added | Minor |
-| Existing public signature changed or removed | Major |
-| Internal-only change, `.api` file untouched | Patch |
-
-Get this wrong once (a breaking change shipped as a minor) and every consumer pinned to
-`^x.y` silently breaks on their next `./gradlew build` — there's no compiler error on
-their side, just a runtime `NoSuchMethodError` or a build failure with no obvious cause.
-
----
+Full content: `references/step5-binary-compat-validator.md`.
 
 ## Step 6 — GPG signing and secrets
 
@@ -780,74 +348,7 @@ The release CI should run both publish tasks in the same workflow run when a tag
 
 ## Step 11 — Ongoing maintenance (post-1.0)
 
-Everything above covers shipping. A published library also needs a maintenance
-practice — real gaps found repeatedly in libraries that only had a publish checklist:
-
-### Deprecation cycle, not silent removal
-
-Never delete a public symbol a consumer might already depend on. Mark it first:
-
-```kotlin
-@Deprecated(
-    message = "Use fetchUserV2() — handles pagination correctly",
-    replaceWith = ReplaceWith("fetchUserV2(id)"),
-    level = DeprecationLevel.WARNING,
-)
-fun fetchUser(id: String): User
-```
-
-Cycle, tied to SemVer:
-1. **This minor version** — add `@Deprecated(level = WARNING)`. `apiCheck` still passes;
-   this is not a binary-breaking change.
-2. **Next minor version** — bump to `level = ERROR`. Consumers must migrate to keep
-   compiling, but the symbol still exists (source-compatible migration window).
-3. **Next major version** — remove the symbol entirely. `apiDump` records the removal;
-   `apiCheck` correctly fails until the API dump is regenerated for the major bump.
-
-### Communicating a breaking change
-
-A binary-incompatible change (an `apiCheck` failure you're accepting on purpose, not a
-mistake to fix) needs three things before it ships, not just a version bump:
-- A `CHANGELOG.md` entry naming the exact symbol and the replacement, not just "breaking changes"
-- A migration note if the fix isn't mechanical (find/replace) — show the before/after
-- The major version bump itself, per SemVer — a breaking change is never a minor/patch release
-
-### Dependency upgrade cadence
-
-A library's own dependency versions become every consumer's transitive minimum. Pin
-conservatively and review on a cadence, not reactively:
-- Renovate or Dependabot on the repo, scoped to `gradle/libs.versions.toml`
-- Treat a transitive major-version bump (Compose Multiplatform, Kotlin itself) as its own
-  reviewed change, never bundled silently into an unrelated feature release
-- Keep `sample/`'s own dependency versions pinned to the library's own — a stale sample
-  masks a real compatibility break until a real consumer hits it first
-
-### Dependency vulnerability scanning
-
-Distinct from the version-cadence review above — a dependency can be current and still
-carry a disclosed CVE. Enable GitHub's own **Dependabot security alerts** (Settings →
-Security → Dependabot, or a `.github/dependabot.yml` scoped to `gradle`) on the repo — it
-flags a known vulnerability in a dependency independent of whether a routine upgrade PR
-would have touched it. Treat an alert on a library's own dependency as higher priority
-than the same alert in an app: every consumer inherits it transitively, and a library
-maintainer usually doesn't know how many downstream apps are affected.
-
-### Keep `sample/` from drifting
-
-The sample app is the only thing that actually compiles against the library's *public*
-API the way a real consumer would — an internal test suite compiles against internals
-too and can miss a public-surface break. Run the sample's build as its own CI job on
-every PR, not just at release time:
-
-```bash
-./gradlew :sample:compileKotlinX  # X = every registered target
-```
-
-A sample that still compiles against a symbol scheduled for removal is a signal the
-deprecation cycle above hasn't actually reached consumers yet — don't remove the symbol
-from the library until the sample itself has migrated off it.
-
----
+Full content: `references/step11-ongoing-maintenance.md`.
 
 ## Step 12 — Third-party license aggregation (NOTICE file)
 
@@ -936,6 +437,15 @@ missing fields cause Maven Central validation failures that are hard to debug.
 
 ---
 
+## References
+
+Full implementation content lives in `references/*.md`: `step1-library-project-structure`,
+`step3-library-module-build-gradle`, `step5-binary-compat-validator`,
+`step11-ongoing-maintenance`. Load the specific file named in the pointer under its
+matching heading above, not all of them.
+
+---
+
 ## Related Skills
 
 | Skill | When to use alongside this skill |
@@ -958,6 +468,8 @@ missing fields cause Maven Central validation failures that are hard to debug.
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Added a "`core`/`helper`/`sugar` — higher stakes here than in an app" section to Step 11 (Ongoing maintenance) — cross-references `kmp-code-quality`'s new core/helper/sugar/sample-local/deprecated categorization and maps it to this skill's own mechanisms: `core`/`sugar` are both binary-compat surface tracked by `apiCheck`/`apiDump`, `helper` is compiler-enforced via `explicitApi()`, `sample-local` is the existing `sample/` module guidance, `deprecated` is the existing cycle below it. |
+| 2026-08-04 | Split SKILL.md (972 lines) into 4 `references/*.md` files (Step 1 Library project structure, Step 3 build.gradle.kts, Step 5 Binary compat validator, Step 11 Ongoing maintenance), leaving pointer stubs plus a new References section. SKILL.md drops to 482 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as `kmp-compose-design-system`/`-extended`/`kmp-mvi`/`kmp-feature-scaffold`/`kmp-code-quality` (KI-008). |
 | 2026-08-01 | Fixed a self-contradiction found the same day: this skill's own pre-1.0 policy section says `1.0.0` is a deliberate stability promise cut after real usage, but its `gradle.properties` example (and the official `multiplatform-library-template` we clone in Step 1) both defaulted to `1.0.0` for a brand-new library. Changed the example to `0.1.0-SNAPSHOT` and added an explicit instruction to override the template's hardcoded `1.0.0`. Same fix applied to `kmp-release`'s version example and `/kmp-new-project`'s Library F-01. |
 | 2026-07-31 | Fixed a second real gap found right after the correction below: `build-logic/` was listed as "optional but recommended" in every structure diagram but never actually wired anywhere — no `includeBuild`, no convention plugin content, and the real official template doesn't ship one at all. It adds nothing for a single `:library` module (nothing to de-duplicate), so removed it from Step 1's default diagram entirely. It does earn its keep once Step 1a's multi-module split is in play (3+ modules needing the same `explicitApi()`/AGP/`apiCheck` config) — added the real `includeBuild("build-logic")` wiring and a convention plugin example there instead of asserting it as a default. |
 | 2026-07-31 | **Self-correction, verified via GitHub API + raw source, not assumed**: this skill and `/kmp-new-project` both stated "there is no equivalent to kmp-wizard for a library" — wrong. `Kotlin/multiplatform-library-template` is a real, official, actively-maintained JetBrains repo (same org as `kmp-wizard`, "official project" badge, 332 stars) that scaffolds exactly this: one `:library` module with `vanniktech-mavenPublish`, the AGP 9 `com.android.kotlin.multiplatform.library` plugin, and `jvm()`/`androidLibrary()`/`iosArm64()`/`iosSimulatorArm64()`/`linuxX64()` already wired — the template's own README explicitly says it omits binary-compat tracking, `explicitApi()`, licensing, and a contribution guideline, which is exactly what this skill's Steps 2/5/12/13 already add on top. Rewrote Step 1 to clone it as the mandatory starting point instead of hand-building the structure, mirroring `kmp-wizard`'s own discipline for apps. Added a matching anti-pattern. |

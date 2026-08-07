@@ -100,64 +100,7 @@ Detekt rules second (catches import-level violations within a valid dep graph).
 
 ## Composition Over Inheritance in commonMain
 
-**commonMain APIs should be called or composed, not extended.** This is a distinct rule
-from the layer contract above — it applies within any single layer, to how a class
-exposes itself to the code that uses it.
-
-A recurring, real anti-pattern: an agent asked to make something "reusable" or "shared"
-reaches for a public `abstract class` in `commonMain` with abstract members a consumer
-must override — importing an Android/Spring-style inheritance instinct
-(`Application`, `@Component` base classes) into a context where it actively works
-against KMP's advantage. The base class now dictates *how* every consumer must structure
-their app around it, and a CMP upgrade or a second consumer with different needs can't
-easily deviate from the inheritance chain the shared code imposed.
-
-This isn't specific to any one domain — the same shape shows up as a game engine's
-`GenericGameApplication`, a network layer's `BaseApiClient`, a plugin system's
-`AbstractPlugin`. The smell is the shape (`abstract class`, only abstract members, in
-`commonMain`), not the name:
-
-```kotlin
-// ❌ Forces every consumer into this exact inheritance chain — commonMain shouldn't
-// assume how the consumer structures their own app.
-abstract class GenericGameApplication {
-    abstract fun onInitialize()
-    abstract fun onConfigure(): AppConfig
-}
-
-// ✓ Consumer implements and injects this — same flexibility, no inheritance chain,
-// no assumption about the consumer's own class hierarchy.
-interface GameLifecycle {
-    fun onInitialize()
-    fun onConfigure(): AppConfig
-}
-
-fun bootstrap(lifecycle: GameLifecycle) {
-    lifecycle.onInitialize()
-    val config = lifecycle.onConfigure()
-    // ...
-}
-```
-
-Wire `lifecycle` through Koin (already this collection's default DI, see
-`kmp-dependency-injection`) the same way any other dependency is
-injected — nothing about "the consumer must implement a contract" requires inheritance.
-
-**Mechanical detector:** Detekt's real `AbstractClassCanBeInterface` rule (wired in
-`kmp-code-quality`) flags exactly this shape — "abstract class with only
-abstract members should be an interface instead" — for any project with Detekt already
-configured. `kmp-audit`'s `_detect_extensible_abstract_class_in_common`
-is a project-independent backstop for the same signal, scoped specifically to
-`commonMain` (an abstract class with only abstract members in a platform source set —
-`androidMain`, `iosMain` — is often a genuine platform requirement, not this smell).
-
-**When an abstract class in commonMain is fine:** it has at least one concrete member —
-a real template-method pattern with genuinely shared logic (e.g., `BaseRepository`'s
-`cachedFetch()` calling an abstract `fetch()`) is not this anti-pattern. The rule targets
-*pure* templates with nothing shared at all — those provide zero benefit over an
-interface and only cost the consumer their inheritance slot.
-
----
+Full content: `references/composition-over-inheritance.md`.
 
 ## Layer Weight — Add Only When It Carries Weight
 
@@ -335,48 +278,7 @@ internal class AuthRepositoryImpl(
 
 ## Typed Domain Errors
 
-Typed errors let callers distinguish and handle failure cases without parsing strings.
-They live in `:model` (if shared) or `:feature:*:model` (if feature-specific).
-
-```kotlin
-// :core:model or :feature:auth:model
-sealed class AuthError {
-    data object InvalidCredentials : AuthError()
-    data object AccountLocked : AuthError()
-    data class NetworkError(val cause: Throwable) : AuthError()
-    data class Unknown(val cause: Throwable) : AuthError()
-}
-```
-
-Repository interface in `:api` returns `Result<T>` wrapping the typed error:
-
-```kotlin
-// :feature:auth:api
-interface AuthRepository {
-    suspend fun login(email: String, password: String): Result<User>
-    // throws AuthError subtypes captured in Result.failure(...)
-}
-```
-
-The `:data` impl maps HTTP/network errors to the sealed type:
-
-```kotlin
-override suspend fun login(email: String, password: String): Result<User> = runCatching {
-    api.login(email, password).toDomain()
-}.mapFailure { cause ->
-    when {
-        cause is HttpException && cause.code == 401 -> AuthError.InvalidCredentials
-        cause is HttpException && cause.code == 423 -> AuthError.AccountLocked
-        cause is IOException -> AuthError.NetworkError(cause)
-        else -> AuthError.Unknown(cause)
-    }
-}
-```
-
-The `:presenter` maps `AuthError` to a `UiError` for display — domain errors never flow
-to the UI layer as-is (see `kmp-mvi` for the `UiError` sealed type).
-
----
+Full content: `references/typed-domain-errors.md`.
 
 ## Typed Domain IDs
 
@@ -420,92 +322,7 @@ serializer is registered for it.
 
 ## Cross-Feature Navigation
 
-`:feature` modules must not depend on each other. When feature A needs to navigate to
-feature B, the nav contract is declared in `:core:api` (or the target feature's `:api`)
-and both features depend only on that.
-
-```kotlin
-// :core:api — navigation contracts visible to all features
-interface AppNavigator {
-    fun navigateToProfile(userId: String)
-    fun navigateToCheckout(cartId: String)
-    fun navigateToHome()
-}
-```
-
-The `:app` module provides the `AppNavigator` implementation. `NavController` is only
-available after `rememberNavController()` inside a composable, so `AppNavigatorImpl` cannot
-be constructed at Koin startup. The solution is a `NavControllerHolder` singleton that
-`AppNavHost` populates at composition time:
-
-```kotlin
-// :app — holder bridges Koin DI time and Compose time
-class NavControllerHolder {
-    var current: NavController? = null
-}
-
-class AppNavigatorImpl(private val holder: NavControllerHolder) : AppNavigator {
-    override fun navigateToProfile(userId: String) =
-        holder.current?.navigate(ProfileRoute(userId))
-    override fun navigateToCheckout(cartId: String) =
-        holder.current?.navigate(CheckoutRoute(cartId))
-    override fun navigateToHome() =
-        holder.current?.navigate(HomeRoute) { popUpTo<HomeRoute> { inclusive = true } }
-}
-
-// :app — Koin DI module (constructs at startup, holder is empty until AppNavHost runs)
-val appModule = module {
-    single { NavControllerHolder() }
-    single<AppNavigator> { AppNavigatorImpl(get()) }
-}
-
-// :app — AppNavHost sets the holder as soon as navController is ready
-@Composable
-fun AppNavHost() {
-    val navController = rememberNavController()
-    val holder: NavControllerHolder = koinInject()
-
-    DisposableEffect(navController) {
-        holder.current = navController
-        onDispose { holder.current = null }   // clear on teardown — prevents leaks
-    }
-
-    NavHost(navController = navController, startDestination = HomeRoute) {
-        homeGraph()
-        cartGraph()
-        profileGraph()
-    }
-}
-```
-
-The feature `:presenter` injects `AppNavigator` and calls it directly from `handleIntent`:
-
-```kotlin
-// :feature:cart:presenter
-class CartViewModel(
-    private val navigator: AppNavigator,
-    private val repo: CartRepository,
-) : MviViewModel<CartContract.State, CartContract.Intent, CartContract.Effect>(...) {
-
-    override suspend fun handleIntent(intent: CartContract.Intent) {
-        when (intent) {
-            CartContract.Intent.CheckoutClicked -> {
-                val cartId = state.value.cartId
-                navigator.navigateToCheckout(cartId)
-            }
-        }
-    }
-}
-```
-
-**Rules:**
-- `AppNavigator` is the single cross-feature navigation surface — one interface, one impl, in `:app`.
-- `AppNavigatorImpl` must be created inside `AppNavHost` after `rememberNavController()` — never as a Koin `single {}`.
-- Within a feature graph, use navigation lambdas passed from NavHost — not `AppNavigator`.
-- Never pass a `NavController` into a `:presenter` ViewModel — that creates a Compose dependency.
-- Feature `:ui` modules expose `NavGraphBuilder` extensions that accept only lambdas or `AppNavigator`, never `NavController`.
-
----
+Full content: `references/cross-feature-navigation.md`.
 
 ## Internal Visibility Rules
 
@@ -610,6 +427,14 @@ which Gradle allows fine and nothing else catches.
 
 ---
 
+## References
+
+Full implementation content lives in `references/*.md`: `composition-over-inheritance`,
+`cross-feature-navigation`, `typed-domain-errors`. Load the specific file named in the
+pointer under its matching heading above, not all of them.
+
+---
+
 ## Related Skills
 
 - `kmp-feature-scaffold` — creates the 6-layer module structure this skill governs
@@ -660,6 +485,7 @@ When asked about architecture layers or module boundaries, respond in this order
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split "Composition Over Inheritance in commonMain", "Cross-Feature Navigation", and "Typed Domain Errors" out of SKILL.md into `references/*.md`, leaving pointer stubs plus a new References section. SKILL.md drops from 673 to 498 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 10 skills fixed alongside it (KI-008). |
 | 2026-08-04 | **Correction**: renamed `UnnecessaryAbstractClass` to `AbstractClassCanBeInterface` throughout (trigger keywords, "Mechanical detector" section, Related Skills row) — verified directly against Detekt's own `default-detekt-config.yml` on GitHub and `UnnecessaryAbstractClass` does not exist as a Detekt rule name. The real rule matching this exact description ("abstract class with only abstract members should be an interface instead") is `AbstractClassCanBeInterface`, in the style ruleset, active by default. Same fabricated-name pattern as `kmp-code-quality`'s `CouplingBetweenObjects` correction — found via a repo-wide sweep after that one. `_detect_extensible_abstract_class_in_common` (the audit backstop) is unaffected, it's this collection's own heuristic, not a Detekt rule claim. |
 | 2026-07-26 | Real gap closed: the ":core" vs ":feature" Split table already documented `:core` as separate modules (`:core:model`, `:core:api`, ...) mirroring `:feature:*`'s shape, but `_detect_module_layer_violation`'s module-path regex only ever matched `feature/<name>/<layer>` — it never applied to `:core` at all, so a monolithic `:core` module went completely uncaught. Added `kmp-audit`'s new `_detect_bare_core_module`. |
 | 2026-07-20 | Added an explicit "umbrella module" anti-pattern — a real, general KMP anti-pattern this skill's 6-layer contract already prevents structurally but never named outright; cross-referenced `kmp-audit`'s existing `_detect_feature_split` status check. |

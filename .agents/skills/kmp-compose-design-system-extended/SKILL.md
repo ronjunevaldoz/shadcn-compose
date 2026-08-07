@@ -165,7 +165,8 @@ step(s) relevant to the current task, not all of them.
 | 2. Primitives | `references/step2-primitives.md` | `AppIcon`, `AppIconButton`, `AppLabel`, `AppSeparator`, `AppAvatar` |
 | 3. Loading states | `references/step3-loading-state.md` | `AppSpinner`, `AppProgress`, `AppCircularProgress`, `AppSkeleton` |
 | 4. Navigation | `references/step4-navigation.md` | `AppTopAppBar`, `AppNavigationBar`, `AppTabs` |
-| 5. Form controls | `references/step5-form-controls.md` | `AppCheckbox`, `AppRadioButton`, `AppSwitch`, `AppSlider`, `AppSelect` |
+| 5. Form controls | `references/step5-form-controls.md` | `AppCheckbox`, `AppRadioButton`, `AppSwitch` |
+| 5b. Form controls (cont.) | `references/step5b-slider-select.md` | `AppSlider`, `AppSelect` |
 | 6. Feedback | `references/step6-feedback.md` | `AppAlert`, `AppToast`, `AppScaffold` |
 | 7. Overlays | `references/step7-overlays.md` | `AppDialog`, `AppSheet`, `AppTooltip`, `AppPopover` |
 | 8. Expandable | `references/step8-expandable.md` | `AppAccordion`, `AppScrollArea`, `AppResizablePanelGroup` |
@@ -322,7 +323,8 @@ fun SettingsPage() {
 8. `AppSelect` — dropdown opens/closes, selected value updates, keyboard accessible
 9. Desktop hover on `AppIconButton` inside `AppTooltip` — tooltip appears above, does not blink
 10. `AppResizablePanelGroup` — dragging the divider resizes both panes smoothly, clamped to `minWeight`/`maxWeight`
-11. `AppScrollArea` on Desktop — scrollbar renders aligned to the trailing edge, thumb is draggable and tracks scroll position; on Android/iOS, no visible thumb (expected — not a bug)
+11. `AppScrollArea` on Desktop — scrollbar sits on the trailing edge, thumb drags and tracks scroll.
+    On Android/iOS there is no visible thumb. That is expected, not a bug.
 12. `./gradlew :desktopApp:run` — all components render correctly on JVM target
 
 ---
@@ -432,6 +434,7 @@ Assume `kmp-compose-design-system` is already applied. Use the user's variant na
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split `references/step5-form-controls.md` (546 lines, `AppCheckbox`/`AppRadioButton`/`AppSwitch`/`AppSlider`/`AppSelect`) into two files — `step5-form-controls.md` keeps `AppCheckbox`/`AppRadioButton`/`AppSwitch`, new `step5b-slider-select.md` gets `AppSlider`/`AppSelect`. Both now under 500 lines. Triggered by a new `oversized_reference_md` check in `scan_skill_issues.py` — the 500-line agentskills.io guideline, applied one level down to individual `references/*.md` files, not just `SKILL.md` itself. |
 | 2026-08-04 | Split Steps 1-8 (all 28 components' Kotlin code, 2676 lines) out of SKILL.md into 8 `references/step*.md` files, one per step, with a new "Implementation Steps" pointer table telling the agent which file covers which components — SKILL.md dropped from 3101 to 442 lines, clearing the agentskills.io 500-line recommendation and removing this skill's `oversized_skill_md` known-debt entry (KI-008). No content removed, only relocated. Also fixed `kmp-audit/scripts/audit_skills_repo.py`'s design-system content checks (`_check_design_system`), which only scanned `SKILL.md` text — they now also scan `references/*.md` so the static-`AppTheme`-access and hardcoded-`.dp` checks keep seeing the actual component code after the split. |
 | 2026-07-08 | Added 2 new components (26 → 28), closing gaps found via real shadcn-compose bug reports: `AppScrollArea`/`AppVerticalScrollbar` (expect/actual — Desktop wires the real `VerticalScrollbar`/`rememberScrollbarAdapter`, Android/iOS intentionally no-op since Compose Multiplatform's foundation library has no scrollbar implementation for those targets; verified against a real-world CMP app's identical expect/actual shape) and `AppResizablePanelGroup` (draggable divider via `pointerInput`/`detectDragGestures`, weight clamped to `minWeight`/`maxWeight`). New drag-interaction and scrollbar-positioning anti-patterns; fixed 2 pre-existing stale "27 components" counts left over from an earlier 27→26 correction. |
 | 2026-07-08 | Fixed a real hover-flicker bug in `AppTooltip`: the `Popup` was shown the instant `isHovered` flipped true, with no debounce — `popupContentSize` is `IntSize.Zero` on the Popup's first frame, so the position calculation could briefly land near the anchor's own bounds, un-hovering it and hiding the tooltip it just showed. Fixed with a `delayMillis`-debounced `LaunchedEffect` decoupling `showTooltip` from raw `isHovered`, and `PopupProperties(focusable = false)` so the popup never steals focus/hover from the anchor. Added 3 anti-patterns (double-animation collapsible overlap, tooltip blink, focused-state border width) from real shadcn-compose bug reports. |

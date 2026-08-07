@@ -421,43 +421,7 @@ sourceSets {
 
 ## Testing
 
-```kotlin
-// Compose Resources provides runtime resolution — test via a real Compose scope
-@get:Rule val composeRule = createComposeRule()
-
-@Test fun `app_name string resource resolves without crash`() {
-    composeRule.setContent {
-        val name = stringResource(Res.string.app_name)
-        Text(name, modifier = Modifier.testTag("app_name"))
-    }
-    // If the resource is missing from any platform bundle, this throws at runtime
-    composeRule.onNodeWithTag("app_name").assertExists()
-}
-
-@Test fun `plural resource selects correct form for count one`() {
-    composeRule.setContent {
-        Text(
-            pluralStringResource(Res.plurals.items_count, 1, 1),
-            modifier = Modifier.testTag("plural_one"),
-        )
-    }
-    composeRule.onNodeWithTag("plural_one").assertTextEquals("1 item")
-}
-
-@Test fun `plural resource selects correct form for count many`() {
-    composeRule.setContent {
-        Text(
-            pluralStringResource(Res.plurals.items_count, 3, 3),
-            modifier = Modifier.testTag("plural_many"),
-        )
-    }
-    composeRule.onNodeWithTag("plural_many").assertTextEquals("3 items")
-}
-```
-
-> String resource tests run on JVM via Roborazzi / `createComposeRule()` — no emulator needed. Add any missing string keys to `commonMain/composeResources/values/strings.xml` and re-run.
-
----
+Full content: `references/testing.md`.
 
 ## Common Anti-Patterns
 
@@ -500,5 +464,6 @@ Keep the snippet to one resource type. Map to the user's actual resource names w
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split "Testing" out of SKILL.md into `references/testing.md`, leaving a pointer stub. SKILL.md drops from 504 to 468 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Last of the 22-skill KI-008 backlog — all now at or under 500 lines. |
 | 2026-07-08 | Added a "Density buckets and px/dp conversion" reference: the scale-factor table (ldpi 0.75x through xxxhdpi 4.0x), the primary `px = dp × scale factor` direction for exporting correctly-sized density rasters, and the reverse `dp = px / scale factor` direction explaining why a hardcoded raw-pixel border/hairline renders inconsistently across densities. Also fixed the density raster list, which omitted `drawable-xxxhdpi/`. 2 new anti-patterns. |
 | 2026-06-06 | Initial release. |

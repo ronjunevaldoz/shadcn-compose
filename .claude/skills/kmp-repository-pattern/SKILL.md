@@ -153,171 +153,7 @@ sealed interface AuthError {
 
 ## The Repository Implementation
 
-The implementation in `:feature:x:data` wires together remote and local data sources,
-maps between types, and owns the fetch strategy:
-
-```kotlin
-// :feature:auth:data/src/commonMain/kotlin/GROUP_ID/feature/auth/data/AuthRepositoryImpl.kt
-package GROUP_ID.feature.auth.data
-
-import GROUP_ID.core.network.NetworkResult
-import GROUP_ID.feature.auth.api.AuthRepository
-import GROUP_ID.feature.auth.api.model.User
-import GROUP_ID.feature.auth.data.local.AuthLocalDataSource
-import GROUP_ID.feature.auth.data.remote.AuthRemoteDataSource
-import GROUP_ID.feature.auth.data.mapper.toDomain
-import GROUP_ID.feature.auth.data.mapper.toEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-
-class AuthRepositoryImpl(
-    private val remote: AuthRemoteDataSource,
-    private val local: AuthLocalDataSource,
-) : AuthRepository {
-
-    // Single source of truth — UI observes the local DB, not the network
-    override fun observeCurrentUser(): Flow<User?> =
-        local.observeUser().map { entity -> entity?.toDomain() }
-
-    override suspend fun login(email: String, password: String): Result<User> {
-        return when (val result = remote.login(email, password)) {
-            is NetworkResult.Success -> {
-                val user = result.data.toDomain()
-                local.saveUser(user.toEntity())     // persist to local first
-                Result.success(user)
-            }
-            is NetworkResult.HttpError -> Result.failure(
-                Exception(result.message ?: "HTTP ${result.code}")
-            )
-            is NetworkResult.NetworkError -> Result.failure(result.exception)
-        }
-    }
-
-    override suspend fun logout() {
-        local.clearUser()
-        // Fire-and-forget remote logout — local clear is what matters for UX
-        runCatching { remote.logout() }
-    }
-
-    override suspend fun refreshSession(): Result<User> {
-        return when (val result = remote.refreshSession()) {
-            is NetworkResult.Success -> {
-                val user = result.data.toDomain()
-                local.saveUser(user.toEntity())
-                Result.success(user)
-            }
-            is NetworkResult.HttpError,
-            is NetworkResult.NetworkError -> Result.failure(Exception("Refresh failed"))
-        }
-    }
-}
-```
-
-### RPC client boundary pattern
-
-If the feature uses RPC or a dedicated HTTP client, keep the client wrapper in `:data`
-and make the call site a private `service()` function, not a cached property. That keeps
-auth headers fresh and the boundary explicit.
-
-```kotlin
-class BookingRpcClient(
-    private val httpClient: HttpClient,
-    private val serverUrl: String,
-    private val userSession: UserSession,
-) : BookingRequestRepository {
-
-    private fun service(): BookingRpcService =
-        httpClient.rpc("$serverUrl/rpc/booking") {
-            rpcConfig { serialization { json() } }
-            bearerAuth(userSession)
-        }.withService()
-}
-```
-
-### In-memory repository (no backend yet)
-
-Use when scaffolding a new feature — or a whole new project — before the real API exists:
-implement the repository interface with an in-memory store instead of `AuthRepositoryImpl`'s
-remote+local wiring. Same public contract, so the ViewModel and UI never know the difference,
-and swapping in the real implementation later touches only the Koin module, not any caller.
-
-```kotlin
-// :feature:auth:data/src/commonMain/kotlin/GROUP_ID/feature/auth/data/InMemoryAuthRepository.kt
-package GROUP_ID.feature.auth.data
-
-import GROUP_ID.feature.auth.api.AuthRepository
-import GROUP_ID.feature.auth.api.model.User
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-
-/**
- * Stands in for [AuthRepositoryImpl] until the real backend exists. Same interface, no
- * network/database dependency — the app runs and demos end to end before the API does.
- * Swap-in point: flip the `single<AuthRepository>` binding in AuthDataModule to
- * AuthRepositoryImpl once the backend is ready; no caller changes needed.
- */
-class InMemoryAuthRepository : AuthRepository {
-    private val currentUser = MutableStateFlow<User?>(null)
-
-    override fun observeCurrentUser(): Flow<User?> = currentUser.asStateFlow()
-
-    override suspend fun login(email: String, password: String): Result<User> {
-        val user = User(id = "local-1", email = email, displayName = email.substringBefore("@"), avatarUrl = null)
-        currentUser.value = user
-        return Result.success(user)
-    }
-
-    override suspend fun logout() {
-        currentUser.value = null
-    }
-
-    override suspend fun refreshSession(): Result<User> =
-        currentUser.value?.let { Result.success(it) } ?: Result.failure(Exception("Not authenticated"))
-}
-```
-
-```kotlin
-// Swap point — one line, no caller touches this
-val authDataModule = module {
-    single { AuthRemoteDataSource(get()) }
-    single { AuthLocalDataSource(get()) }
-    single<AuthRepository> {
-        if (BuildConfig.BACKEND_READY) AuthRepositoryImpl(get(), get())
-        else InMemoryAuthRepository()
-    }
-}
-```
-
-**Naming**: `InMemory<Feature>Repository`, not `Mock*`/`Fake*` — those names are reserved for
-test doubles (see `kmp-unit-testing`'s fake-over-mock rule and the `Testing`
-section below). An in-memory repository runs the real app for real users during bring-up; a
-fake only ever runs inside a test. Same shape, different purpose — keep the names distinct so
-a real in-memory implementation never gets deleted by someone cleaning up "test-only" code.
-
-**Swap-out discipline**: gate the swap behind a single flag or build config value (not a
-scattered `if` in each repository), and track it as an open item — an in-memory repository
-left wired past the point the backend exists is a silent data-loss bug (nothing persists,
-nothing syncs), not a cosmetic one.
-
-### Mock-vs-real DI wiring (tests/previews)
-
-The same branch-in-the-module technique also applies to test/preview-only mocks — keep the
-branch in the DI module, not the ViewModel or UI:
-
-```kotlin
-val bookingDataModule = module {
-    single<BookingRequestRepository> {
-        if (AuthConfig.USE_MOCK_AUTH) MockBookingRequestRepository(rideRepository = get())
-        else BookingRpcClient(httpClient = get(named("rpc")), serverUrl = AuthConfig.SERVER_URL, userSession = get())
-    }
-}
-```
-
-This keeps tests and previews simple: the feature code depends on the repository interface,
-and the module decides whether that interface is backed by a fake or a real remote source.
-
----
+Full content: `references/repository-implementation.md`.
 
 ## Type Mapping: The Mapper Pattern
 
@@ -364,82 +200,7 @@ both data sources map into it. The domain model never knows about either source.
 
 ## The Three Fetch Strategies
 
-### Network-First
-
-Read from network, fall back to cache on failure. Use when data must be fresh (e.g., payment status):
-
-```kotlin
-override fun observeProducts(): Flow<List<Product>> = flow {
-    // 1. Emit cached data immediately (non-blocking first response)
-    val cached = local.getProducts()
-    if (cached.isNotEmpty()) emit(cached.map { it.toDomain() })
-
-    // 2. Fetch from network
-    when (val result = remote.getProducts()) {
-        is NetworkResult.Success -> {
-            local.saveProducts(result.data.map { it.toEntity() })
-            emit(result.data.map { it.toDomain() })
-        }
-        is NetworkResult.NetworkError -> {
-            // Already emitted cache above — no-op, caller handles stale indicator elsewhere
-        }
-        is NetworkResult.HttpError -> throw Exception("HTTP ${result.code}")
-    }
-}
-```
-
-### Cache-First (Single Source of Truth)
-
-The database is the single source of truth. Network writes to DB; UI observes DB only.
-Use for most list/detail screens:
-
-```kotlin
-// In the repository — background refresh, UI always from local
-override fun observeProducts(): Flow<List<Product>> {
-    // Immediately return a Flow from local DB — UI subscribes and gets live updates
-    return local.observeProducts().map { entities -> entities.map { it.toDomain() } }
-}
-
-// Called separately to trigger a refresh (e.g., pull-to-refresh, on screen open)
-override suspend fun refreshProducts(): Result<Unit> {
-    return when (val result = remote.getProducts()) {
-        is NetworkResult.Success -> {
-            local.replaceProducts(result.data.map { it.toEntity() })
-            Result.success(Unit)
-            // observeProducts() Flow above will emit automatically — SQLDelight invalidates the query
-        }
-        is NetworkResult.NetworkError -> Result.failure(result.exception)
-        is NetworkResult.HttpError    -> Result.failure(Exception("HTTP ${result.code}"))
-    }
-}
-```
-
-The ViewModel calls `observeProducts()` once (to get the Flow) and `refreshProducts()`
-on user pull-to-refresh or screen entry. SQLDelight's Flow automatically emits when the DB changes.
-
-### Offline-First (Sync Queue)
-
-Write operations are stored locally first and synced in background. Use for create/update/delete
-in apps that must work without connectivity:
-
-```kotlin
-override suspend fun createNote(title: String, body: String): Result<Note> {
-    // 1. Save locally with a temporary ID and "pending_sync" flag
-    val tempId  = randomUUID()
-    val entity  = NoteEntity(id = tempId, title = title, body = body, syncStatus = "pending")
-    local.insertNote(entity)
-
-    // 2. Return immediately — UI sees the new note without waiting for network
-    val domain = entity.toDomain()
-
-    // 3. Attempt network sync in background (fire-and-forget, retried by SyncWorker)
-    syncQueue.enqueue(SyncOperation.CreateNote(tempId, title, body))
-
-    return Result.success(domain)
-}
-```
-
----
+Full content: `references/three-fetch-strategies.md`.
 
 ## Data Sources
 
@@ -602,6 +363,14 @@ If domain or UI code is importing `:data` types directly, the mapper boundary is
 
 ---
 
+## References
+
+Full implementation content lives in `references/*.md`: `repository-implementation`,
+`three-fetch-strategies`. Load the specific file named in the pointer under its matching
+heading above, not all of them.
+
+---
+
 ## Related Skills
 
 - `kmp-network-layer` — provides `HttpClient` and `safeRequest` that repository data sources call
@@ -628,6 +397,7 @@ Keep the snippet to one repository method. Map to the user's actual entity and d
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split "The Repository Implementation" and "The Three Fetch Strategies" out of SKILL.md into `references/*.md`, leaving pointer stubs plus a new References section. SKILL.md drops from 633 to 402 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 12 skills fixed alongside it (KI-008). |
 | 2026-08-03 | A consumer-project report confirmed a real gap: this skill's own long-standing "call the repository from a composable directly" anti-pattern had no mechanical check — an audit false positive on an unrelated finding (`viewmodel in viewmodel`, since fixed) surfaced that the *actual* smell in the reported code (repository injected and Flow-collected directly inside a `@Composable`) went uncaught. Added `kmp-audit`'s `_detect_repository_in_composable` (MEDIUM) and cross-referenced it here. |
 | 2026-07-13 | Real gap closed: no rule existed for starting a feature/project before the real backend exists — only a generic test/preview "mock DI wiring" example, and `/kmp-new-project`'s data-layer step assumed a real backend from day one. Added "In-memory repository (no backend yet)" with a full `InMemoryAuthRepository` example, a swap-in DI pattern, and a naming rule (`InMemory*`, never `Mock*`/`Fake*` — those names mean test-only). Wired into `/kmp-new-project`'s sprint implementation step and `kmp-migration`'s Tier 3 row for existing projects mid-migration. 2 new anti-patterns (wrong naming, leaving it wired past backend-ready). |
 | 2026-06-06 | Initial release. |

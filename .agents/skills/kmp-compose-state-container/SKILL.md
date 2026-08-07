@@ -161,124 +161,11 @@ val painter = remember(locale, theme) { buildPainter(locale, theme) }
 
 ## `rememberSaveable {}` — Rotation-Proof Local State
 
-`rememberSaveable` writes the value to a `Bundle` on config change and restores it.
-Works automatically for Bundle-safe types: `Boolean`, `Int`, `Long`, `Float`, `Double`,
-`String`, and anything `@Parcelize`/`Serializable`.
-
-```kotlin
-// ✓ Form that survives rotation
-@Composable
-fun SearchScreen() {
-    var query by rememberSaveable { mutableStateOf("") }   // survives rotation
-
-    Column {
-        AppTextField(value = query, onValueChange = { query = it })
-        AppButton(onClick = { performSearch(query) }) { AppText("Search") }
-    }
-}
-```
-
-### Custom Saver for non-Bundle types
-
-When the type isn't Bundle-safe, write a `Saver`:
-
-```kotlin
-data class FilterState(
-    val category: String?,
-    val priceRange: IntRange,
-    val sortOrder: SortOrder,
-)
-
-val FilterStateSaver = Saver<FilterState, Map<String, Any>>(
-    save = { state ->
-        mapOf(
-            "category"   to (state.category ?: ""),
-            "priceMin"   to state.priceRange.first,
-            "priceMax"   to state.priceRange.last,
-            "sortOrder"  to state.sortOrder.name,
-        )
-    },
-    restore = { map ->
-        FilterState(
-            category   = (map["category"] as String).ifEmpty { null },
-            priceRange = (map["priceMin"] as Int)..(map["priceMax"] as Int),
-            sortOrder  = SortOrder.valueOf(map["sortOrder"] as String),
-        )
-    },
-)
-
-// Usage
-var filterState by rememberSaveable(stateSaver = FilterStateSaver) {
-    mutableStateOf(FilterState(category = null, priceRange = 0..1000, sortOrder = SortOrder.Newest))
-}
-```
-
-**Limits of `rememberSaveable`:** Bundles have a size cap (~1 MB total). Don't store lists
-of items, images, or large collections — use a ViewModel with `SavedStateHandle` for those
-(store only the IDs, reload the data from repository).
-
----
+Full content: `references/remembersaveable.md`.
 
 ## `ViewModel` — Config-Change-Proof Business State
 
-A ViewModel survives configuration changes because Android holds it separately from the
-Activity/Fragment. In KMP, `androidx.lifecycle.ViewModel` works across Android, Desktop,
-and iOS (with lifecycle support from JetBrains).
-
-```kotlin
-// ✓ Correct uses of ViewModel
-class ProductListViewModel(private val repo: ProductRepository) : ViewModel() {
-
-    // Async data load — needs viewModelScope
-    private val _products = MutableStateFlow<List<Product>>(emptyList())
-    val products = _products.asStateFlow()
-
-    init { loadProducts() }
-
-    private fun loadProducts() {
-        viewModelScope.launch {
-            _products.value = repo.getProducts()
-        }
-    }
-}
-
-// ✓ Shared across screens (scoped to nav graph)
-class CartViewModel : ViewModel() {
-    val items = mutableStateListOf<CartItem>()
-    fun addItem(item: CartItem) { items.add(item) }
-}
-```
-
-```kotlin
-// ❌ Wrong — ViewModel for pure ephemeral UI state
-class SearchViewModel : ViewModel() {
-    var isDropdownOpen by mutableStateOf(false)   // no business logic — belongs in remember
-    var tooltipVisible by mutableStateOf(false)   // no business logic — belongs in remember
-}
-```
-
-### ViewModel + SavedStateHandle (process-death survival)
-
-```kotlin
-class SearchViewModel(
-    private val savedStateHandle: SavedStateHandle,
-    private val repo: SearchRepository,
-) : ViewModel() {
-
-    // Automatically restored after process death
-    var query by savedStateHandle.saveable { mutableStateOf("") }
-
-    fun onQueryChanged(newQuery: String) {
-        query = newQuery
-        // launch search, etc.
-    }
-}
-```
-
-`savedStateHandle.saveable` is the ViewModel equivalent of `rememberSaveable`. Same size
-limits apply — store IDs, not full objects.
-
----
+Full content: `references/viewmodel.md`.
 
 ## ViewModel Scoping in Navigation Compose
 
@@ -502,46 +389,7 @@ state survival strategy accordingly if cross-platform survival matters.
 
 ## Testing
 
-```kotlin
-// Test ViewModel state via SavedStateHandle — verifies state survives process death
-@Test fun `viewmodel restores state from savedStateHandle`() = runTest {
-    val savedState = SavedStateHandle(mapOf("query" to "hello"))
-    val vm = SearchViewModel(savedState)
-    assertEquals("hello", vm.state.value.query)
-}
-
-// Test remember vs rememberSaveable semantics with ComposeTestRule
-@get:Rule val composeRule = createComposeRule()
-
-@Test fun `rememberSaveable counter survives recomposition`() {
-    composeRule.setContent {
-        var count by rememberSaveable { mutableStateOf(0) }
-        Column {
-            Button(
-                onClick = { count++ },
-                modifier = Modifier.testTag("increment"),
-            ) { Text("+") }
-            Text(count.toString(), modifier = Modifier.testTag("count"))
-        }
-    }
-    composeRule.onNodeWithTag("increment").performClick()
-    composeRule.onNodeWithTag("count").assertTextEquals("1")
-}
-
-@Test fun `remember resets when trigger changes`() {
-    var key by mutableStateOf(0)
-    composeRule.setContent {
-        val value = remember(key) { key * 10 }
-        Text(value.toString(), modifier = Modifier.testTag("value"))
-    }
-    composeRule.onNodeWithTag("value").assertTextEquals("0")
-    key = 3
-    composeRule.waitForIdle()
-    composeRule.onNodeWithTag("value").assertTextEquals("30")
-}
-```
-
----
+Full content: `references/testing.md`.
 
 ## Common Anti-Patterns
 
@@ -584,6 +432,7 @@ Keep the survival matrix reference tight. Map to actual state names when the use
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split "rememberSaveable {}", "ViewModel", and "Testing" out of SKILL.md into `references/*.md`, leaving pointer stubs. SKILL.md drops from 589 to 437 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 16 skills fixed alongside it (KI-008). |
 | 2026-06-28 | Add rememberUpdatedState section: stable reference to latest value in LaunchedEffect(Unit), when to use vs not, one new anti-pattern. |
 | 2026-06-28 | Add derivedStateOf (memoized derived state, remember rule) and snapshotFlow (Compose State → Flow, debounce bridge) sections. Two new anti-patterns. |
 | 2026-06-06 | Initial release. |

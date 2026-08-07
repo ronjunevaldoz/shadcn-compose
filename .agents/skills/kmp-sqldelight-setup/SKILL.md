@@ -119,58 +119,7 @@ Add any missing entries to `gradle/libs.versions.toml`.
 
 ## Step 1: Update `:core:database/build.gradle.kts`
 
-The `GROUP_ID.core` plugin already adds all KMP targets. Add `sqldelight {}` and platform drivers:
-
-```kotlin
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-
-plugins {
-    alias(libs.plugins.GROUP_ID.core)
-    alias(libs.plugins.sqldelight)
-}
-
-kotlin {
-    androidLibrary {
-        namespace = "GROUP_ID.core.database"
-    }
-
-    sourceSets {
-        commonMain.dependencies {
-            implementation(libs.sqldelight.runtime)
-            implementation(libs.sqldelight.coroutines)
-            implementation(libs.sqldelight.primitive.adapters)
-        }
-        androidMain.dependencies {
-            implementation(libs.sqldelight.android.driver)
-        }
-        iosMain.dependencies {
-            implementation(libs.sqldelight.native.driver)
-        }
-        jvmMain.dependencies {
-            implementation(libs.sqldelight.sqlite.driver)   // Desktop
-        }
-        jsMain.dependencies {
-            implementation(libs.sqldelight.web.worker.driver)
-            implementation(npm("sql.js", "1.6.2"))
-            implementation(devNpm("copy-webpack-plugin", "9.1.0"))
-        }
-        // wasmJsMain: no SQLDelight driver available — skip or use alternative
-    }
-}
-
-sqldelight {
-    databases {
-        create("AppDatabase") {
-            packageName.set("GROUP_ID.core.database")
-            // Enable schema versioning for migrations
-            schemaOutputDirectory.set(file("src/commonMain/sqldelight/databases"))
-            verifyMigrations.set(true)
-        }
-    }
-}
-```
-
----
+Full content: `references/step1-build-gradle.md`.
 
 ## Step 2: Create a schema file
 
@@ -283,92 +232,7 @@ val stringListAdapter: ColumnAdapter<List<String>, String> = object : ColumnAdap
 
 ## Step 5: DriverFactory expect/actual
 
-### `src/commonMain/kotlin/GROUP_ID/core/database/DriverFactory.kt`
-
-```kotlin
-package GROUP_ID.core.database
-
-import app.cash.sqldelight.db.SqlDriver
-
-expect class DriverFactory {
-    fun createDriver(): SqlDriver
-}
-```
-
-### `src/androidMain/kotlin/GROUP_ID/core/database/DriverFactory.kt`
-
-```kotlin
-package GROUP_ID.core.database
-
-import android.content.Context
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-
-actual class DriverFactory(private val context: Context) {
-    actual fun createDriver(): SqlDriver =
-        AndroidSqliteDriver(AppDatabase.Schema, context, "app.db")
-}
-```
-
-### `src/iosMain/kotlin/GROUP_ID/core/database/DriverFactory.kt`
-
-```kotlin
-package GROUP_ID.core.database
-
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.driver.native.NativeSqliteDriver
-
-actual class DriverFactory {
-    actual fun createDriver(): SqlDriver =
-        NativeSqliteDriver(AppDatabase.Schema, "app.db")
-}
-```
-
-### `src/jvmMain/kotlin/GROUP_ID/core/database/DriverFactory.kt`
-
-```kotlin
-package GROUP_ID.core.database
-
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
-import java.util.Properties
-
-actual class DriverFactory {
-    actual fun createDriver(): SqlDriver {
-        val driver = JdbcSqliteDriver("jdbc:sqlite:app.db", Properties(), AppDatabase.Schema)
-        return driver
-    }
-}
-```
-
-> For Desktop, the database file is created relative to the process working directory.
-> Use `System.getProperty("user.home")` to store in a persistent location.
-
-### `src/jsMain/kotlin/GROUP_ID/core/database/DriverFactory.kt`
-
-```kotlin
-package GROUP_ID.core.database
-
-import app.cash.sqldelight.async.coroutines.awaitCreate
-import app.cash.sqldelight.db.SqlDriver
-import app.cash.sqldelight.driver.worker.WebWorkerDriver
-import org.w3c.dom.Worker
-
-/**
- * JS driver is async — the schema creation is deferred to [DatabaseFactory].
- * [createDriver] returns the uninitialised driver; call [AppDatabase.Schema.awaitCreate] after.
- */
-actual class DriverFactory {
-    actual fun createDriver(): SqlDriver =
-        WebWorkerDriver(
-            Worker(js("""new URL("@cashapp/sqldelight-sqljs-worker/sqljs.worker.js", import.meta.url)"""))
-        )
-}
-```
-
-> JS uses an async schema; call `AppDatabase.Schema.awaitCreate(driver)` before first query.
-
----
+Full content: `references/step5-driverfactory-expect-actual.md`.
 
 ## Step 6: DatabaseFactory
 
@@ -549,42 +413,7 @@ dependencies {
 
 ## Testing
 
-```kotlin
-// Use JdbcSqliteDriver with in-memory database — no device or emulator needed
-fun testDriver(): SqlDriver {
-    val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-    AppDatabase.Schema.create(driver)
-    return driver
-}
-
-@Test fun `insert and query round-trip`() = runTest {
-    val db = AppDatabase(testDriver())
-    db.userQueries.insertUser(id = "1", name = "Alice", email = "a@example.com", createdAt = 0L)
-    val result = db.userQueries.selectUserById("1").executeAsOne()
-    assertEquals("Alice", result.name)
-}
-
-@Test fun `delete removes row`() = runTest {
-    val db = AppDatabase(testDriver())
-    db.userQueries.insertUser(id = "1", name = "Alice", email = "a@example.com", createdAt = 0L)
-    db.userQueries.deleteUserById("1")
-    assertNull(db.userQueries.selectUserById("1").executeAsOneOrNull())
-}
-
-@Test fun `query emits updates via flow`() = runTest {
-    val db = AppDatabase(testDriver())
-    db.userQueries.selectAllUsers().asFlow().mapToList(coroutineContext).test {
-        assertEquals(emptyList(), awaitItem())
-        db.userQueries.insertUser(id = "1", name = "Alice", email = "a@example.com", createdAt = 0L)
-        assertEquals(1, awaitItem().size)
-        cancelAndIgnoreRemainingEvents()
-    }
-}
-```
-
-> Add `testImplementation("app.cash.sqldelight:sqlite-driver:<version>")` to the `jvmTest` source set only — the JDBC driver is JVM-only and must not appear in `commonMain`.
-
----
+Full content: `references/testing.md`.
 
 ## Common Anti-Patterns
 
@@ -625,6 +454,7 @@ Keep the snippet to one table and one query. Map to the user's actual entity nam
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split Step 1 (build.gradle.kts), Step 5 (DriverFactory expect/actual), and Testing out of SKILL.md into `references/*.md`, leaving pointer stubs. SKILL.md drops from 630 to 459 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 13 skills fixed alongside it (KI-008). |
 | 2026-08-04 | Added `kmp-code-quality` to Related Skills — naming conventions existed but only `kmp-mvi` cross-referenced them. |
 | 2026-07-09 | The "one file per table" guideline had no enforcement anywhere. New `kmp-audit` detector `combined sqldelight table file [MEDIUM]` flags any `.sq` file defining more than one `CREATE TABLE`. |
 | 2026-06-06 | Initial release. |

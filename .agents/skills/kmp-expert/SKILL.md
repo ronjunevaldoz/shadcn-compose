@@ -135,50 +135,7 @@ keep the implementation stage on the smallest model that can still follow the pl
 
 ## Required vs Optional Skills
 
-Classify every skill into one of five bands before recommending. Always cover the **Required core** first; pull in lower bands only when the task or the app's capabilities demand them.
-
-### Required core (every KMP feature)
-These implement the architecture contract — no proper feature ships without them.
-
-| Skill | Why required |
-|---|---|
-| `clean-architecture` | The 6-layer contract — the rules everything else obeys |
-| `feature-scaffold` | Module structure, build-logic, version catalog |
-| `presenter-module` | Every feature has a no-Compose, JVM-testable ViewModel |
-| `mvi` | The Screen/Content state pattern for every screen |
-| `dependency-injection` | Koin wiring spans every layer |
-
-### Conditionally required (depends on app capability)
-Required **if** the app has that capability — most production apps do.
-
-| Skill | Required when… |
-|---|---|
-| `network-layer` | App calls any backend/API |
-| `sqldelight-setup` **or** `datastore` | App persists data (DB vs key-value) |
-| `repository-pattern` | App has both network and local storage |
-| `navigation` | App has more than one screen |
-| `design-system` | App renders any custom UI |
-| `shared-resources` | App needs localization / strings / assets |
-| `expect-actual` | App needs platform-specific code |
-| `xcframework-spm` | Shipping a shared framework to an iOS team |
-
-### Strongly recommended (project health)
-Optional in theory; skipping them costs quality and velocity.
-
-`flavor-environment`, `ci-github-actions`, `code-quality`, `logging`, `unit-testing`, `preview-driven-development`
-
-### Optional (feature-specific)
-Pull in only when a feature explicitly needs it.
-
-`design-system-extended`, `adaptive-layout`, `compose-slot-api`, `compose-state-hoisting`, `compose-state-container`, `compose-animation`, `graphics-modifiers`, `roborazzi`, `accessibility`, `paging`, `analytics`, `form-validation`, `image-loading`, `permissions`, `deep-linking`, `biometric-auth`, `push-notifications`, `workmanager`, `feature-flags`, `crash-reporting`, `ktor-auth-service`, `mongodb-database`, `kotlin-rpc`, `legal-docs`, `release`
-
-### Opt-in (never auto-select — must be named explicitly)
-- `offline-first` — only when the user names "offline-first", "background sync", or "conflict resolution". For plain caching or a local source of truth, use `repository-pattern` + `sqldelight-setup` instead. Offline-first layers `SyncManager` + `WorkManager`/`BGTaskScheduler` on top, which is overkill unless explicitly wanted.
-
-### Meta (tooling, not app code)
-`expert` (routing), `audit` (review), `kmp-jni-pro` (native bridge), `docs-maintainer`, `changelog`, `benchmark` (invoked on-demand for a specific performance claim — never scaffolded speculatively), `docs-site` (public developer guide — library-only, gated on real surface area, never scaffolded for an app or a trivial library)
-
----
+Full content: `references/required-vs-optional-skills.md`.
 
 ## Routing Precedence
 
@@ -212,7 +169,7 @@ versions when the local repo can be checked directly.
 
 ---
 
-## The 68 Skills and What They Own
+## The 69 Skills and What They Own
 
 ### Layer 0 — Architecture Contract
 | Skill | Owns |
@@ -289,6 +246,7 @@ versions when the local repo can be checked directly.
 | `kmp-compose-design-system` | Tokens (colors, typography, shapes, spacing), dark mode, 6 core components, no Material dependency |
 | `kmp-compose-design-system-extended` | 27 additional components: Dialog, Sheet, Toast, Tabs, TopAppBar, Checkbox, etc. |
 | `kmp-shadcn-compose` | Published-library alternative to `design-system` — Maven Central setup, `ShadcnTheme`, 70+ components. Gated to explicit user choice (`/kmp-new-project` Step 6a); never suggested unprompted — carries a real experimental-API dependency risk |
+| `kmp-shadcn-compose-layouts` | Composes shadcn-compose components into full page layouts — login/auth forms, generic forms, data table screens, admin/dashboard shells — plus `scan_shadcn_layout_gaps.py` auditing for hand-rolled fields/tables/shells that should migrate to `ShadcnField`/`ShadcnTable`/`ShadcnSidebar` |
 | `kmp-compose-adaptive-layout` | WindowSizeClass, Compact/Medium/Expanded breakpoints, list-detail split, adaptive navigation, cross-session pattern consistency |
 | `kmp-compose-slot-api` | `@Composable () -> Unit` slots, scoped slots, CompositionLocal, component API shape |
 | `kmp-compose-state-hoisting` | Hoist-until-shared rule, controlled components, stateless vs stateful composables |
@@ -312,292 +270,19 @@ versions when the local repo can be checked directly.
 
 ## Dependency Graph
 
-```
-kmp-clean-architecture     ← read first (defines the rules)
-kmp-feature-scaffold       ← scaffold second (implements the rules)
-├── kmp-presenter-module   (depends on: scaffold, clean-architecture)
-├── kmp-flavor-environment (no deps)
-├── kmp-ci-github-actions  (no deps)
-├── kmp-android-cli        (no deps)
-├── kmp-release            (depends on: ci-github-actions, xcframework-spm)
-├── kmp-dependency-injection (no deps)
-├── kmp-audit              (no deps for review work)
-├── kmp-migration          (depends on: audit, clean-architecture, mvi)
-├── kmp-refactor           (depends on: clean-architecture, code-quality)
-├── kmp-project-docs-maintainer (depends on: audit)
-├── kmp-layout-system      (no deps)
-├── kmp-lessons            (no deps)
-├── kmp-skill-harvester    (depends on: lessons)
-├── kmp-logging            (depends on: scaffold)
-├── kmp-ktor-auth-service  (no deps)
-├── kmp-mongodb-database   (no deps)
-├── kmp-kotlin-rpc         (no deps)
-├── kmp-network-layer      (depends on: scaffold)
-├── kmp-sqldelight-setup   (depends on: scaffold)
-├── kmp-xcframework-spm    (depends on: scaffold, ci)
-├── kmp-api-mimicry        (depends on: library-publishing)
-├── kmp-native-authoring   (no deps; always followed by jni-pro)
-├── kmp-expect-actual      (depends on: scaffold)
-├── kmp-repository-pattern (depends on: network-layer, sqldelight-setup)
-├── kmp-navigation         (depends on: scaffold)
-├── kmp-shared-resources   (depends on: scaffold)
-├── kmp-mvi                (depends on: scaffold, navigation)
-├── kmp-compose-design-system      (depends on: scaffold, shared-resources)
-├── kmp-compose-design-system-extended (depends on: design-system)
-├── kmp-compose-slot-api   (depends on: design-system)
-├── kmp-compose-state-hoisting (depends on: mvi)
-├── kmp-compose-state-container (depends on: mvi, navigation)
-├── kmp-compose-graphics-modifiers (depends on: design-system, compose-state-container)
-├── kmp-compose-preview-driven-development (depends on: presenter-module, design-system)
-├── kmp-unit-testing       (depends on: presenter-module)
-├── kmp-roborazzi          (depends on: preview-driven-development)
-├── kmp-code-quality       (depends on: scaffold, clean-architecture)
-├── kmp-paging             (depends on: mvi, network-layer, repository-pattern)
-├── kmp-analytics          (depends on: mvi, dependency-injection)
-├── kmp-form-validation    (depends on: mvi, design-system)
-├── kmp-image-loading      (depends on: design-system, network-layer)
-├── kmp-permissions        (depends on: mvi, dependency-injection)
-├── kmp-deep-linking       (depends on: navigation)
-├── kmp-biometric-auth     (depends on: mvi, dependency-injection)
-├── kmp-push-notifications (depends on: permissions, deep-linking, workmanager)
-├── kmp-workmanager        (depends on: dependency-injection)
-├── kmp-feature-flags      (depends on: dependency-injection, analytics)
-├── kmp-compose-accessibility      (depends on: design-system, roborazzi, compose-animation)
-├── kmp-compose-animation  (depends on: design-system)
-├── kmp-offline-first      (depends on: repository-pattern, sqldelight-setup, workmanager)
-└── kmp-crash-reporting    (depends on: logging, dependency-injection)
-```
-
----
+Full content: `references/dependency-graph.md`.
 
 ## Build Order for a New Project
 
-### Phase 1: Foundation (do once per project)
-1. **`clean-architecture`** — read the layer contract before writing any code
-2. **`feature-scaffold`** — create the project from Kotlin/kmp-wizard, 6-layer module structure
-3. **`flavor-environment`** — set up dev/staging/prod before writing any API code
-4. **`network-layer`** — Ktor client, `NetworkResult`, auth interceptor
-5. **`sqldelight-setup`** — local database, platform drivers, Koin wiring
-6. **`logging`** — structured logging wrapper setup before any feature adds log calls
-7. **`ci-github-actions`** — CI before any feature merges
-8. **`code-quality`** — Ktlint + Detekt as CI gates from day one
-
-### Phase 2: iOS/Desktop Readiness (if shipping to those platforms)
-9. **`xcframework-spm`** — SPM binary target for iOS team
-10. **`expect-actual`** — platform-specific code (UUID, SecureStorage, dispatchers)
-
-### Phase 3: First Feature (repeat for each feature)
-11. **`design-system`** — tokens and core components (once per project, before first feature)
-12. **`navigation`** — add the feature's routes to the nav graph
-13. **`shared-resources`** — add strings/assets the feature needs
-14. **`repository-pattern`** — wire `RemoteDataSource` + `LocalDataSource` → `FooRepository`
-15. **`presenter-module`** — `FooViewModel` (no Compose dep) + `FooUiState`/`FooUiIntent`
-16. **`mvi`** — `FooScreen`/`FooContent` split consuming the presenter
-17. **`preview-driven-development`** — Desktop `@Preview` for all states before wiring logic
-18. **`unit-testing`** — `runTest` + Turbine tests for the ViewModel before shipping
-
-### Phase 4: Richer UI & Quality (as needed)
-19. **`design-system-extended`** — pull in Dialog, Sheet, Toast etc. when the feature needs them
-20. **`compose-slot-api`** — when designing reusable components for the design system
-21. **`compose-state-hoisting`** — when a component hierarchy gets complex
-22. **`compose-state-container`** — when debugging state survival across rotation/back-nav
-23. **`roborazzi`** — screenshot golden tests once the UI is stable
-
----
+Full content: `references/build-order.md`.
 
 ## Feature Slice Checklist
 
-For every new feature module group (`:feature:x:model/:api/:domain/:data/:presenter/:ui`), verify:
-
-**`:feature:x:model` (pure types)**
-- [ ] Only `data class`, `sealed class`, `enum class` — no interfaces, no framework imports
-- [ ] No dependency on any other module
-
-**`:feature:x:api` (interfaces)**
-- [ ] `FooRepository` interface returns domain types and `Flow<T>` / `Result<T>` only
-- [ ] `sealed interface FooError` defined for typed error cases
-- [ ] Depends only on `:model` — no logic, no framework deps
-
-**`:feature:x:data` (implementation)**
-- [ ] `FooRemoteDataSource` returns `NetworkResult<FooDto>`
-- [ ] `FooLocalDataSource` returns `FooEntity` / `Flow<FooEntity?>`
-- [ ] `FooRepositoryImpl` maps all types — no DTO or entity escapes to `:api`
-- [ ] `FooDataModule` (Koin) wires both data sources and `FooRepository`
-
-**`:feature:x:domain` (use cases, if complexity warrants)**
-- [ ] Use cases have a single `invoke` operator
-- [ ] Use cases depend only on `:api` — no `:data` imports
-
-**`:feature:x:presenter` (ViewModel — no Compose)**
-- [ ] `FooViewModel` has zero Compose imports
-- [ ] `FooUiState` and `FooUiIntent` sealed classes defined here
-- [ ] Exposes `StateFlow<FooUiState>` — no `SharedFlow` as state holder
-- [ ] `_state.update { it.copy(...) }` — never `_state.value = _state.value.copy(...)`
-
-**`:feature:x:ui` (Compose screens)**
-- [ ] `FooScreen` wires ViewModel via `koinViewModel()` only
-- [ ] `FooContent` is a stateless `@Composable` — accepts `FooUiState` as parameter
-- [ ] `@Preview` functions cover Loading / Error / Empty / Success states
-- [ ] No direct `:domain` or `:data` imports
-
----
+Full content: `references/feature-slice-checklist.md`.
 
 ## Decision Trees
 
-### "Where does this code go?"
-
-```
-Is it platform-specific behavior?
-├── YES: Does it wrap a platform SDK or require a platform type?
-│   ├── YES → expect/actual (kmp-expect-actual)
-│   └── NO  → interface + Koin injection in platform sourcesets
-└── NO:
-    ├── Is it a domain type (data class, sealed, enum)?  → :feature:x:model
-    ├── Is it a repository interface or nav contract?    → :feature:x:api
-    ├── Is it network communication?     → :core:network + network-layer skill
-    ├── Is it local persistence?         → :core:database + sqldelight-setup skill
-    ├── Is it domain logic?              → :feature:x:domain use cases
-    ├── Is it data fetching + mapping?   → :feature:x:data repository-pattern skill
-    ├── Is it ViewModel / UiState?       → :feature:x:presenter (presenter-module skill)
-    ├── Is it a Compose screen?          → :feature:x:ui (mvi skill, Content composable)
-    ├── Is it a reusable UI component?   → :core:designsystem slot-api + state-hoisting skills
-    └── Is it app-wide config?           → :core:common or flavor-environment skill
-```
-
-### "Which state container?"
-
-```
-Does the state involve async, IO, or repository calls?
-├── YES → ViewModel (mvi skill)
-└── NO:
-    ├── Must survive rotation? YES
-    │   ├── Bundle-safe type? → rememberSaveable {}
-    │   └── Complex type?     → rememberSaveable(stateSaver = customSaver)
-    └── Must survive rotation? NO → remember {}
-    └── Shared with another screen? → ViewModel (graph-scoped)
-```
-
-Full survival matrix: see `kmp-compose-state-container`.
-
-### "Which transport for a backend call?"
-
-Before following the tree below, check by **content**, not by module name, whether a
-Ktor client already exists anywhere in the project — a new server module or feature
-with a different name is still the same transport concern. Real bug this fixed: an
-agent found no module literally named `:core:network` and defaulted to a raw HTTP call
-instead of the project's actual (differently-named) client:
-
-```bash
-grep -rl "HttpClient(\|safeRequest\|NetworkResult<" */src --include="*.kt"
-```
-
-If that finds matches, reuse whatever module they're in — never scaffold a second client
-or write a raw platform HTTP call because the path didn't match an assumed name. See
-`kmp-network-layer`'s Step 0 for the full detection procedure.
-
-```
-grep -r "RemoteService\|@Rpc\|withRpc\|KtorRPCClient\|rpcClient\|\.rpc(" */src --include="*.kt" -l
-
-Results found?
-├── YES (kRPC is in the project):
-│   ├── Does an existing RPC service interface expose this operation?
-│   │   ├── YES → call through the RPC client; do NOT add safeRequest
-│   │   └── NO  → extend the service interface with a new method; do NOT add a parallel HTTP call
-│   └── Is the call to a DIFFERENT backend (external REST API, third-party service)?
-│       └── YES → safeRequest is correct; this is a separate network boundary
-└── NO (kRPC not present):
-    ├── Is the backend a Kotlin-first Ktor server you control?
-    │   ├── YES → consider kRPC (kmp-kotlin-rpc skill) before adding HTTP
-    │   └── NO  → use safeRequest (kmp-network-layer skill)
-    └── Is the backend a third-party REST API?
-        └── YES → safeRequest is correct
-```
-
-### "expect/actual or interface?"
-
-```
-Is it a pure behavior difference (same API, different platform behavior)?
-→ Interface + Koin injection
-
-Does it require a platform-specific constructor argument (Context, UIViewController)?
-→ expect class / typealias actual
-
-Does it wrap a platform SDK with no clean interface abstraction?
-→ expect class (Category 3 in expect-actual skill)
-
-Is it a stateless primitive with no constructor (UUID, currentTimeMillis)?
-→ expect fun (Category 4 in expect-actual skill)
-```
-
-Full guide: see `kmp-expect-actual`.
-
-### "What layer does this DTO/entity/model belong to?"
-
-```
-NetworkDto (from Ktor JSON)      → stays inside :feature:x:data/remote/dto/
-DatabaseEntity (from SQLDelight) → stays inside :feature:x:data/local/
-DomainModel (data class)         → lives in :feature:x:model/
-RepositoryInterface              → lives in :feature:x:api/
-UiState / UiIntent               → lives in :feature:x:presenter/
-Composable screen                → lives in :feature:x:ui/
-```
-
-The rule: data flows **inward** through mappers. DTOs and entities never cross the `:data`
-boundary. Domain types (in `:model`) are the lingua franca across `:api`, `:domain`, and `:presenter`.
-
-### "Improve the performance of X" — where do I even look?
-
-There is no single performance skill — routing depends entirely on what X names.
-Never guess at a target; if X is unnamed or app-wide ("the app feels slow"), ask the
-user to narrow it to one of the branches below before picking a skill.
-
-```
-What is X?
-├── A specific composable re-rendering too often / UI feels janky?
-│   → kmp-compose-state-container (wrong container, e.g. ViewModel
-│     for ephemeral state) or kmp-compose-state-hoisting (state
-│     buried too deep, forcing a wide recomposition scope)
-├── Custom drawing (Canvas, graphicsLayer, drawBehind) is slow?
-│   → kmp-compose-graphics-modifiers
-├── A JNI/native bridge call?
-│   → kmp-jni-pro (minimize boundary crossings, batch marshalling,
-│     GPU sync tips already in the skill)
-├── Database queries?
-│   → kmp-sqldelight-setup (indices, Flow query batching)
-├── Network calls / sync?
-│   → kmp-network-layer or kmp-offline-first
-│     (cache-first, avoid redundant refresh)
-├── App startup time or binary/APK size?
-│   → kmp-proguard-r8
-├── Web/Wasm target: slow page load, dropped frames in the browser, or bundle size?
-│   → kmp-compose-web-performance (live browser profiling via chrome-devtools-mcp —
-│     distinct from kmp-benchmark, which measures a Kotlin function in isolation,
-│     not the running browser's own load/render cost)
-├── A specific function/class flagged as complex (long, many params, deep nesting)?
-│   → kmp-code-quality (Detekt `complexity:` rules — LongMethod,
-│     CyclomaticComplexMethod, LongParameterList)
-├── Need a real number, not a guess (comparing two implementations, confirming a fix)?
-│   → kmp-benchmark
-└── Unnamed / whole-app / "it feels slow"?
-    → STOP — do not pick a skill on a guess. Ask which of the above the user means,
-      or profile first (Android Studio Profiler / Instruments, or
-      kmp-benchmark for a specific function/class) to get a concrete
-      target, then re-route through this tree.
-```
-
-### "How do I handle audit findings?"
-
-```
-Finding confirmed?
-├── NO → keep it as a question and ask the user for clarification
-└── YES:
-    ├── Needs tracking in the repo? → draft a GitHub issue
-    └── Needs design/product input?  → draft a GitHub question
-```
-
-Include the skill name in every draft so attribution stays visible.
-
----
+Full content: `references/decision-trees.md`.
 
 ## Common Anti-Patterns
 
@@ -669,6 +354,7 @@ When the user asks about one of these topics, invoke the corresponding skill:
 | "adaptive layout", "WindowSizeClass", "tablet layout", "desktop layout", "mobile layout", "phone layout", "list detail", "detail split", "split screen", "navigation rail", "Compact Medium Expanded", "responsive UI", "master detail", "multi-pane", "different layout phone tablet", "different layout phone desktop", "screen size breakpoint", "pane layout", "layout per screen size", "layout phone desktop" | `kmp-compose-adaptive-layout` |
 | "dialog", "bottom sheet", "toast", "tabs", "TopAppBar", "Checkbox" | `kmp-compose-design-system-extended` |
 | "shadcn-compose", "ShadcnButton", "ShadcnTheme", "ShadcnCard", "shadcn ui kotlin", "shadcn compose multiplatform", "ExperimentalFoundationStyleApi", "shadcn kmp" | `kmp-shadcn-compose` |
+| "shadcn login form", "shadcn admin layout", "shadcn dashboard", "shadcn data table", "ShadcnField", "ShadcnFieldGroup", "ShadcnTable", "ShadcnSidebar", "shadcn compose form", "admin shell compose multiplatform" | `kmp-shadcn-compose-layouts` |
 | "mimic api", "api mimicry", "clone api shape", "inspired by jetpack compose", "custom dsl engine", "from-scratch renderer", "vulkan ui", "metal ui", "port api ergonomics", "reimplement compose-like dsl", "non-compose renderer", "engine-agnostic dsl", "own compiler-free dsl", "api shape porting" | `kmp-api-mimicry` |
 | "slot API", "content lambda", "composable parameter", "scoped slot" | `kmp-compose-slot-api` |
 | "state hoisting", "hoist state", "controlled component", "where does state go" | `kmp-compose-state-hoisting` |
@@ -707,25 +393,7 @@ When the user asks about one of these topics, invoke the corresponding skill:
 
 ## Quick Health Check for Existing Projects
 
-Run through these 6 questions for any KMP project audit:
-
-1. **Dependency direction**: do `:ui` or `:domain` modules ever import from `:data`?
-   If yes → architectural violation; data layer details are leaking.
-
-2. **Presenter boundary**: does `:presenter` import `androidx.compose.*` or `org.jetbrains.compose.*`?
-   If yes → ViewModels cannot be tested on JVM; move Compose to `:ui` only.
-
-3. **Network/DB types at the boundary**: does any `UiState` contain a `Dto`, `Entity`,
-   or `NetworkResult`? If yes → mapping is missing at the repository boundary.
-
-4. **Effect delivery**: are effects `SharedFlow` or `StateFlow`? They should be `Channel<Effect>`.
-   `SharedFlow` can replay effects (double navigation, double toast).
-
-5. **State atomicity**: are there any `_state.value = _state.value.copy(...)` calls?
-   They should be `_state.update { it.copy(...) }` to be thread-safe under concurrent intents.
-
-6. **Expect/actual ratio**: what fraction of platform files have identical implementations?
-   High ratio → probable over-use of expect/actual; move shared logic to `commonMain`.
+Full content: `references/quick-health-check.md`.
 
 ## Docs-First Rule
 
@@ -748,96 +416,7 @@ without the `kmp-` prefix. Then route to `/kmp-new-skill kmp-<topic>`.
 
 ## Project-Specific Commands/Agents/Skills — Source of Truth
 
-When a user asks for a custom command, agent, skill, or hook for **their own project**
-(not one of this collection's own), or an agent decides one is needed — author it at a
-project-owned source location first, then deploy a copy into `.claude/` for Claude Code
-to actually discover it. Never author directly into `.claude/agents/*.md`,
-`.claude/commands/*.md`, or `.claude/skills/*/` as the only copy.
-
-**The model to mirror is this very repo**: `kmp-agent-skills` itself keeps project-owned
-agent assets at the repo root, with runtime copies generated separately. A consumer
-project should do the same for its *own* custom artifacts so the source stays versioned
-next to the app code, reviewable in a normal PR diff, and portable if the project ever
-needs to regenerate or move its `.claude/` setup.
-
-Layout — flat, `<name>` is the artifact's own name, never the app/project name:
-```
-<project root>/
-├── agents/<agent-name>.md               ← source
-├── rules/<rule-name>.md                 ← source
-├── commands/<command-name>.md           ← source
-├── skills/<skill-name>/SKILL.md         ← source — project-owned CUSTOM skills only,
-│                                           never bundled kmp-agent-skills content
-├── hooks/<hook-name>.sh                 ← source
-├── docs/reference/ai-collaboration.md   ← canonical cross-agent policy
-├── docs/reference/agent-catalog.md      ← canonical model-tier mapping
-├── AGENTS.md                            ← optional thin bootstrap
-├── CLAUDE.md                            ← optional thin bootstrap
-├── GEMINI.md                            ← optional thin bootstrap
-├── .agents/
-│   └── skills/<skill-name>/             ← DEPLOYED — bundled kmp-agent-skills + mirrored
-│                                           custom skills; the cross-client target, read
-│                                           by any agentskills.io-compliant client
-└── .claude/
-    ├── AGENTS.md                        ← deployed routing/context
-    ├── commands/<command-name>.md       ← deployed copy
-    ├── skills/<skill-name>/             ← deployed copy, mirrors .agents/skills/
-    └── settings.json                    ← permissions + hook wiring
-```
-
-Thin entrypoints (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`) should point to the canonical
-docs, keep only startup-critical guardrails, and avoid becoming the only copy of
-project policy. `docs/reference/agent-catalog.md` owns provider-neutral model tiers and
-provider-specific mappings. Do not hardcode stale provider model names across every
-agent file when one canonical catalog can carry that mapping.
-
-`rules/` exists for optional project-specific rule snippets or assistant overlays that
-should stay project-owned even if only one assistant consumes them today. Do **not**
-copy the same policy text from `docs/reference/ai-collaboration.md` into `rules/`.
-Keep the explanation canonical in `docs/reference/ai-collaboration.md`; use `rules/`
-only when the project genuinely needs short assistant-facing overlays in addition to
-that canonical doc.
-
-Use this split consistently:
-
-- `docs/*` answers "how is this project designed?"
-- `skills/*` answers "how should an agent work in this repo?"
-
-If a repo-local skill starts retelling architecture docs, stop and move the stable
-design guidance back into `docs/*`.
-
-If a project has no custom artifacts yet, still scaffold these folders with placeholder
-README files. Empty-but-present source locations make future additions land in the
-right place instead of drifting straight into `.claude/`.
-
-**Never nest a project artifact under an app/project-name folder** (e.g.
-`skills/<app-name>/<skill-name>/`). Verified against the real, official skill
-anatomy (`anthropic-skills:skill-creator`'s own documented convention): a skill's
-folder is named after what the skill *does*, flat under `skills/` — this is also how
-`.claude/skills/` is actually scanned. If a project-owned skill's name might collide
-with one of this collection's 64, resolve it by giving the project-owned skill a more
-specific name (e.g. `awaken-ecs-conventions`, not `ecs`) — not by nesting it under an
-app-name folder, which isn't a real convention Claude Code (or this collection)
-recognizes.
-
-Deploy the copy after every edit to the source — a stale `.claude/` copy that's drifted
-from its project-owned source is worse than no source at all, since it looks authoritative
-but silently isn't. Simple `cp`/`rsync` is enough; no need for a dedicated script unless
-the project has many artifacts to keep in sync. If the project uses
-`update-consumer-skills.sh`, that sync path should copy project-owned custom skills from
-`skills/<name>/` into `.claude/skills/<name>/` as part of the normal refresh.
-
-**Real gap this closes**: a review of a real KMP game-engine project found two custom
-agent definitions (`ecs-dev`, `game-framework-dev`) authored directly into
-`.claude/agents/` with no project-owned source anywhere — meaning the only copy of that
-authoring work lived in a directory this rule now treats as deploy-only.
-
-**Audited automatically**: `kmp-audit`'s `_detect_project_skill_standards`
-checks every `skills/<name>/` folder it finds against the real skill anatomy — SKILL.md
-present, opening YAML frontmatter with `name`/`description`, body under ~500 lines unless
-a `references/` subdirectory exists. It also checks that the deployed `.claude/skills/`
-copy exists and is not stale. Run it any time a project skill is added or edited, not
-just once at creation.
+Full content: `references/project-specific-source-of-truth.md`.
 
 ## Recommendation Format
 
@@ -874,6 +453,25 @@ already has multiple same-named concepts or the component is part of a shared li
 
 ---
 
+## References
+
+Full implementation content lives in `references/*.md`: `dependency-graph`,
+`build-order`, `feature-slice-checklist`, `decision-trees`, `quick-health-check`,
+`required-vs-optional-skills`, `project-specific-source-of-truth`, `changelog`. Load the
+specific file named in the pointer under its matching heading above, not all of them.
+
+Two reference groups back a *command*, not a heading here — orchestration is this skill's:
+
+- `references/agents-md-templates.md` — the `.claude/AGENTS.md` and `CLAUDE.md` bodies
+  `/kmp-setup-agents` writes. Here, not in the command, because a command reaches a
+  consumer as a single bare `.md` while skills are always deployed.
+- `references/new-project-phase-1..5-*.md` — the five phases of `/kmp-new-project`; the
+  command is just the index and gates. **Load one phase at a time**, or the split is moot.
+The 68 Skills table and Skill Invocation Map stay inline above — `validate_skill_map.py`
+and `validate_keyword_routing.py` check this file's own text directly.
+
+---
+
 ## Related Skills
 
 - `kmp-audit` — run this after every feature to verify no architecture smells were introduced
@@ -898,22 +496,5 @@ Keep the response concise — this skill routes to other skills, not implements.
 
 ## Changelog
 
-| Date | Change |
-|---|---|
-| 2026-08-01 | Added an explicit non-KMP scope guard to "When to Use This Skill" — verified no literal trigger-keyword collision exists with unrelated stacks (React, Flutter, etc.), but nothing stated the boundary explicitly for a request naming a different stack outright or no stack at all. Now states plainly: don't route to this collection unless there's real Kotlin/KMP signal, even when the task shape sounds generic (a UI component, a state machine). |
-| 2026-07-31 | Fixed the "Project-Specific Commands/Agents/Skills" canonical layout diagram — it never mentioned `.agents/skills/` at all, only `.claude/`, despite `.agents/skills/` being the actual cross-client deploy target this collection has used since an earlier fix. Added it to the diagram, and clarified project-root `skills/` is for custom skills only. Matches the same fix applied to `docs/reference/ai-collaboration.md`. |
-| 2026-07-31 | Added `kmp-native-authoring` (66th skill) — real gap: `kmp-jni-pro` explicitly assumes the native C/C++ code already exists (its whole framing is "3rd-party files are read-only," library-first discovery) and never covered authoring brand-new first-party native source. Scaffolds directory layout, CMake, public C-ABI header design, and native-side testing; always hands off to `jni-pro` for the actual bridge. Added to the Meta list, Skill Invocation Map, and dependency graph. |
-| 2026-07-31 | Added `kmp-api-mimicry` (65th skill) — a real gap: nothing covered mimicking a reference API's *shape* (Modifier-style chains, slot lambdas, DSL markers) when building a KMP library on a non-standard runtime (custom native renderer, custom transport) that isn't real Compose Multiplatform underneath. Distinct from `design-system`, which builds atop the real Compose runtime. Added to the Meta list, Skill Invocation Map, and dependency graph. |
-| 2026-07-15 | Expanded the project-owned scaffold contract for Claude consumers: `rules/` and `docs/reference/ai-collaboration.md` are now part of the canonical source layout, and `CLAUDE.md` is explicitly treated as a thin bootstrap rather than the only copy of project policy. This keeps project-specific agent guidance at the repo root while `.claude/` remains the deployed runtime layer. |
-| 2026-07-14 | Added "Project-Specific Commands/Agents/Skills — Source of Truth": a real gap found while reviewing a consumer project (a KMP game engine) whose two custom agent definitions were authored directly into `.claude/agents/` with no project-owned source anywhere. Documents mirroring this repo's own layout (`agents/`, `commands/`, `skills/`, `hooks/` at the project root as canonical source, `.claude/` as the deployed copy) for any project-specific artifact that isn't from `kmp-agent-skills` itself. Cross-referenced from `/kmp-setup-agents`, which only deploys this collection's own skills/commands, not project-owned ones. Corrected same-day: the layout initially nested a skill under an app-name folder (`skills/<app-name>/<skill-name>/`) — verified against `anthropic-skills:skill-creator`'s real, official skill anatomy that this isn't a recognized convention; skills are flat, named after what they do. Fixed to `skills/<skill-name>/`, with name-collision guidance (rename the skill, don't nest it) instead. |
-| 2026-07-11 | Added an invocation-map row routing "composition over inheritance"/"abstract class in commonMain"/"agent over-abstracting" to `kmp-clean-architecture`'s new Composition Over Inheritance section — a real, recurring anti-pattern where an agent creates a public abstract class in commonMain requiring consumer inheritance. |
-| 2026-07-11 | Added `kmp-docs-site` (62nd skill) — public GitHub Pages developer guide for a published library (MkDocs Material + Dokka HTML + compiler-verified snippet extraction), explicitly gated to library projects with real surface area, never apps or trivial libraries. Added to the Meta list and Skill Invocation Map. |
-| 2026-07-10 | Two real gaps closed: (1) added a "Improve the performance of X" decision tree — there was no routing path for performance requests at all (only a model-routing hint, not a skill-routing rule); routes by naming what X is and explicitly stops rather than guessing when X is unnamed or whole-app; added `kmp-benchmark` (61st skill) as its "get a real number" branch. (2) Broadened "Which transport for a backend call?" to check for an existing Ktor client by content (`HttpClient(`/`safeRequest`/`NetworkResult<`) before the kRPC-specific grep — the prior version only checked kRPC symbols, so a project with a plain (differently-named) Ktor client and no kRPC could still fall through to a raw HTTP call; cross-referenced to `kmp-network-layer`'s new Step 0. |
-| 2026-06-24 | Refined routing precedence for repo docs, downstream docs, changelogs, and navigation/deep-link collisions. |
-| 2026-06-24 | Added architecture-diagram / library-docs / app-docs routing keywords for `kmp-project-docs-maintainer`. |
-| 2026-06-24 | Added explicit release routing keywords (`release project`, `cut release`, `ship version`) so project release requests route to `kmp-release`. |
-| 2026-06-24 | Added web routing / browser fragment / hash navigation keywords for `kmp-navigation`. |
-| 2026-06-24 | Added direct designer routing for wireframes, screen flows, layout specs, and design handoff requests. |
-| 2026-06-22 | Fixed kmp-jni-pro routing: was tagged with Kotlin/Native cinterop vocabulary (`CPointer`, `kotlin native interop`) but the skill is strictly JVM JNI. Corrected description + trigger map to JNI terms (`JNIEnv`, `Java_*`, `wrapper.cpp`, `vendor C++`, `C-shim`); added expect-actual disambiguation row for cinterop. |
-| 2026-06-21 | Removed private project reference from docs-first rule; rule is now generic. |
-| 2026-06-18 | Initial release — 30-skill routing map, dependency graph, build order, decision trees, anti-pattern checklist. |
+Full content: `references/changelog.md`.
+

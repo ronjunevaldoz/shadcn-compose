@@ -262,175 +262,11 @@ interface TokenStorage {
 
 ## Step 4: Platform engine factory
 
-### `src/androidMain/kotlin/GROUP_ID/core/network/HttpClientEngineFactory.kt`
-
-```kotlin
-package GROUP_ID.core.network
-
-import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.engine.okhttp.OkHttp
-
-internal actual fun platformEngine(): HttpClientEngineFactory<*> = OkHttp
-```
-
-### `src/iosMain/kotlin/GROUP_ID/core/network/HttpClientEngineFactory.kt`
-
-```kotlin
-package GROUP_ID.core.network
-
-import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.engine.darwin.Darwin
-
-internal actual fun platformEngine(): HttpClientEngineFactory<*> = Darwin
-```
-
-### `src/jvmMain/kotlin/GROUP_ID/core/network/HttpClientEngineFactory.kt`
-
-```kotlin
-package GROUP_ID.core.network
-
-import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.engine.cio.CIO
-
-internal actual fun platformEngine(): HttpClientEngineFactory<*> = CIO
-```
-
-### `src/jsMain/kotlin/GROUP_ID/core/network/HttpClientEngineFactory.kt`
-
-```kotlin
-package GROUP_ID.core.network
-
-import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.engine.js.Js
-
-internal actual fun platformEngine(): HttpClientEngineFactory<*> = Js
-```
-
-### `src/wasmJsMain/kotlin/GROUP_ID/core/network/HttpClientEngineFactory.kt`
-
-```kotlin
-package GROUP_ID.core.network
-
-import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.engine.js.Js
-
-internal actual fun platformEngine(): HttpClientEngineFactory<*> = Js
-```
-
-### `src/commonMain/kotlin/GROUP_ID/core/network/HttpClientEngineFactory.kt`
-
-```kotlin
-package GROUP_ID.core.network
-
-import io.ktor.client.engine.HttpClientEngineFactory
-
-internal expect fun platformEngine(): HttpClientEngineFactory<*>
-```
-
----
+Full content: `references/step4-platform-engine-factory.md`.
 
 ## Step 5: HttpClient factory
 
-Create `src/commonMain/kotlin/GROUP_ID/core/network/NetworkClient.kt`:
-
-```kotlin
-package GROUP_ID.core.network
-
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logger
-import io.ktor.client.plugins.logging.Logging
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
-
-/**
- * Creates the shared Ktor HttpClient.
- *
- * @param baseUrl    Base URL applied to every request (e.g. "https://api.example.com")
- * @param tokenStorage   Used by the Auth plugin for Bearer token management.
- * @param onRefreshFailed Called when token refresh returns null — use to trigger logout.
- * @param enableLogging  Set false in release builds (use BuildKonfig.DEBUG).
- */
-fun createHttpClient(
-    baseUrl: String,
-    tokenStorage: TokenStorage,
-    onRefreshFailed: suspend () -> Unit = {},
-    enableLogging: Boolean = false,
-): HttpClient = HttpClient(platformEngine()) {
-
-    defaultRequest {
-        url(baseUrl)
-        contentType(ContentType.Application.Json)
-    }
-
-    install(ContentNegotiation) {
-        json(Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            explicitNulls = false
-        })
-    }
-
-    install(HttpTimeout) {
-        requestTimeoutMillis = 30_000
-        connectTimeoutMillis = 15_000
-        socketTimeoutMillis = 30_000
-    }
-
-    // Ktor's built-in bearer plugin handles:
-    // - Attaching the access token to every request
-    // - Automatic refresh on 401 (race-condition-safe: only one refresh fires
-    //   even when multiple requests fail simultaneously)
-    install(Auth) {
-        bearer {
-            loadTokens {
-                val access = tokenStorage.getAccessToken() ?: return@loadTokens null
-                val refresh = tokenStorage.getRefreshToken() ?: return@loadTokens null
-                BearerTokens(access, refresh)
-            }
-            refreshTokens {
-                val refreshToken = tokenStorage.getRefreshToken()
-                    ?: run { onRefreshFailed(); return@refreshTokens null }
-
-                // TODO: replace with your actual refresh endpoint call
-                // val response = client.post("/auth/refresh") { ... }
-                // val newTokens = response.body<TokenResponse>()
-                // tokenStorage.saveTokens(newTokens.access, newTokens.refresh)
-                // BearerTokens(newTokens.access, newTokens.refresh)
-
-                // Placeholder — return null to trigger onRefreshFailed
-                onRefreshFailed()
-                null
-            }
-            sendWithoutRequest { request ->
-                // Bypass auth for public endpoints (e.g. login, register)
-                request.url.pathSegments.none { it == "auth" }
-            }
-        }
-    }
-
-    if (enableLogging) {
-        install(Logging) {
-            level = LogLevel.BODY
-            logger = object : Logger {
-                override fun log(message: String) {
-                    println("[Ktor] $message")
-                }
-            }
-        }
-    }
-}
-```
-
----
+Full content: `references/step5-httpclient-factory.md`.
 
 ## Step 6: safeRequest extension
 
@@ -570,60 +406,7 @@ fun `login returns Success on 200`() = runTest {
 
 ## Step 11: Server-Sent Events (SSE) for real-time server push
 
-Ktor ships an official multiplatform SSE client plugin — works across all KMP targets
-since Ktor Client is multiplatform. Use it for one-way server → client push (live
-updates, progress streams, notifications) instead of polling REST or rolling a custom
-WebSocket.
-
-```kotlin
-// build.gradle.kts — commonMain
-implementation("io.ktor:ktor-client-sse:$ktorVersion")
-```
-
-```kotlin
-val client = HttpClient {
-    install(SSE) {
-        // auto-reconnect on drop — tune per endpoint, not global
-        reconnectionTime = 3.seconds
-        maxReconnectionAttempts = 5
-    }
-}
-
-fun observeOrderStatus(orderId: String): Flow<OrderStatus> = flow {
-    client.sseSession(urlString = "$baseUrl/orders/$orderId/events") {
-        // type-safe deserialization via ClientSSESessionWithDeserialization
-        incoming.collect { event ->
-            event.data?.let { emit(json.decodeFromString<OrderStatus>(it)) }
-        }
-    }
-}
-```
-
-SSE maps directly onto `Flow` — backpressure comes for free, and `Flow.retry` plus
-replaying the `Last-Event-ID` header covers reconnection without hand-rolled retry logic.
-
-Constraints to know before reaching for it:
-- **No compression** — the Compression plugin skips SSE responses by default; don't
-  expect gzip savings on an SSE stream.
-- **One-way only** — SSE is server → client. If the client also needs to push, use
-  WebSocket or fall back to a normal request alongside the SSE stream.
-- Server-side counterpart is Ktor's own SSE plugin (`install(SSE)` on the server) —
-  pairs naturally when both ends are Ktor.
-
-### SSE vs kRPC vs WebSocket vs polling
-
-| Need | Use |
-|---|---|
-| One-way server push, Kotlin or non-Kotlin client, standard HTTP semantics | **SSE** (this section) |
-| Bidirectional Kotlin-to-Kotlin streaming, both sides control the contract | **kRPC** — see `kmp-kotlin-rpc`'s streaming section |
-| Bidirectional, non-Kotlin client, or low-level frame control needed | **WebSocket** |
-| Infrequent updates, simplicity over latency, no persistent connection wanted | **Polling REST** with `safeRequest` |
-
-If the backend is already exposed over kRPC and the need is one-way push to a
-non-Kotlin client too, don't add SSE as a second transport — extend the RPC service
-with a `Flow`-returning method instead (kRPC handles that natively).
-
----
+Full content: `references/step11-sse.md`.
 
 ## Guidelines
 
@@ -685,6 +468,7 @@ Keep the snippet to one endpoint. Map to the user's actual base URL and response
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split Step 4 (Platform engine factory), Step 5 (HttpClient factory), and Step 11 (SSE) out of SKILL.md into `references/*.md`. SKILL.md drops from 690 to 473 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 9 skills fixed alongside it (KI-008). |
 | 2026-07-31 | Added Step 11: Server-Sent Events (SSE) via Ktor's official multiplatform SSE client plugin (reconnection config, `Flow` mapping, no-compression caveat), plus an SSE vs kRPC vs WebSocket vs polling decision table. Real gap — this repo had zero SSE coverage before. |
 | 2026-07-10 | **Fixed a real bug**: this skill only checked for a module literally named `:core:network` — a new server module or feature with a different name found no match, and an agent defaulted to a raw platform HTTP call instead of reusing the project's actual (differently-named) Ktor client. Added Step 0: detect an existing client by content (`HttpClient(`/`safeRequest`/`NetworkResult<`), not by path, before scaffolding or writing any network call. New `kmp-audit` detector `raw http bypasses established ktor client [HIGH]` catches the resulting anti-pattern. |
 | 2026-06-06 | Initial release. |

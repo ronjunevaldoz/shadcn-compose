@@ -319,206 +319,11 @@ when a layout-quality finding fires; don't default to only the shadcn-compose on
 
 ## Step 3: Using components
 
-### The one rule that matters more than any example below
-
-**Never call a `Shadcn*` component with a parameter you haven't verified exists on its
-real signature.** Do not assume a parameter exists by analogy to Jetpack Compose's own
-`TextField`/Material components, to HTML/CSS attributes, or to another `Shadcn*`
-component's shape — every component here has its own specific, independently-designed
-API. Two confirmed, real examples of what guessing produces, found by fetching the
-actual source rather than trusting a table like the one below:
-
-- `ShadcnTextField` has **no `singleLine` parameter** — a real project's implementation
-  used `singleLine = false` (a real Compose `TextField`/`BasicTextField` parameter,
-  assumed to carry over) and it would not compile. The real multi-line component is the
-  separate `ShadcnTextarea` (see below) — not a parameter toggle on `ShadcnTextField`.
-- The component commonly assumed to be `ShadcnTabs` is actually named **`ShadcnTabsList`**
-  — this skill's own component table said `ShadcnTabs` until this was checked against
-  the real source.
-
-Before writing a call to any component **not** shown with a verified signature below,
-fetch the real one first — one command, no need to remember the file path or grep
-pattern by hand:
-```bash
-python3 skills/kmp-shadcn-compose/scripts/fetch_component_signature.py <ComponentName>
-```
-It handles the two cases that break a naive lookup: a component living in a
-differently-named file (checks the obvious filename first, then searches every
-component file), and nested parens in a default value (uses a balanced-paren scan, not
-a single-level regex, so the signature isn't truncated early). Or, if the project
-already resolves the dependency, read it directly from the Gradle cache / IDE-decompiled
-sources. Never skip this to save a lookup — a wrong guess costs more time than the
-lookup would have.
-
-### Verified signatures (checked against real source, 2026-07-12)
-
-```kotlin
-ShadcnButton(onClick = {}) { ShadcnText("Click me") }
-ShadcnButton(onClick = {}, variant = ButtonVariant.Outline, size = ButtonSize.Sm) { ShadcnText("Outline") }
-ShadcnButton(onClick = {}, variant = ButtonVariant.Destructive) { ShadcnText("Delete") }
-// ButtonVariant: Default | Outline | Secondary | Ghost | Destructive | Link — 6 variants, 5 sizes
-
-ShadcnTextField(value = text, onValueChange = { text = it }, placeholder = "Email")
-// value, onValueChange, modifier, enabled, label, placeholder, leadingIcon, trailingIcon,
-// isError, supportingText, variant, style, keyboardOptions, keyboardActions, visualTransformation
-// NO singleLine parameter — this is a single-line-only field by design.
-
-ShadcnTextarea(value = prompt, onValueChange = { prompt = it }, placeholder = "Describe the scene")
-// value, onValueChange, modifier, enabled, label, placeholder, isError, supportingText,
-// variant, style, keyboardOptions, keyboardActions — the multi-line equivalent of
-// ShadcnTextField above; wraps it internally. Use this for an HTML wireframe's <textarea>,
-// never ShadcnTextField with a guessed multi-line parameter.
-
-ShadcnSelect(value = selected, options = listOf("A", "B"), onValueChange = { selected = it }, label = { it })
-// fun <T> ShadcnSelect(value: T?, options: List<T>, onValueChange: (T) -> Unit, modifier,
-// label: (T) -> String = { it.toString() }, placeholder: String, variant, style, icon)
-
-ShadcnCard(header = { ShadcnCardHeader(title = "Title") }) { ShadcnText("Body content") }
-// fun ShadcnCard(modifier, variant, size, style, header: (@Composable () -> Unit)?,
-// footer: (@Composable () -> Unit)?, content: @Composable ColumnScope.() -> Unit)
-// Slot-based — header/footer are optional composable slots, not string parameters.
-// ShadcnCardHeader(title, description, action, modifier) is a separate helper composable.
-
-ShadcnCheckbox(checked = isChecked, onCheckedChange = { isChecked = it })
-// checked, onCheckedChange: ((Boolean) -> Unit)?, modifier, indeterminate, enabled, style
-
-ShadcnSwitch(checked = isOn, onCheckedChange = { isOn = it })
-// checked, onCheckedChange: ((Boolean) -> Unit)?, modifier, enabled, style
-
-ShadcnAvatar { ShadcnAvatarFallback("JD") }
-// fun ShadcnAvatar(modifier, size: ShadcnAvatarSize, content: @Composable BoxScope.() -> Unit)
-// Slot-based, with separate companion composables: ShadcnAvatarFallback(text, modifier),
-// ShadcnAvatarBadge(modifier), ShadcnAvatarGroup(modifier) { content }.
-
-ShadcnTabsList(items = tabItems, selected = selectedId, onSelectedChange = { selectedId = it })
-// NOT "ShadcnTabs" — items: List<ShadcnTabItem>, selected: String, onSelectedChange: (String) -> Unit, modifier
-```
-
-See the
-[component catalog](https://github.com/ronjunevaldoz/shadcn-compose/blob/main/docs/components.md)
-for the full 70+ component list; each entry links to a live usage page in the library's own
-catalog app (`app/shared/.../catalog/docs/*Doc.kt`) — treat that catalog app as the
-authoritative usage reference for anything not verified above, not a guess from the name
-alone.
-
-No icon-library dependency is bundled *into* shadcn-compose — every component draws from
-this library's own tokens for color/shape, not icon art. An icon needed in a screen built
-with these components comes from a separate dependency:
-[`heroicons-compose`](https://github.com/ronjunevaldoz/heroicons-compose)
-(`io.github.ronjunevaldoz:heroicons-outline:<version>`, Maven Central, Heroicons compiled
-to CMP `ImageVector` — Outline variant only today; Solid/Mini/Micro not yet built), or
-`kmp-imagevector-generator` for anything Heroicons doesn't cover. Do not
-assume any icon set ships automatically with the `shadcn-compose` dependency itself.
-
-### Density/sizing requests — reach for the library's own parameters first
-
-This isn't only about the literal word "compact." Any request that's really about
-density or sizing — "make this compact," "tighter," "denser," "smaller," "more
-breathing room," "roomier" — has two real levers already built into this library.
-Check both before writing a single custom `Style { }` override:
-
-1. **Whole-app/whole-screen density → `ShadcnTheme`'s `preset` parameter.** The preset
-   table earlier in this skill is not cosmetic — `Mira` ("made for compact interfaces,"
-   tightest timings) and `Nova` ("reduced padding and margins," snappy) both compress
-   spacing/timing across every component at once. If the request is about the app's
-   overall feel, changing `preset` is very likely the actual fix — not a per-component
-   override, and not introducing a custom modifier at all.
-2. **One component's size → its own preset `Size` enum.** Every sized `Shadcn*`
-   component ships one. Verified against real source (2026-07-31):
-
-```kotlin
-sealed interface ButtonSize {
-    data object Xs : ButtonSize    // 28.dp height — the compact preset
-    data object Sm : ButtonSize    // 32.dp height
-    data object Md : ButtonSize    // 36.dp height — default
-    data object Lg : ButtonSize    // 40.dp height
-    data object Icon : ButtonSize  // 36×36.dp square, icon-only
-}
-```
-
-`ShadcnCard` and `ShadcnAvatar` (`ShadcnAvatarSize`) also take a `size` parameter — verify
-each component's actual `Size` enum with `fetch_component_signature.py` before assuming it
-does or doesn't have one; do not assume a component lacks a preset just because one isn't
-shown above. Only reach for a custom `Style { }` override when the request needs a value
-neither lever covers (an exact one-off `height`, not a general density change) — and say
-so explicitly when doing it, since it's the exception, not the norm.
-
----
+Full content: `references/step3-using-components.md`.
 
 ## Step 4: Composing a real screen from multiple components
 
-Knowing one component's signature isn't the same as knowing how several fit together into
-a good screen. Worked example — a settings-style list of rows inside a card, every symbol
-below individually verified against real source (`fetch_component_signature.py`), not
-copied wholesale from the library's own KDoc usage examples:
-
-```kotlin
-@OptIn(ExperimentalFoundationStyleApi::class)
-@Composable
-fun AccountSettingsCard(members: List<Member>, onView: (Member) -> Unit) {
-    ShadcnCard(
-        header = { ShadcnCardHeader(title = "Team members", description = "${members.size} people") },
-    ) {
-        ShadcnItemGroup {
-            members.forEach { member ->
-                ShadcnItem(variant = ShadcnItemVariant.Outline) {
-                    ShadcnAvatar { ShadcnAvatarFallback(member.initials) }
-                    Column(Modifier.weight(1f).padding(start = 12.dp)) {
-                        ShadcnItemTitle(member.name)
-                        ShadcnItemDescription(member.email)
-                    }
-                    ShadcnButton(onClick = { onView(member) }) { ShadcnText("View") }
-                }
-            }
-        }
-    }
-}
-```
-
-What's real here and why it's shaped this way:
-- `ShadcnCard`'s `content` lambda is `ColumnScope` — `ShadcnItemGroup` drops straight in,
-  no wrapper needed.
-- `ShadcnItemGroup` **already paints a hairline separator between each `ShadcnItem`** —
-  confirmed in its own KDoc ("Vertically stacks a list of ShadcnItems with a hairline
-  separator between each"). Adding a manual `ShadcnSeparator()` between items double-draws
-  the divider. `ShadcnSeparator` is for dividing unrelated sections, not rows inside a group
-  — that's already handled.
-- `ShadcnItem`'s `content` lambda is `RowScope`, not a set of named slots — a `Row`/`Column`
-  and plain `Modifier.weight()` inside it is the normal way to lay out avatar/text/action,
-  the same as composing any other `RowScope` content.
-
-**A real trap this example exists to name**: `ShadcnItem`'s own KDoc usage example shows
-`ShadcnItemMedia { }`, `ShadcnItemContent { }`, and `ShadcnItemActions { }` as if they were
-real slot composables. Checked against the actual file
-(`ShadcnItem.kt`) — **none of the three exist anywhere in the repo.** Only
-`ShadcnItem`, `ShadcnItemGroup`, `ShadcnItemTitle`, `ShadcnItemDescription`, and
-`ShadcnItemSeparator` are real functions. Even the library's own official KDoc example is
-not a substitute for `fetch_component_signature.py` — this is the concrete case proving why.
-
-For a split view (list + detail), the same discipline applies: wrap the two panes in
-`ShadcnResizablePanelGroup` (verified in the Component Keyword Matrix's Layout & structure
-row) rather than a bare `Row` with manual weights — it gets a draggable divider and clamped
-min/max weights for free, matching what `kmp-layout-system`'s Pattern A
-wireframe expects for a nav+side+main layout.
-
-### Layout-pattern lookup when nothing here covers the shape needed
-
-[Shadcn Studio](https://shadcnstudio.com/) — **not the official shadcn/ui project, and not
-this library.** Verified directly (2026-07-13): a third-party, independently-run paid
-catalog ($99–$849 one-time) of 800+ UI blocks and 20+ page templates built on real
-shadcn/ui, explicitly "not affiliated with shadcn/ui." Useful here for exactly one thing —
-seeing how a layout *shape* (a dashboard, a pricing table, a settings page) is typically
-structured — never as a source to copy code from.
-
-**Why code can't be copied from it directly**: its output is React/JSX + Tailwind, not
-Kotlin/Compose. Treat any block from it exactly like an HTML/CSS wireframe — run it through
-`kmp-layout-system`'s "Translating an External HTML/CSS Wireframe" mapping
-table, then verify every resulting `Shadcn*` component name with
-`fetch_component_signature.py` before using it, the same discipline Step 3/Step 4 already
-require for this library's own components. A block behind the paid tier is not accessible
-without payment — don't assume free access to a specific block by name.
-
----
+Full content: `references/step4-composing-a-real-screen.md`.
 
 ## Testing
 
@@ -559,6 +364,14 @@ When asked to add or use shadcn-compose, respond in this order:
 
 ---
 
+## References
+
+Full implementation content lives in `references/*.md`: `step3-using-components`,
+`step4-composing-a-real-screen`. Load the specific file named in the pointer under its
+matching heading above, not all of them.
+
+---
+
 ## Related Skills
 
 - `kmp-compose-design-system` — the default, owned-scaffold alternative this skill exists to be compared against; see its Ownership Model note for the full risk tradeoff
@@ -575,6 +388,7 @@ When asked to add or use shadcn-compose, respond in this order:
 |---|---|
 | 2026-07-31 | Fixed a real drift: this skill's own icon-dependency note read as if no real icon library was available at all, but `heroicons-compose` (`io.github.ronjunevaldoz:heroicons-outline`, Maven Central) shipped since — verified real and live. Corrected the note to name it directly instead of only pointing at the icon-generator skill. Added a "Density/sizing requests" section after a report that these were producing hand-rolled `Style{}` overrides instead of using the library's own two real levers: `ShadcnTheme`'s `preset` param (`Mira`/`Nova` compress spacing/timing app-wide) for whole-app/whole-screen density, and each component's own `Size` enum (documented the real, verified `ButtonSize`: `Xs`/`Sm`/`Md`/`Lg`/`Icon`) for one component. Deliberately not scoped to the literal word "compact" — covers any density/sizing phrasing. Added a matching anti-pattern. Also extended `kmp-audit`'s `_detect_raw_component_bypass` to cover shadcn-compose projects (see that skill's own changelog). |
 | 2026-07-17 | Added explicit "if `ShadcnTheme` is already in use, stop suggesting `App*`/`AppTheme`" guidance, mirrored in `kmp-compose-design-system`'s own doc. The "never combine" rule existed but was never mechanically checked — added `kmp-audit`'s `_detect_mixed_design_system_usage`, scoped to both theme wrappers coexisting (not individual `App*` component names, which risked a false positive on unrelated real identifiers like `AppConfig(...)`). Caught and fixed a real bug in my own first draft: the regex only matched `ShadcnTheme(`/`AppTheme(` with parens, missing the common parenthesis-free trailing-lambda call shape (`AppTheme { ... }`) both functions support since every other param is defaulted. 4 new regression tests. |
+| 2026-08-04 | Split "Step 3: Using components" and "Step 4: Composing a real screen from multiple components" out of SKILL.md into `references/*.md`, leaving pointer stubs plus a new References section. SKILL.md drops from 583 to 396 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 17 skills fixed alongside it (KI-008). |
 | 2026-07-13 | Added a layout-pattern lookup reference (Shadcn Studio, shadcnstudio.com) for when no wireframe template or component here covers the needed shape — verified directly it's a third-party paid catalog, explicitly not affiliated with shadcn/ui or this library. Labeled clearly as a shape reference only: its output is React/JSX, not Kotlin/Compose, so any block from it must go through `kmp-layout-system`'s HTML-translation table plus `fetch_component_signature.py` verification, never copied directly. |
 | 2026-07-13 | Added Step 4: a worked multi-component composition example (settings-list-in-a-card, using `ShadcnCard`/`ShadcnItemGroup`/`ShadcnItem`/`ShadcnAvatar`/`ShadcnButton` together) — closes a real gap where the skill only taught single-component verification and per-element HTML mapping, never how to assemble components into a good screen. Found and documented a real trap in the process: `ShadcnItem`'s own official KDoc usage example references `ShadcnItemMedia`/`ShadcnItemContent`/`ShadcnItemActions` as if they were real slot composables — none exist anywhere in the repo (confirmed by searching the actual source, not just the doc comment). Also documented that `ShadcnItemGroup` auto-separates its items, so a manual `ShadcnSeparator` between them double-draws. 2 new anti-patterns. |
 | 2026-07-13 | Rechecked the real README and Maven Central directly (not `search.maven.org`): latest published version is `0.2.3`, not `0.2.1` — updated the Gradle version pin. Component count grew 62 → 64: found 2 new real components via a live file-list diff (`ShadcnIcon` — tinted icon renderer resolving `LocalShadcnContentColor`; `ShadcnStepper`/`ShadcnStepperStep` — multi-step progress indicator, presentational only, same pattern as `ShadcnTabs`/`ShadcnAccordion`). Added both to the Component Keyword Matrix and frontmatter keywords. |

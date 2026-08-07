@@ -318,134 +318,7 @@ AppScaffold(
 
 ## CompositionLocal: The Alternative for Deep Slots
 
-When you need the same value available many levels deep without threading it through
-every intermediate composable, use `CompositionLocal` instead of slot parameters or
-Koin injection.
-
-```kotlin
-// Problem: need theme colors 5 levels deep — slot threading becomes prop drilling
-@Composable
-fun AppTheme(
-    theme: AppThemeData,
-    content: @Composable () -> Unit,
-) {
-    CompositionLocalProvider(LocalAppTheme provides theme) {
-        content()
-    }
-}
-
-val LocalAppTheme = compositionLocalOf { lightTheme() }
-
-// Any descendant can access without parameter threading
-@Composable
-fun SomeDeepComponent() {
-    val colors = LocalAppTheme.current.colors    // no parameter needed
-    Box(modifier = Modifier.background(colors.primary)) { ... }
-}
-```
-
-**Rule: slots vs CompositionLocal**
-
-| Use slots when | Use CompositionLocal when |
-|---|---|
-| Content is positional (goes in a specific layout region) | Value needs to be available to an arbitrary subtree |
-| Caller customizes for a specific instance of a component | All descendants share the same value (theme, locale, toast host) |
-| The component has 1–4 distinct content regions | Threading through 3+ layers becomes unreadable |
-
-CompositionLocal is not a global variable — it's scoped to the subtree under the
-`CompositionLocalProvider`. Providers nest cleanly:
-
-```kotlin
-AppTheme(theme = darkTheme) {         // dark theme for everything inside
-    AppScaffold(...) {
-        AppTheme(theme = lightTheme) { // light theme override for this subtree only
-            SpecialDialog()
-        }
-    }
-}
-```
-
-### `compositionLocalOf` vs `staticCompositionLocalOf`
-
-This choice controls how Compose handles value changes:
-
-| | `compositionLocalOf` | `staticCompositionLocalOf` |
-|---|---|---|
-| Value can change at runtime | Yes — only consumers recompose | No — **entire subtree recomposes** |
-| Use for | Theme, locale, toast host, user preferences | Values set once at startup and never changed (e.g., platform type, screen density) |
-| Default factory required | Yes — called when no Provider is found | Yes — should `error("no provider")` if the value is always provided |
-
-```kotlin
-// ✓ Changes at runtime (dark/light switch) → compositionLocalOf
-val LocalAppTheme = compositionLocalOf<AppThemeData> { lightTheme() }
-
-// ✓ Never changes after app start → staticCompositionLocalOf
-val LocalPlatform = staticCompositionLocalOf<Platform> {
-    error("LocalPlatform must be provided at the root")
-}
-```
-
-### Cross-cutting concerns via CompositionLocal
-
-Use CompositionLocal for composition-scoped services that many unrelated composables need
-without a shared parent (toast hosts, snackbar state, analytics trackers, in-app review):
-
-```kotlin
-// Toast host — provided at the Scaffold level, consumed anywhere below it
-val LocalToastHostState = compositionLocalOf<ToastHostState> {
-    error("LocalToastHostState must be provided")
-}
-
-@Composable
-fun AppScaffold(content: @Composable (PaddingValues) -> Unit) {
-    val toastHostState = remember { ToastHostState() }
-    CompositionLocalProvider(LocalToastHostState provides toastHostState) {
-        Scaffold(
-            snackbarHost = { ToastHost(toastHostState) },
-            content = content,
-        )
-    }
-}
-
-// Any composable inside AppScaffold — no parameter threading needed
-@Composable
-fun SomeScreen() {
-    val toast = LocalToastHostState.current
-    Button(onClick = { toast.show("Saved!") }) { ... }
-}
-```
-
-### When NOT to use CompositionLocal
-
-| Do not use CompositionLocal for | Why | Use instead |
-|---|---|---|
-| Business logic services (repositories, use cases) | Composition-scoped DI bypasses testability; ViewModel lifecycle is separate from Compose | Koin `koinInject()` or ViewModel |
-| Values only needed 1–2 levels deep | Parameter threading is clearer at this depth | Explicit function parameters |
-| Navigation (passing NavController down) | NavController is not a composition-scoped value — it lives in `AppNavHost` | Navigation lambdas or `AppNavigator` |
-| ViewModel instances | ViewModels have their own lifecycle; use `koinViewModel()` | `koinViewModel()` |
-
-### Testing with CompositionLocal
-
-Override any `CompositionLocal` in your test's `setContent`:
-
-```kotlin
-@Test
-fun `toast shows on save success`() {
-    val fakeToast = FakeToastHostState()
-    composeTestRule.setContent {
-        CompositionLocalProvider(LocalToastHostState provides fakeToast) {
-            SomeScreen()
-        }
-    }
-    composeTestRule.onNodeWithText("Save").performClick()
-    assertEquals("Saved!", fakeToast.lastMessage)
-}
-```
-
-This is the main testability advantage of `CompositionLocal` over threading a parameter
-through every composable — you override at the root of the test, not in every caller.
-
----
+Full content: `references/compositionlocal-deep-slots.md`.
 
 ## Slot Performance
 
@@ -555,6 +428,14 @@ fun AppSomething(
 
 ---
 
+## References
+
+Full implementation content lives in `references/*.md`: `compositionlocal-deep-slots`,
+`testing`. Load the specific file named in the pointer under its matching heading above,
+not all of them.
+
+---
+
 ## Related Skills
 
 - `kmp-compose-design-system` — slot API is how design system components accept custom content
@@ -566,54 +447,7 @@ fun AppSomething(
 
 ## Testing
 
-```kotlin
-@get:Rule val composeRule = createComposeRule()
-
-@Test fun `header slot renders caller-provided content`() {
-    composeRule.setContent {
-        AppCard(
-            header = { Text("Card Title", modifier = Modifier.testTag("slot_header")) },
-            content = { Text("Body") },
-        )
-    }
-    composeRule.onNodeWithTag("slot_header").assertExists()
-    composeRule.onNodeWithTag("slot_header").assertTextEquals("Card Title")
-}
-
-@Test fun `empty slot lambda does not crash`() {
-    composeRule.setContent {
-        AppCard(header = {}, content = {})
-    }
-    // Composable must accept empty slots gracefully — no exception thrown
-}
-
-@Test fun `action slot fires callback on click`() {
-    var clicked = false
-    composeRule.setContent {
-        AppCard(
-            header = { Text("Title") },
-            content = { Text("Body") },
-            action = { AppButton(text = "OK", onClick = { clicked = true }) },
-        )
-    }
-    composeRule.onNodeWithText("OK").performClick()
-    assertTrue(clicked)
-}
-
-// Roborazzi screenshot for visual contract
-@Test fun `app_card_default_light screenshot`() {
-    captureRoboImage("slot_card_default_light.png") {
-        AppTheme(darkTheme = false) {
-            AppCard(
-                header = { Text("Card Header") },
-                content = { Text("Card body text.") },
-            )
-        }
-    }
-}
-```
-
----
+Full content: `references/testing.md`.
 
 ## Common Anti-Patterns
 
@@ -643,6 +477,7 @@ Keep snippets small. If the user provides a component name, use it in the exampl
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split "CompositionLocal: The Alternative for Deep Slots" and "Testing" out of SKILL.md into `references/*.md`, leaving pointer stubs plus a new References section. SKILL.md drops from 648 to 482 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 11 skills fixed alongside it (KI-008). |
 | 2026-06-28 | Expanded CompositionLocal section: compositionLocalOf vs staticCompositionLocalOf decision table, cross-cutting concerns pattern (toast host, analytics), when NOT to use CompositionLocal (DI, nav, ViewModel), and test override example. |
 | 2026-06-26 | Added restricted scope template guidance plus a pattern comparison table to distinguish plain slots, guarded scopes, and data/variant APIs. |
 | 2026-06-06 | Initial release. |

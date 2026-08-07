@@ -240,7 +240,8 @@ When asked to add an icon/logo/vector asset, respond in this order:
 1. Identify the source (SVG provided? raster? needs cropping?)
 2. Run the script — show the command and the report line only
 3. Show the one-line wiring snippet (`Icon(imageVector = …, tint = …)`)
-4. If the script refused (photo or node budget), relay the refusal and the fix — never work around it by writing paths manually
+4. If the script refused — photo or node budget — relay the refusal and the fix.
+   Never work around a refusal by writing paths manually.
 
 Never print generated path data into the conversation.
 

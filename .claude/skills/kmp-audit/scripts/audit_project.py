@@ -1205,8 +1205,15 @@ def _detect_library_multimodule_missing_build_logic(root: Path) -> list[str]:
 # enough signal to check (most app code is public by Kotlin's own default).
 
 _EXPLICIT_API_MARKER_RE = re.compile(r"\bexplicitApi(?:Warning)?\s*\(")
+# `val`/`var` included deliberately: a public property is as much of a published API
+# surface as a function under explicitApi() (binary-compatibility-validator tracks it
+# either way), but this regex matched only class/interface/object/fun, and
+# kmp-code-quality's Detekt block enabled only UndocumentedPublicClass/Function — so a
+# public `val` was documented by neither, despite the doc claiming "every public
+# declaration". Safe to match here because this whole detector is gated on the project
+# actually using explicitApi(), which forces the literal `public` keyword.
 _PUBLIC_DECL_RE = re.compile(
-    r"(?m)^(?P<indent>[ \t]*)public\s+(?:class|interface|object|fun)\s+(\w+)"
+    r"(?m)^(?P<indent>[ \t]*)public\s+(?:class|interface|object|fun|val|var)\s+(\w+)"
 )
 
 
@@ -1416,8 +1423,27 @@ def _detect_kotlin_reflect_in_common(root: Path) -> list[str]:
 # about what's actually inside. A file of extensions all sharing one receiver type is
 # fine; the smell is unrelated functions sharing only a generic filename.
 
-_UTILS_FILENAME_RE = re.compile(r"(Utils|Helpers)$", re.IGNORECASE)
-_TOP_LEVEL_FUN_RE = re.compile(r"(?m)^fun\s+(?:<[^>]*>\s*)?(?:([\w.]+)\.)?(\w+)\s*\(")
+# `Extensions` included because kmp-code-quality's own rule names all three
+# (`Utils.kt`/`Helpers.kt`/`Extensions.kt`) — the regex covered only two, so a god
+# `AppExtensions.kt` sailed through the check written to catch it. Safe to add: the
+# _GOD_UTILS_MIN_RECEIVER_TYPES threshold below still exempts the *recommended* shape
+# (`StringExtensions.kt`, all one receiver type), which is 1 receiver, not 3+.
+_UTILS_FILENAME_RE = re.compile(r"(Utils|Helpers|Extensions)$", re.IGNORECASE)
+# Visibility modifiers matter here: this was `^fun\s+`, which matches a bare top-level
+# `fun` only. Under explicitApi() — which every library this collection scaffolds turns
+# on — every top-level function is written `public fun`/`internal fun`, so the detector
+# found zero functions and silently never fired, in exactly the projects where API
+# hygiene matters most.
+# A generic receiver (`fun List<String>.foo()`) matched nothing at all before: the
+# receiver group was `([\w.]+)\.`, which stops dead at the `<`, so the whole line failed
+# to parse and the function was invisible to both the count and the receiver-diversity
+# check. The receiver's type arguments are consumed but not captured, so `List<String>`
+# and `List<Int>` count as the same receiver type — which is what "distinct receiver
+# types" should mean here.
+_TOP_LEVEL_FUN_RE = re.compile(
+    r"(?m)^(?:public\s+|internal\s+|private\s+)?fun\s+(?:<[^>]*>\s*)?"
+    r"(?:([\w.]+)(?:<[^>]*>)?\.)?(\w+)\s*\("
+)
 _GOD_UTILS_MIN_FUNCTIONS = 10
 _GOD_UTILS_MIN_RECEIVER_TYPES = 3
 
@@ -2671,6 +2697,37 @@ _WHY_MARKER_RE = re.compile(
 _CONTROL_FLOW_KEYWORD_RE = re.compile(r"\b(?:for|while|if|when)\s*\(")
 
 
+def _line_comment_index(line: str) -> int:
+    """Index of the first `//` that actually starts a comment, or -1.
+
+    A plain `line.find("//")` also matches the `//` inside a URL string literal, which
+    produced findings pointing at lines with no comment on them at all — e.g.
+    `val base = "https://build.example.com"` next to an `if` was reported as "this //
+    comment narrates what the block does". Skips over double-quoted and single-quoted
+    literals, honouring backslash escapes.
+
+    Single-line scope only: a `//` inside a multi-line raw string (`\"\"\"`) still slips
+    through, since this scans one line without cross-line state. That's a narrower gap
+    than the URL case and hasn't been observed in practice.
+    """
+    i, n = 0, len(line)
+    quote = ""
+    while i < n:
+        ch = line[i]
+        if quote:
+            if ch == "\\":
+                i += 2
+                continue
+            if ch == quote:
+                quote = ""
+        elif ch in ('"', "'"):
+            quote = ch
+        elif ch == "/" and i + 1 < n and line[i + 1] == "/":
+            return i
+        i += 1
+    return -1
+
+
 def _detect_what_comment_in_control_flow(root: Path) -> list[str]:
     """Flag // comments that narrate WHAT a loop/conditional does instead of WHY.
 
@@ -2687,7 +2744,7 @@ def _detect_what_comment_in_control_flow(root: Path) -> list[str]:
         except OSError:
             continue
         for i, line in enumerate(lines):
-            idx = line.find("//")
+            idx = _line_comment_index(line)
             if idx == -1:
                 continue
             comment_text = line[idx + 2 :].strip()
@@ -2800,6 +2857,63 @@ def _detect_long_stacked_comment_block(root: Path) -> list[str]:
             else:
                 flush(i)
         flush(len(lines))
+
+    return findings
+
+
+# A justification comment above a single Gradle dependency/config line is a distinct
+# smell from the long-stacked-block check above: it's often short enough (3-4 lines) to
+# duck under _LONG_COMMENT_BLOCK_MIN_LINES, and it's usually WHY-shaped (real reasoning),
+# so the WHY-signal exemption above would wave it through too. The tell isn't length or
+# tone, it's proportion: 3+ lines justifying one dependency declaration. Confirmed real —
+# a user reported an agent-written comment of this exact shape and asked for a mechanical
+# backstop, not just the "put it in the commit message" rule in kmp-code-quality.
+_SINGLE_LINE_DEPENDENCY_STATEMENT_RE = re.compile(
+    r"^\s*(?:implementation|api|compileOnly|runtimeOnly|ksp|kapt|"
+    r"testImplementation|androidTestImplementation|debugImplementation)\([^()]*\)\s*$"
+)
+_JUSTIFICATION_COMMENT_MIN_LINES = 3
+
+
+def _detect_justification_comment_above_single_statement(root: Path) -> list[str]:
+    """Flag a 3+ line // comment block directly above one single-line Gradle dependency
+    declaration — even a real, non-obvious reason doesn't need a paragraph to justify
+    adding one line; that reasoning belongs in the commit message, discoverable via
+    git blame exactly when someone needs it, not sitting in the file for every reader.
+    """
+    findings: list[str] = []
+    for path in root.rglob("*.gradle.kts"):
+        if _is_excluded(path, root):
+            continue
+        try:
+            lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+        except OSError:
+            continue
+
+        block_start: int | None = None
+        block_lines: list[str] = []
+        for i, line in enumerate(lines):
+            if _COMMENT_LINE_RE.match(line):
+                if block_start is None:
+                    block_start = i
+                block_lines.append(line)
+                continue
+            if (
+                block_start is not None
+                and len(block_lines) >= _JUSTIFICATION_COMMENT_MIN_LINES
+                and _SINGLE_LINE_DEPENDENCY_STATEMENT_RE.match(line)
+            ):
+                findings.append(
+                    f"justification comment above single statement [LOW]: "
+                    f"{path.relative_to(root)}:{block_start + 1} "
+                    f"— {len(block_lines)} consecutive // lines justifying one dependency "
+                    f"line; per kmp-code-quality's Comment & KDoc Conventions, put the "
+                    f"reasoning in the commit message instead, unless it's a gotcha a "
+                    f"future maintainer will independently re-trip on\n"
+                    f"    {i + 1} | {line.strip()}"
+                )
+            block_start = None
+            block_lines = []
 
     return findings
 
@@ -4551,6 +4665,7 @@ def audit_project(root: Path) -> list[str]:
     # ── WHAT-comment inside a loop or conditional ────────────────────────────────
     findings.extend(_detect_what_comment_in_control_flow(root))
     findings.extend(_detect_long_stacked_comment_block(root))
+    findings.extend(_detect_justification_comment_above_single_statement(root))
 
     # ── Destructive-read accessor (single-writer snapshot anti-pattern) ─────────
     findings.extend(_detect_destructive_read_accessor(root))

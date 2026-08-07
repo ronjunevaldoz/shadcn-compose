@@ -162,89 +162,7 @@ fun LoginForm() {
 
 ## The Hoist-Until-Shared Rule in Practice
 
-### Level 1: State local to one composable
-
-State that only one composable reads and writes — leave it there:
-
-```kotlin
-@Composable
-fun ExpandableSection(title: String, content: @Composable () -> Unit) {
-    var expanded by remember { mutableStateOf(false) }   // only this composable cares
-
-    Column {
-        Row(modifier = Modifier.clickable { expanded = !expanded }) {
-            AppText(title)
-            AppIcon(if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore)
-        }
-        if (expanded) content()
-    }
-}
-```
-
-No reason to hoist — no other composable needs `expanded`.
-
-### Level 2: Hoist to parent when siblings share state
-
-```kotlin
-// ❌ Each tab owns its selected state — can't coordinate
-@Composable
-fun TabRow() {
-    Tab1()   // has its own selected state internally
-    Tab2()   // has its own selected state internally
-    // how do we know which tab is selected to show its content?
-}
-
-// ✓ Hoist to parent — parent can show the right content
-@Composable
-fun TabsWithContent() {
-    var selectedTab by remember { mutableStateOf(0) }
-
-    Column {
-        AppTabs(
-            tabs = listOf("Overview", "Activity"),
-            selectedIndex = selectedTab,
-            onTabSelected = { selectedTab = it },
-        )
-        when (selectedTab) {
-            0 -> OverviewContent()
-            1 -> ActivityContent()
-        }
-    }
-}
-```
-
-### Level 3: Hoist to ViewModel when state needs async, persistence, or cross-screen sharing
-
-```kotlin
-// Form data that survives navigation, or must be validated against a repository
-class ProfileViewModel(private val repo: ProfileRepository) : ViewModel() {
-    private val _state = MutableStateFlow(ProfileState())
-    val state = _state.asStateFlow()
-
-    fun onNameChanged(name: String) {
-        _state.update { it.copy(name = name) }
-    }
-
-    fun onSave() {
-        viewModelScope.launch {
-            repo.updateProfile(_state.value)
-        }
-    }
-}
-
-@Composable
-fun ProfileScreen(viewModel: ProfileViewModel = koinViewModel()) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    ProfileForm(
-        name = state.name,
-        onNameChanged = viewModel::onNameChanged,
-        onSave = viewModel::onSave,
-    )
-}
-```
-
----
+Full content: `references/hoist-until-shared-rule.md`.
 
 ## `derivedStateOf` — Memoize Derived Compose State
 
@@ -459,61 +377,7 @@ the `Screen` composable holds nothing, the `ViewModel` holds business state, and
 
 ## Common Mistakes
 
-**1. Passing state down without hoisting it up first**
-
-If you find yourself passing the same state value through 3+ composables to reach a
-deep consumer, you have a hoisting gap. Either hoist to a shared ancestor or use
-`CompositionLocal` (see `kmp-compose-slot-api`).
-
-**2. Hoisting state but keeping the write in a child**
-
-If the parent holds the state but a deep child calls a callback that directly mutates
-a shared object, the parent's state is stale. State and its mutation logic must travel
-together — hoist both.
-
-**3. Using `mutableStateOf` outside a composable without `remember`**
-
-```kotlin
-// ❌ New MutableState on every recomposition — state is lost immediately
-@Composable
-fun Counter() {
-    val count = mutableStateOf(0)   // recreated every frame!
-    AppButton(onClick = { count.value++ }) { AppText("${count.value}") }
-}
-
-// ✓ Remembered — survives recompositions
-@Composable
-fun Counter() {
-    val count by remember { mutableStateOf(0) }
-    AppButton(onClick = { count++ }) { AppText("$count") }
-}
-```
-
-**4. Duplicating state (two sources of truth)**
-
-```kotlin
-// ❌ Two sources of truth — which one is correct?
-class SearchViewModel : ViewModel() {
-    var query by mutableStateOf("")
-}
-
-@Composable
-fun SearchBar(viewModel: SearchViewModel) {
-    var localQuery by remember { mutableStateOf(viewModel.query) }   // copy!
-    TextField(value = localQuery, onValueChange = {
-        localQuery = it           // updates local copy
-        viewModel.query = it      // also updates ViewModel — duplication
-    })
-}
-
-// ✓ Single source of truth — ViewModel owns it
-@Composable
-fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
-    TextField(value = query, onValueChange = onQueryChanged)
-}
-```
-
----
+Full content: `references/common-mistakes.md`.
 
 ## Verification
 
@@ -527,48 +391,7 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
 
 ## Testing
 
-```kotlin
-// Stateless composables are pure functions — easy to test with ComposeTestRule
-@get:Rule val composeRule = createComposeRule()
-
-@Test fun `stateless counter renders given count`() {
-    composeRule.setContent {
-        StatelessCounter(count = 7, onIncrement = {}, modifier = Modifier.testTag("counter"))
-    }
-    composeRule.onNodeWithTag("counter").assertTextContains("7")
-}
-
-@Test fun `increment callback fires on button click`() {
-    var incrementCalled = false
-    composeRule.setContent {
-        StatelessCounter(count = 0, onIncrement = { incrementCalled = true })
-    }
-    composeRule.onNodeWithContentDescription("Increment").performClick()
-    assertTrue(incrementCalled)
-}
-
-@Test fun `stateful wrapper delegates increment to hoisted state`() {
-    composeRule.setContent {
-        StatefulCounter()
-    }
-    composeRule.onNodeWithText("0").assertExists()
-    composeRule.onNodeWithContentDescription("Increment").performClick()
-    composeRule.onNodeWithText("1").assertExists()
-}
-
-@Test fun `callback receives correct argument`() {
-    var received = -1
-    composeRule.setContent {
-        StatelessSlider(value = 0.5f, onValueChange = { received = (it * 100).toInt() })
-    }
-    // Simulate a drag — check callback contract, not drag mechanics
-    // Use semantics-based interaction rather than pixel coordinates
-    composeRule.onNodeWithTag("slider").performSemanticsAction(SemanticsActions.SetProgress) { it(0.75f) }
-    assertEquals(75, received)
-}
-```
-
----
+Full content: `references/testing.md`.
 
 ## Common Anti-Patterns
 
@@ -583,6 +406,14 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
 - lifting state all the way to the ViewModel when it is purely ephemeral UI state (tooltip, dropdown)
 
 If a composable is hard to preview or test, check whether the state is in the right place.
+
+---
+
+## References
+
+Full implementation content lives in `references/*.md`: `hoist-until-shared-rule`,
+`common-mistakes`, `testing`. Load the specific file named in the pointer under its
+matching heading above, not all of them.
 
 ---
 
@@ -612,6 +443,7 @@ Keep snippets small. Use the user's actual composable names when provided.
 
 | Date | Change |
 |---|---|
+| 2026-08-04 | Split "The Hoist-Until-Shared Rule in Practice", "Common Mistakes", and "Testing" out of SKILL.md into `references/*.md`, leaving pointer stubs plus a new References section. SKILL.md drops from 618 to 449 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 14 skills fixed alongside it (KI-008). |
 | 2026-07-20 | Cross-referenced `kmp-audit`'s new `_detect_compose_unstable_collection_param` — mechanically flags the exact raw `List`/`Map`/`Set` parameter case the existing @Stable/@Immutable section already warns about, instead of relying on an agent to remember it unprompted. |
 | 2026-06-28 | Add @Stable/@Immutable stability annotation section: decision table, where to apply, contract rules. Two new anti-patterns. |
 | 2026-06-28 | Add derivedStateOf section: memoized derived Compose state, decision table (when to use vs plain expression), list-filter example, remember wrapping rule. Two new anti-patterns. |

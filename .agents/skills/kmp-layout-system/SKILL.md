@@ -220,95 +220,7 @@ Total row width (including all `│` and `─` borders) must be the same for eve
 
 ## Wireframe Templates
 
-Use whichever pattern matches the screen. Replace every `<placeholder>` with the
-project's real component name, size, label, or content.
-
-### Pattern A — narrow nav + secondary panel + main area
-
-```
-┌──────────┬──────────────────┬──────────────────────────────────────────────┐
-│ <Nav>    │ <Side Panel>     │ <Main Area>                                  │
-│ <N> dp   │ <N> dp           │ flex 1                                       │
-├──────────┼──────────────────┼──────────────────────────────────────────────┤
-│          │                  │                                              │
-│ [nav-1]* │ <item>           │ <primary content>                            │
-│ [nav-2]  │ <item>           │ <primary content>                            │
-│ [nav-3]  │ <item>           │                                              │
-│          │                  │                                              │
-│          │                  │──────────────────────────────────────────────│
-│ [nav-4]  │                  │ <action row>                                 │
-│ [nav-5]  │                  │──────────────────────────────────────────────│
-│          │                  │ <input area>                                 │
-└──────────┴──────────────────┴──────────────────────────────────────────────┘
-Legend: [nav-1] = <name>  [nav-2] = <name>  [nav-3] = <name>
-        [nav-4] = <name>  [nav-5] = <name>  * = active
-```
-
-### Pattern B — narrow nav + main area (secondary panel hidden)
-
-```
-┌──────────┬────────────────────────────────────────────────────────────┐
-│ <Nav>    │ <Main Area>                                                │
-│ <N> dp   │ flex 1  (<Side Panel> not rendered)                        │
-├──────────┼────────────────────────────────────────────────────────────┤
-│          │                                                            │
-│ [nav-1]  │ [tab] <Tab A>  [tab] <Tab B>  [tab] <Tab C>                │
-│          ├────────────────────────────────────────────────────────────┤
-│ [nav-2]* │                                                            │
-│          │  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐            │
-│          │  │        │  │        │  │        │  │        │            │
-│          │  └────────┘  └────────┘  └────────┘  └────────┘            │
-│          │  <label>      <label>      <label>     <label>             │
-│          │                                                            │
-│ [nav-3]  │                                                            │
-│ [nav-4]  │                                                            │
-└──────────┴────────────────────────────────────────────────────────────┘
-Legend: [nav-1] = <name>  [nav-2] = <name>  [nav-3] = <name>
-        [nav-4] = <name>  * = active
-```
-
-### Pattern C — modal / sheet overlay
-
-```
-┌──────────┬────────────────────────────────────────────────────────────┐
-│ <Nav>    │ [canvas stays in place — no swap]                          │
-│ <N> dp   │                                                            │
-├──────────┼────────────────────────────────────────────────────────────┤
-│          │                                                            │
-│ [nav-1]  │     ┌──────────────────────────────────────────────────┐   │
-│          │     │ <Sheet title>                                  X │   │
-│ [nav-2]  │     │ ──────────────────────────────────────────────── │   │
-│          │     │ <content line>                                   │   │
-│ [nav-3]* │     │ <content line>                                   │   │
-│ [nav-4]  │     │ <content line>                                   │   │
-│          │     └──────────────────────────────────────────────────┘   │
-└──────────┴────────────────────────────────────────────────────────────┘
-Legend: [nav-1] = <name>  [nav-2] = <name>  [nav-3] = <name>
-        [nav-4] = <name>  * = active
-```
-
-### Pattern D — full-screen (no persistent nav)
-
-For login, onboarding, splash, or any screen where no nav chrome is visible.
-
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│ <Screen Title>                                                         │
-│ full width                                                             │
-├────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│  <header / hero content>                                               │
-│                                                                        │
-│  <content row>                                       [scroll]          │
-│  <content row>                                                         │
-│  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~   │
-│                                                                        │
-│  [ <Primary action>                                                  ] │
-│  <secondary action>                                                    │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
----
+Full content: `references/wireframe-templates.md`.
 
 ## Translating an External HTML/CSS Wireframe
 
@@ -360,77 +272,7 @@ does this lookup in one command.
 
 ## Filled Example
 
-The templates above filled in for a generic messaging app (3 screens shown):
-
-**`docs/layout-system/inbox.md`**
-
-```
-+----------+------------------+----------------------------------------------+
-| Left Nav | Thread List      | Message View                                 |
-| 48 dp    | 240 dp           | flex 1                                       |
-+----------+------------------+----------------------------------------------+
-|          |                  |                                              |
-| [ch]*    | Alice            | [bubble] Hey, are you free tonight?          |
-|          | Bob              | [bubble] Yeah! What did you have in mind?    |
-| [cont]   | Team Alpha       |                                              |
-|          |                  |                                              |
-|          |                  |----------------------------------------------|
-| [sett]   |                  | [ Type a message...              ]  [Send]   |
-+----------+------------------+----------------------------------------------+
-Legend: [ch] = Chats  [cont] = Contacts  [sett] = Settings  * = active
-```
-
-**`docs/layout-system/contacts.md`** — Thread List hidden
-
-```
-+----------+------------------------------------------------------------+
-| Left Nav | Contacts                                                   |
-| 48 dp    | flex 1  (Thread List not rendered)                         |
-+----------+------------------------------------------------------------+
-|          |                                                            |
-| [ch]     | [tab] All  [tab] Favorites  [tab] Groups                   |
-|          +------------------------------------------------------------+
-| [cont]*  |                                                            |
-|          |  Alice Romano          alice@example.com                   |
-|          |  Bob Tanaka            bob@example.com                     |
-|          |  Team Alpha            3 members                           |
-|          |                                                            |
-| [sett]   |                                                            |
-+----------+------------------------------------------------------------+
-Legend: [ch] = Chats  [cont] = Contacts  [sett] = Settings  * = active
-```
-
----
-
-## Screen File Format
-
-Each screen file follows this structure:
-
-```
-# <Screen name>
-
-## Components
-
-| Component      | Width   | Visible         | Notes                     |
-|----------------|---------|-----------------|---------------------------|
-| <Component A>  | <N> dp  | <always / when> | <short note>              |
-| <Component B>  | flex 1  | Yes             | <short note>              |
-
----
-
-## <Variant name>
-
-<wireframe here>
-
----
-
-## Interaction notes
-
-- <tap / swipe / gesture> → <what happens>
-- <state change> → <how it looks>
-```
-
----
+Full content: `references/filled-example.md`.
 
 ## Validation Checklist
 
@@ -500,6 +342,14 @@ Keep explanations short. The wireframe is the primary output — do not narrate 
 
 ---
 
+## References
+
+Full implementation content lives in `references/*.md`: `wireframe-templates`,
+`filled-example`. Load the specific file named in the pointer under its matching heading
+above, not all of them.
+
+---
+
 ## Related Skills
 
 - `kmp-compose-adaptive-layout` — Compose implementation of breakpoint-driven
@@ -524,6 +374,7 @@ Keep explanations short. The wireframe is the primary output — do not narrate 
 | 2026-07-17 | Switched wireframe borders from plain ASCII (`+`/`-`/`|`) to Unicode box-drawing characters (`┌┐└┘├┤┬┴┼─│`) — plain ASCII renders visibly uneven at junctions in most monospace fonts; box-drawing glyphs are purpose-built single-width characters (verified: same East Asian Width class as ASCII, unlike double-width emoji) that render cleanly everywhere. Converted all 4 templates in this file and in `create_wireframe.py`'s `PATTERNS` dict programmatically (a hand-converted first attempt corrupted label hyphens like `[nav-1]` into `[nav─1]` — caught before shipping, fixed by only converting `-` adjacent to another border character). Also found and fixed a real, pre-existing bug this surfaced: `create_wireframe.py`'s Pattern D `full width` line was 1 character shorter than every other row, violating this skill's own same-width rule. |
 | 2026-07-12 | Added "Translating an External HTML/CSS Wireframe" — a real consumer project had an HTML wireframe implemented incorrectly (`ShadcnTextField` given a hallucinated `singleLine` parameter instead of using the real, dedicated `ShadcnTextarea` component). New structural mapping table (flex/grid → Row/Column, `<textarea>` → verify the project's actual multi-line shape, icon webfont classes → resolve via imagevector-generator, never assumed 1:1), and a hard rule: never assume a Compose component's parameters by analogy to the source HTML or to Compose's own API shape. Translates into this skill's existing `docs/layout-system/*.md` format — no parallel format for HTML sources. Expanded the mapping table with 6 more verified constructs (checkbox, radio group, range slider, table, modal dialog, file input — the last one has no shadcn-compose equivalent at all, confirmed rather than assumed) using `kmp-shadcn-compose`'s new `fetch_component_signature.py`. 2 new anti-patterns. |
 | 2026-07-09 | The one-screen-per-file rule was documented but had no enforcement beyond `create_wireframe.py` refusing to overwrite — a hand-edited file could still merge two screens together silently. New `kmp-audit` detector `combined layout screen file [MEDIUM]` flags any `docs/layout-system/*.md` file (other than `_components.md`) with more than one top-level heading. |
+| 2026-08-04 | Split "Wireframe Templates" and "Filled Example" out of SKILL.md into `references/*.md`, leaving pointer stubs plus a new References section. SKILL.md drops from 532 to 382 lines, clearing the agentskills.io 500-line recommendation. No content removed, only relocated. Part of the same backlog cleanup as the other 18 skills fixed alongside it (KI-008). |
 | 2026-07-03 | Added a repo-relative fallback path for generate_slot_scaffold.py — `~/.claude/skills/...` only resolves in a Claude Code install; Codex CLI and Gemini CLI installs need the `skills/...` relative path (see INSTALL.md). |
 | 2026-07-03 | Slot-grid contracts: create_wireframe.py now emits machine-readable frontmatter (slots/grid/weights per breakpoint); new generate_slot_scaffold.py compiles the contract into a <Screen>Layout.kt shell with slot lambdas — the agent fills content, never structure. Weights restricted to a closed fraction set, enforced by the raw weight literal audit smell. |
 | 2026-06-30 | Added create_wireframe.py — deterministic one-file-per-screen scaffolder (seeds section skeleton + pattern A/B/C/D block, bootstraps _components.md once, never overwrites). Hardened the one-screen-per-file rule; new anti-pattern against multi-screen files. |
