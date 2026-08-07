@@ -41,7 +41,8 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * arrow keys increment/decrement the focused field (day rolls into the next/previous month,
  * month rolls the year), and an invalid value reverts to the last valid one on blur. Calls
  * [onValueChange] as soon as all three fields form a valid calendar date -- not gated behind
- * a separate "confirm" step, same as the real reference.
+ * a separate "confirm" step, same as the real reference. [value] seeds the three fields'
+ * initial text and re-seeds them whenever it changes from outside (e.g. a calendar picker).
  *
  * Real shadcn/ui itself has no such component (this pattern isn't part of the base
  * registry) -- it's specific to that popular community date-range-picker recipe, which this

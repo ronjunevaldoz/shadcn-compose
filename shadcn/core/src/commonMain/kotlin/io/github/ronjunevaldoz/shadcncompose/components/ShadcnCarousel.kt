@@ -41,6 +41,10 @@ import kotlinx.coroutines.launch
  * own size), so an unconstrained caller silently gets a carousel that expands to the
  * full ambient width/height instead of a sensible card-like size.
  *
+ * [state] drives which page is shown (`rememberPagerState`), [orientation] picks
+ * horizontal or vertical paging, and [pageContent] renders the content for a given page
+ * index.
+ *
  * Usage:
  * ```
  * val state = rememberPagerState { items.size }
@@ -63,7 +67,7 @@ fun ShadcnCarousel(
     }
 }
 
-/** A circular Previous button that scrolls a [ShadcnCarousel]'s [state] back one page. */
+/** A circular Previous button that scrolls a [ShadcnCarousel]'s [state] back one page. [modifier] applies to the button. */
 @Composable
 fun ShadcnCarouselPrevious(
     state: PagerState,
@@ -110,7 +114,7 @@ fun ShadcnCarouselPrevious(
     }
 }
 
-/** A circular Next button that scrolls a [ShadcnCarousel]'s [state] forward one page. */
+/** A circular Next button that scrolls a [ShadcnCarousel]'s [state] forward one page. [modifier] applies to the button. */
 @Composable
 fun ShadcnCarouselNext(
     state: PagerState,

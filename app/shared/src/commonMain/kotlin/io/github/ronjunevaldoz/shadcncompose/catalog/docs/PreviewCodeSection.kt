@@ -37,7 +37,9 @@ import io.github.ronjunevaldoz.heroicons.outline.Eye
  * between the live preview and its source, rather than two separate labeled controls.
  *
  * [title], when given, shares the same header row as the toggle button instead of being
- * rendered as a separate line above it -- one header, not two stacked rows.
+ * rendered as a separate line above it -- one header, not two stacked rows. [code] is the
+ * source text shown in the "Code" state, [modifier] applies to the outer container, and
+ * [preview] renders the live example shown in the "Preview" state.
  */
 @Composable
 fun PreviewCodeSection(

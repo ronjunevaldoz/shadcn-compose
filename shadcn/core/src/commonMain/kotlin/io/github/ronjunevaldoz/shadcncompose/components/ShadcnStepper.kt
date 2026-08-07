@@ -26,11 +26,14 @@ enum class ShadcnStepperOrientation { Horizontal, Vertical }
 /**
  * A multi-step progress indicator, matching shadcn/ui community "stepper" patterns (e.g.
  * shadcn-studio's stepper variants): numbered circles connected by a line, with each step's
- * title/description alongside. Steps before [currentStep] render as completed (filled), the step
- * at [currentStep] as active (filled + ring), the rest as upcoming (muted).
+ * title/description alongside. [steps] is the ordered list to render. Steps before
+ * [currentStep] render as completed (filled), the step at [currentStep] as active
+ * (filled + ring), the rest as upcoming (muted).
  *
  * [showLabels] = false renders a compact indicator with just circles and connectors -- no
- * title/description row -- for tight spaces (progress dots, condensed headers).
+ * title/description row -- for tight spaces (progress dots, condensed headers). [orientation]
+ * picks [ShadcnStepperOrientation.Horizontal]/[ShadcnStepperOrientation.Vertical] layout, and
+ * [modifier] applies to the root container.
  *
  * This is the step *indicator* only -- Back/Next navigation and per-step content are left to the
  * caller (a `when (currentStep)` block plus [ShadcnButton]s, or a form built from

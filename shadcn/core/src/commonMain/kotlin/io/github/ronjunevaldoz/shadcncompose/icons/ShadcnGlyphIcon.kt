@@ -29,6 +29,9 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * this library provides itself precisely because the Style API doesn't expose one. This
  * internal util predates that and stays explicit-tint-only since every one of its call sites
  * already computes the right color directly from theme tokens.
+ *
+ * [imageVector] is the vector to render, [modifier] is applied to the underlying [Image], and
+ * [small] switches between `ShadcnIconStyles`' `smallSize`/`standardSize` tokens.
  */
 @Composable
 internal fun ShadcnGlyphIcon(

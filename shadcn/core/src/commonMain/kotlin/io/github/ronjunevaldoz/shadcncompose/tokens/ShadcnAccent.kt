@@ -51,7 +51,7 @@ enum class ShadcnAccent(
 
     val label: String get() = name
 
-    /** Applies this accent's primary/onPrimary override on top of [base]. */
+    /** Applies this accent's primary/onPrimary override on top of [base], selecting the [dark] or light pair. */
     fun applyTo(
         base: ShadcnColors,
         dark: Boolean,

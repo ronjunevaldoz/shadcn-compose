@@ -65,7 +65,8 @@ import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
  * [io.github.ronjunevaldoz.shadcncompose.App] already lifts and threads into
  * [io.github.ronjunevaldoz.shadcncompose.catalog.CatalogTopBar]'s own pickers -- no
  * separate copy of this state, so switching here, changing a picker, and switching back
- * to "Components" shows every page re-themed instantly.
+ * to "Components" shows every page re-themed instantly. [onStylePresetChange] fires when
+ * this page's own preset row is changed.
  */
 @Composable
 fun CreatePage(
@@ -220,9 +221,10 @@ fun CreatePage(
 }
 
 /**
- * A sidebar preset row matching real shadcn/ui's own `/create` settings panel: a label
- * caption over a bold current value, a small preview [swatch] on the trailing edge, and
- * a dropdown of [options] on click. Built directly on [ShadcnAnchoredPopup] plus the
+ * A sidebar preset row matching real shadcn/ui's own `/create` settings panel: a [label]
+ * caption over a bold current [value], a small preview [swatch] on the trailing edge, and
+ * a dropdown of [options] on click, firing [onValueChange] on pick. Built directly on
+ * [ShadcnAnchoredPopup] plus the
  * library's own `SelectVariant` trigger/panel/item styles (the same ones
  * [io.github.ronjunevaldoz.shadcncompose.components.ShadcnSelect] itself uses) rather
  * than extending `ShadcnSelect`, which has no slot for a two-line label+value trigger --

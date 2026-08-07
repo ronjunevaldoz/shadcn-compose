@@ -143,7 +143,7 @@ fun rememberCopyToClipboard(text: String): CopyToClipboardState {
 }
 
 /** Cross-fades between [label] and "Copied!" as [justCopied] flips -- a plain instant text
- *  swap read as a glitch, not a confirmation. */
+ *  swap read as a glitch, not a confirmation. [style] picks the rendered [ShadcnTextStyle]. */
 @Composable
 fun CopyLabel(
     justCopied: Boolean,

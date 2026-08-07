@@ -103,7 +103,8 @@ private fun nextMonth(
  * external date library needed for what is fundamentally a fixed 42-cell grid.
  *
  * [year]/[month] (the *displayed* month, 1-indexed) are hoisted separately from
- * [selected] so navigating months doesn't require a selection.
+ * [selected] so navigating months doesn't require a selection. [onMonthChange] fires
+ * when the prev/next chevrons move the displayed month.
  *
  * [disabled] matches real shadcn/ui's `disabled` matcher prop -- days it returns `true`
  * for render muted and non-interactive (real's `disabled:opacity-50 disabled:pointer-events-none`).

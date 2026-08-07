@@ -76,7 +76,7 @@ class ShadcnToastState {
 @Composable
 fun rememberShadcnToastState(): ShadcnToastState = remember { ShadcnToastState() }
 
-/** Renders [state]'s current toast queue as a bottom-aligned stack. Place once, near the root of your app. */
+/** Renders [state]'s current toast queue as a bottom-aligned stack via [modifier]. Place once, near the root of your app. */
 @Composable
 fun ShadcnToaster(
     state: ShadcnToastState,

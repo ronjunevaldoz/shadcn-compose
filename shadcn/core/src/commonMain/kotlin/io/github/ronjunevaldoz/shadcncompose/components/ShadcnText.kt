@@ -44,6 +44,11 @@ enum class ShadcnTextStyle {
  * [ShadcnTextStyle]'s [TextStyle] when non-null; `null` (the default) leaves the style's
  * own value untouched -- same override-only-when-set convention the rest of this
  * library's `Style {}` DSL uses elsewhere.
+ *
+ * [text] is the string to render, [style] picks the [ShadcnTextStyle] preset, [muted]
+ * resolves `colors.onSurfaceVariant` instead of the ambient/default color, [maxLines]/
+ * [overflow] cap and clip long text, and [color] overrides the resolved color entirely when
+ * not [Color.Unspecified].
  */
 @Composable
 fun ShadcnText(
@@ -99,9 +104,10 @@ fun ShadcnText(
 /**
  * [AnnotatedString] overload of [ShadcnText] -- for multi-line/styled text built with
  * `buildAnnotatedString {}` (e.g. a name assembled from several optional parts, a price
- * with a conditional discount suffix). Mirrors the [String] overload's parameters and
- * color/style resolution exactly; see that overload's doc for the [fontWeight]/[textAlign]
- * override behavior.
+ * with a conditional discount suffix). Mirrors the [String] overload's parameters
+ * ([text], [modifier], [style], [muted], [maxLines], [overflow], [color]) and color/style
+ * resolution exactly; see that overload's doc for the [fontWeight]/[textAlign] override
+ * behavior.
  */
 @Composable
 fun ShadcnText(
@@ -160,7 +166,8 @@ internal fun resolveShadcnTextColor(
 /**
  * Resolves the same [ShadcnTextStyle] -> [TextStyle] mapping [ShadcnText] uses, factored out so
  * [io.github.ronjunevaldoz.shadcncompose.components.ShadcnEmojiText] can match it exactly
- * without the two composables' typography rules drifting apart over time.
+ * without the two composables' typography rules drifting apart over time. [theme] supplies the
+ * base typography tokens and [style] selects which preset to resolve.
  *
  * [fontWeight]/[textAlign] override the resolved [TextStyle]'s own field when non-null;
  * `null` leaves the style's baked-in value untouched.

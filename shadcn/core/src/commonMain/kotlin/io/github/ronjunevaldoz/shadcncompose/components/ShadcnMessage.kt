@@ -41,7 +41,8 @@ internal val LocalMessageAlign = compositionLocalOf { ShadcnMessageAlign.Start }
  * lambda the caller populates in a fixed order) specifically so [ShadcnMessage] itself
  * can deterministically flip their visual order for [ShadcnMessageAlign.End] -- Compose
  * has no `flex-direction: row-reverse` equivalent that reorders an opaque composable
- * lambda's already-emitted children after the fact.
+ * lambda's already-emitted children after the fact. [modifier] applies to the row, and
+ * [align] picks which [ShadcnMessageAlign] side avatar/content flip toward.
  *
  * Usage:
  * ```

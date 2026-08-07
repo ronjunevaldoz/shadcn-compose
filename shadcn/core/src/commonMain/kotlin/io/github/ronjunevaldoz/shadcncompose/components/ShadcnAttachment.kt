@@ -184,7 +184,8 @@ fun ShadcnAttachmentContent(content: @Composable ColumnScope.() -> Unit) {
  * [ShadcnAttachmentState.Processing], matching real shadcn's CSS `shimmer` class --
  * approximated the same way [ShadcnSkeleton] approximates `animate-pulse`, an alpha
  * oscillation rather than a literal moving-gradient sweep (Compose has no CSS
- * `background-position` animation primitive).
+ * `background-position` animation primitive). [text] is the filename shown, and
+ * [modifier] applies to the root [ShadcnText].
  */
 @Composable
 fun ShadcnAttachmentTitle(

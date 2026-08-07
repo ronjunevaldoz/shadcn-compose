@@ -20,6 +20,10 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * components); if neither applies, falls back to `colors.onSurface` -- the same default
  * [ShadcnText] uses.
  *
+ * [imageVector] is the icon to draw, [modifier] applies to the underlying [Image], [small]
+ * switches to `ShadcnIconStyles`' compact size token, and [contentDescription] is passed
+ * straight through for accessibility (`null` means decorative/no announcement).
+ *
  * Usage:
  * ```
  * ShadcnButton(onClick = {}) {

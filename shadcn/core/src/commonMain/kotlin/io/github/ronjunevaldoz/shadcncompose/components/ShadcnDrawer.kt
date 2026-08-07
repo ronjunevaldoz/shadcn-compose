@@ -45,8 +45,8 @@ enum class ShadcnDrawerDirection { Top, Bottom, Start, End }
  * shadcn's `vaul`-based `Drawer` provides (the one thing [ShadcnSheet]'s `Bottom` side
  * doesn't). [dragOffsetPx] is always `>= 0` here (how far dragged *toward* the closing
  * edge; dragging the other way is clamped to 0 by the caller, there is nothing to
- * decide). `contentExtentPx <= 0` (not measured yet) can never legitimately clear the
- * threshold.
+ * decide). [contentExtentPx] <= 0 (not measured yet) can never legitimately clear the
+ * [thresholdFraction] of [contentExtentPx] that counts as a completed dismiss.
  */
 internal fun shouldDismissDrawer(
     dragOffsetPx: Float,

@@ -50,7 +50,8 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * [value] is nullable so the trigger can show [placeholder] text before anything is
  * picked (real shadcn's own canonical demo starts empty); pass a non-null default when
  * the control should never be empty (e.g. this catalog's own theme-preset pickers in
- * `CatalogTopBar`, which always have a current preset).
+ * `CatalogTopBar`, which always have a current preset). [options] is the full list shown
+ * in the popover, and [onValueChange] fires with the newly picked option on selection.
  *
  * Usage:
  * ```

@@ -20,7 +20,8 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
  * light/transparent background) but MUST be passed explicitly as the surrounding button's own
  * content color for anything with a colored background (e.g. `ButtonVariant.Default`'s
  * `onPrimary`) -- otherwise the icon renders in the wrong color for its background and can end
- * up nearly invisible.
+ * up nearly invisible. [icon] is the vector to draw, and [modifier] applies to the underlying
+ * [Image].
  */
 @Composable
 fun DocIcon(

@@ -33,6 +33,7 @@ internal val LocalAvatarSize = compositionLocalOf { ShadcnAvatarSize.Default }
  *
  * This library has no bundled image-loading dependency, so [content] is a plain slot --
  * pass your own `Image`/`AsyncImage`/etc., or [ShadcnAvatarFallback] for initials.
+ * [modifier] applies to the root circle, and [size] picks the `sm`/default/`lg` diameter.
  *
  * Usage:
  * ```

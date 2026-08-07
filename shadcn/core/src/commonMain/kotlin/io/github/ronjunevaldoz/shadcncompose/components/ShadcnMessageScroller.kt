@@ -85,9 +85,10 @@ private fun defaultMessageScrollerButton(
     }
 
 /**
- * Whether the scroll position is within [thresholdPx] of the bottom of the content, as a
- * plain function with no Compose dependency -- drives [ShadcnMessageScrollerButton]'s
- * visibility (shown only once scrolled meaningfully away from the bottom).
+ * Whether [value] (the current scroll position) is within [thresholdPx] of [maxValue] (the
+ * bottom of the content), as a plain function with no Compose dependency -- drives
+ * [ShadcnMessageScrollerButton]'s visibility (shown only once scrolled meaningfully away
+ * from the bottom).
  */
 internal fun isMessageScrollerNearBottom(
     value: Int,
@@ -100,7 +101,9 @@ internal fun isMessageScrollerNearBottom(
  * reader is currently [following] the live edge. Real shadcn's `message-scroller.tsx`
  * auto-scrolls to follow new messages *only* while the reader hasn't released the view --
  * if they've scrolled up into history, new messages must not yank them back down, even if
- * [scrollValue] happens to already be near [previousMaxValue] again.
+ * the current scroll position happens to already be near [previousMaxValue] again.
+ * [newMaxValue] is the content's max scroll extent after the new content arrived; a
+ * larger value than [previousMaxValue] is what actually signals new content arrived.
  */
 internal fun shouldAutoScrollToBottom(
     following: Boolean,
@@ -120,7 +123,8 @@ internal fun shouldAutoScrollToBottom(
  * reader happens to scroll back within [thresholdPx] of the bottom. Re-engaging requires
  * an explicit action ([ShadcnMessageScrollerButton] or `scrollToEnd()`), which is why this
  * function only ever returns `true` (a one-way transition) and callers should not use its
- * negation to resume following.
+ * negation to resume following. [value]/[maxValue]/[thresholdPx] are the same current
+ * position, max scroll extent, and near-bottom tolerance as [isMessageScrollerNearBottom].
  */
 internal fun shouldReleaseFollowing(
     value: Int,

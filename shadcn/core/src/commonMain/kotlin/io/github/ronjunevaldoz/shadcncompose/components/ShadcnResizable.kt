@@ -41,9 +41,10 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
  * The entire drag-to-resize calculation, as a plain function with no Compose dependency:
- * given the current split and how far the handle just moved (in px), returns the new
- * split, clamped to `[minFraction, maxFraction]`. `containerExtentPx <= 0` (not measured
- * yet) is a no-op, returning [currentFraction] unchanged rather than dividing by zero.
+ * given [currentFraction] and [dragDeltaPx] (how far the handle just moved, in px, relative
+ * to [containerExtentPx]), returns the new split, clamped to [minFraction]/[maxFraction].
+ * `containerExtentPx <= 0` (not measured yet) is a no-op, returning [currentFraction]
+ * unchanged rather than dividing by zero.
  */
 internal fun resizablePanelFraction(
     currentFraction: Float,
@@ -93,7 +94,9 @@ internal fun resizableHandleKeyboardDelta(
  * container's own measured extent -- simpler than a full multi-panel-group API, but
  * covers the documented two-pane use case. [content] receives each pane's already-sized
  * `Modifier` (via `RowScope`/`ColumnScope` weight) plus the current split fraction so the
- * caller can wire [ShadcnResizableHandle]'s `onDrag` back into it.
+ * caller can wire [ShadcnResizableHandle]'s `onDrag` back into it. [modifier] applies to
+ * the root container, [orientation] picks a horizontal or vertical split, and
+ * [initialFraction]/[minFraction]/[maxFraction] seed and clamp the draggable split.
  *
  * Usage:
  * ```

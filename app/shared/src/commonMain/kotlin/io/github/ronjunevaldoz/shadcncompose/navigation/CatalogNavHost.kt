@@ -64,7 +64,7 @@ private val CATALOG_BASE_RADIUS = ShadcnRadius(4.dp)
  * - [stylePreset]/[baseColor]/[accent] (the picker values) apply to the sidebar and
  *   content pane only -- the outer theme wrapping the top bar uses fixed constants
  *   instead, so the top bar keeps a stable brand identity regardless of what a reader
- *   is previewing.
+ *   is previewing. [onStylePresetChange] fires when the top bar's preset picker changes.
  */
 @Composable
 fun CatalogNavHost(

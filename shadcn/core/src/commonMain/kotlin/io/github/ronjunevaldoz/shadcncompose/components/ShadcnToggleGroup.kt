@@ -22,7 +22,7 @@ data class ToggleGroupItem(val value: String, val label: String)
  * has no per-side border control, so the group itself draws a single shared border
  * (Outline variant only) and each item is borderless -- same visual result, simpler
  * implementation. Supports single- or multi-select depending on how [selected] and
- * [onSelectedChange] are wired by the caller.
+ * [onSelectedChange] are wired by the caller. [items] is the ordered list of segments to render.
  *
  * Usage:
  * ```

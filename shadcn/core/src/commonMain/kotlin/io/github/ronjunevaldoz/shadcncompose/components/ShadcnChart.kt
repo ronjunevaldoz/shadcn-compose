@@ -64,7 +64,7 @@ fun ShadcnChartContainer(
     }
 }
 
-/** A color-swatch + label row for every series in [config], matching `ChartLegendContent`. */
+/** A color-swatch + label row for every series in [config], matching `ChartLegendContent`. [modifier] applies to the row. */
 @Composable
 fun ShadcnChartLegend(
     config: ShadcnChartConfig,

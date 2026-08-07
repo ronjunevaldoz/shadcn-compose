@@ -46,7 +46,8 @@ private const val GITHUB_URL = "https://github.com/ronjunevaldoz/shadcn-compose"
  * [io.github.ronjunevaldoz.shadcncompose.App]'s doc comment). [isDarkMode] is the one
  * axis this top bar *does* react to, shared with the sidebar/content pane below it --
  * see [io.github.ronjunevaldoz.shadcncompose.navigation.CatalogNavHost]'s doc comment
- * for where that scoping split actually happens.
+ * for where that scoping split actually happens. [onStylePresetChange]/[onBaseColorChange]/
+ * [onAccentChange]/[onToggleDarkMode] fire when the matching picker changes.
  *
  * Plain [ButtonVariant.Ghost]/[ButtonVariant.Secondary] buttons for the nav pair, not
  * [ShadcnTabsList] -- that component's pill-track styling is built for in-page content

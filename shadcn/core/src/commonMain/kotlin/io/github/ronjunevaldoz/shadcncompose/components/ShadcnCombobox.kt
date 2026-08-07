@@ -136,6 +136,8 @@ fun <T> ShadcnCombobox(
  * [ShadcnSelect] convention and the common case; opt into multi-select explicitly by
  * calling this overload instead of flipping a boolean on the single-select one, so a
  * caller's `value: T?` vs `values: List<T>` state shape is obvious at the call site.
+ * [options] is the full pickable list, and [onValuesChange] fires with the updated
+ * selection on every toggle.
  *
  * The popup stays open after a pick (real Base UI multi-select combobox behaves the same
  * way) so multiple options can be toggled in one session; dismiss by clicking outside or

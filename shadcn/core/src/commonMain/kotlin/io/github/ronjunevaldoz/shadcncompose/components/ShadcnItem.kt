@@ -43,6 +43,9 @@ enum class ShadcnItemVariant { Default, Outline, Muted }
  * `focus-visible:ring-[3px]`) for the "tap the row to view details" use case, without
  * forcing every informational-only usage to carry unused interaction machinery.
  *
+ * [modifier] applies to the root row, and [variant] picks [ShadcnItemVariant.Default]/
+ * [ShadcnItemVariant.Outline]/[ShadcnItemVariant.Muted] styling.
+ *
  * Usage:
  * ```
  * ShadcnItemGroup {
