@@ -82,7 +82,6 @@ Group ID: `io.github.ronjunevaldoz`   Artifact: `shadcn-compose`   Published to:
 | Module | Purpose |
 |---|---|
 | `:shadcn:core` | Published artifact (`io.github.ronjunevaldoz:shadcn-compose`) -- tokens, `ShadcnTheme`, every component (including the AI Elements family: Message/Bubble/Attachment/Marker/MessageScroller), styles |
-| `:core` | Small shared utility module (currently minimal, stock demo code) |
 | `:app:shared` | Catalog/docs app shared code -- navigation, sidebar, per-component doc pages (not published) |
 | `:app:androidApp` / `:app:desktopApp` / `:app:webApp` | Catalog app platform entry points (not published) |
 | `:app:iosApp` | Xcode project for the catalog app on iOS (not published) |
