@@ -1,5 +1,13 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+// Catalog app's own version, derived from the library's VERSION_NAME (gradle.properties)
+// so a real semver bump always produces a strictly higher versionCode -- a hardcoded
+// literal passes every local check and only fails as a hard Play Console rejection on
+// the second upload.
+val libVersionName = providers.gradleProperty("VERSION_NAME").get()
+val (libMajor, libMinor, libPatch) = libVersionName.split(".").map { it.toInt() }
+val catalogVersionCode = libMajor * 1_000_000 + libMinor * 1_000 + libPatch
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
@@ -28,8 +36,8 @@ android {
         applicationId = "io.github.ronjunevaldoz.shadcncompose"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = catalogVersionCode
+        versionName = libVersionName
     }
     packaging {
         resources {

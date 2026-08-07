@@ -52,7 +52,6 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
         }
         commonMain.dependencies {
-            api(projects.core)
             api(projects.shadcn.core)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
