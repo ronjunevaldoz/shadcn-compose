@@ -45,6 +45,9 @@ Every file that references a component's `style` parameter needs an opt-in:
 @file:OptIn(ExperimentalFoundationStyleApi::class)
 ```
 
+> [!NOTE]
+> **Version Compatibility**: `shadcn-compose` uses Compose's experimental `@ExperimentalFoundationStyleApi`. Ensure your application uses **Compose Multiplatform 1.11.1+** and **Kotlin 2.4.0+** to avoid runtime binary interface mismatches (`AbstractMethodError`).
+
 ## Claude Code Skills
 
 Using shadcn-compose with an AI coding agent? Two [Claude Code](https://claude.com/claude-code)

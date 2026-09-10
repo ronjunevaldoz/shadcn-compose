@@ -1,0 +1,101 @@
+name: Bug Report
+description: Create a report to help us reproduce and fix a bug
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the form below carefully so we can investigate effectively.
+
+  - type: input
+    id: shadcn-version
+    attributes:
+      label: shadcn-compose Version
+      description: What version of shadcn-compose are you using?
+      placeholder: e.g., 0.2.7
+    validations:
+      required: true
+
+  - type: input
+    id: cmp-version
+    attributes:
+      label: Compose Multiplatform Version
+      description: What version of Compose Multiplatform is your app using?
+      placeholder: e.g., 1.11.1
+    validations:
+      required: true
+
+  - type: input
+    id: kotlin-version
+    attributes:
+      label: Kotlin Version
+      description: What version of Kotlin is your app using?
+      placeholder: e.g., 2.4.0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: platforms
+    attributes:
+      label: Affected Platform(s)
+      description: Which target platform(s) does this issue occur on?
+      options:
+        - label: Android
+        - label: iOS
+        - label: Desktop (JVM)
+        - label: Web (WasmJS)
+        - label: Web (JS)
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment / JDK / OS
+      description: Operating System, JDK version, and Build Tools
+      placeholder: e.g., macOS Sonoma 14.5, JDK 21, AGP 9.0.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Stack Trace / Error Logs
+      description: Paste any relevant error stack traces or logs here.
+      render: shell
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Snippet / Minimal Reproducible Example
+      description: Please provide the relevant Composable / style code triggering the issue.
+      render: kotlin
+    validations:
+      required: true
