@@ -11,7 +11,7 @@
 
 Features 70+ components built on token-based theming with zero Material dependencies.
 
-🚀 **[Live Demo](https://ronjunevaldoz.github.io/shadcn-compose/)** | 📚 **[Component Catalog](docs/components.md)**
+[Live Demo](https://ronjunevaldoz.github.io/shadcn-compose/) | [Component Catalog](docs/components.md)
 
 ---
 
