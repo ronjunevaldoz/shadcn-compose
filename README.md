@@ -4,20 +4,20 @@
 [![Kotlin](https://img.shields.io/badge/kotlin-2.4.0-blue.svg?logo=kotlin)](https://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.11.1-blue.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
 ![Platforms](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Desktop%20%7C%20Web-blue.svg)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.ronjunevaldoz/shadcn-compose.svg)](https://central.sonatype.com/artifact/io.github.ronjunevaldoz/shadcn-compose)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
-A [shadcn/ui](https://ui.shadcn.com)-inspired component library for **Kotlin Multiplatform / Compose
-Multiplatform** — Android, iOS, Desktop, and Web from one `commonMain` source set. Token-based
-theming and sealed variant systems, built on the experimental **Compose Styles API**. No Material
-dependency, no icon-library dependency — every component is drawn from this library's own tokens.
+**shadcn-compose** is a [shadcn/ui](https://ui.shadcn.com)-inspired component library for **Compose Multiplatform** (Android, iOS, Desktop, and Web). 
 
-70+ components across primitives, forms, overlays, data display, and AI Elements (chat UI) — see the
-[**component catalog**](docs/components.md) for the full list with keywords, and
-[Registry parity](#registry-parity) for how closely each tracks real shadcn/ui.
+Features 70+ components built on token-based theming with zero Material dependencies.
 
-## Installation
+🚀 **[Live Demo](https://ronjunevaldoz.github.io/shadcn-compose/)** | 📚 **[Component Catalog](docs/components.md)**
 
-Published to Maven Central.
+---
+
+## Quick Start
+
+### 1. Add Dependency
 
 ```toml
 # gradle/libs.versions.toml
@@ -39,80 +39,55 @@ kotlin {
 }
 ```
 
-Every file that references a component's `style` parameter needs an opt-in:
+> [!NOTE]
+> **Compatibility**: Requires **Compose Multiplatform 1.11.1+** and **Kotlin 2.4.0+**. Add `@file:OptIn(ExperimentalFoundationStyleApi::class)` to files referencing component styles.
+
+### 2. Usage Example
 
 ```kotlin
-@file:OptIn(ExperimentalFoundationStyleApi::class)
+@Composable
+fun App() {
+    ShadcnTheme {
+        ShadcnButton(onClick = { /* ... */ }) {
+            ShadcnText("Click Me")
+        }
+    }
+}
 ```
 
-> [!NOTE]
-> **Version Compatibility**: `shadcn-compose` uses Compose's experimental `@ExperimentalFoundationStyleApi`. Ensure your application uses **Compose Multiplatform 1.11.1+** and **Kotlin 2.4.0+** to avoid runtime binary interface mismatches (`AbstractMethodError`).
+---
 
-## Claude Code Skills
+## Claude Code / AI Agent Skills
 
-Using shadcn-compose with an AI coding agent? Two [Claude Code](https://claude.com/claude-code)
-skills document real, source-verified usage — not guessed from analogy to other component
-libraries:
-
-- **`kmp-shadcn-compose`** — Maven Central setup, `ShadcnTheme`, and individual component
-  signatures, verified against this repo's own source.
-- **`kmp-shadcn-compose-layouts`** — composes components into full page layouts (login/auth
-  forms, generic forms, data table screens, admin/dashboard shells), plus an audit script
-  (`scan_shadcn_layout_gaps.py`) that flags hand-rolled form fields, hand-rolled tables, and
-  admin shells missing `ShadcnSidebar` in an existing project, suggesting the specific migration.
-
-Install both (and the rest of the [kmp-agent-skills](https://github.com/ronjunevaldoz/kmp-agent-skills)
-collection) into a project:
+Using `shadcn-compose` with an AI coding assistant? Install our source-verified skills from [kmp-agent-skills](https://github.com/ronjunevaldoz/kmp-agent-skills):
 
 ```bash
 npx skills add ronjunevaldoz/kmp-agent-skills
 ```
 
-## Registry parity
+- **`kmp-shadcn-compose`**: Component signatures & theme setup.
+- **`kmp-shadcn-compose-layouts`**: Page layouts, form patterns & layout gap audit.
 
-Every component in real shadcn/ui's `base/*` registry is implemented here, with a small set of
-deliberate, documented exceptions — `native-select`, `direction`, `data-table`, and `toast`
-(deprecated upstream in favor of `sonner`, implemented here as `ShadcnToast`). Full reasoning in
-[`.claude/AGENTS.md`](.claude/AGENTS.md#registry-parity-status); token/component-level verification
-against real source in [`docs/shadcn-parity.md`](docs/shadcn-parity.md).
+---
 
-## Project structure
+## Project Structure
 
-- [`/shadcn/core`](./shadcn/core/src) — the published library (`commonMain` has every `Shadcn*` component).
-- [`/core`](./core/src) — shared utilities used across the catalog app's targets.
-- [`/app/shared`](./app/shared/src) — the catalog/documentation app's shared UI.
-- [`/app/androidApp`](./app/androidApp), [`/app/desktopApp`](./app/desktopApp), [`/app/webApp`](./app/webApp) — catalog app platform entry points.
-- [`/app/iosApp`](./app/iosApp/iosApp) — the iOS entry point; open in Xcode.
+- [`/shadcn/core`](./shadcn/core/src) — Published component library (`Shadcn*`).
+- [`/app/shared`](./app/shared/src) — Catalog and documentation web/app UI.
+- [`/app/desktopApp`](./app/desktopApp), [`/app/androidApp`](./app/androidApp), [`/app/webApp`](./app/webApp), [`/app/iosApp`](./app/iosApp) — Platform targets.
+
+---
 
 ## Development
 
-Requires JDK 21 (matches CI). Android SDK and Xcode only needed for those specific targets.
-
 ```bash
-./gradlew build                          # build everything
-./gradlew :app:desktopApp:run            # run the catalog app (desktop)
-./gradlew :shadcn:core:jvmTest           # library tests + Roborazzi screenshots (JVM)
-./gradlew :shadcn:core:allTests          # library tests, all platforms
-./gradlew ktlintCheck detekt lint        # code quality (also run in CI)
-./scripts/check_style_block_theme_reads.sh
+./gradlew build                          # Build all targets
+./gradlew :app:desktopApp:run            # Run catalog app (Desktop)
+./gradlew :shadcn:core:jvmTest           # Run unit & Roborazzi screenshot tests
 ```
 
-See [`docs/visual-testing.md`](docs/visual-testing.md) for the screenshot-testing workflow
-(`recordRoborazziJvm`/`verifyRoborazziJvm`) and [`docs/shadcn-parity.md`](docs/shadcn-parity.md) for
-how components are checked against real shadcn/ui source.
+---
 
 ## License
 
 [Apache License 2.0](LICENSE).
-
-The curated emoji reaction set used by `ShadcnEmojiText`
-(`shadcn/core/src/commonMain/.../icons/emoji/`) is derived from
-[Twemoji](https://github.com/jdecked/twemoji), licensed under
-[CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Copyright 2020 Twitter, Inc and other
-contributors, graphics licensed under CC-BY 4.0.
-
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-and the source of design truth, [shadcn/ui](https://ui.shadcn.com).
