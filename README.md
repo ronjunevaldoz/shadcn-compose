@@ -88,6 +88,12 @@ npx skills add ronjunevaldoz/kmp-agent-skills
 
 ---
 
+## Contributing
+
+Contributions are welcome! Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) for development setup, testing, and contribution guidelines.
+
+---
+
 ## License
 
 [Apache License 2.0](LICENSE).
