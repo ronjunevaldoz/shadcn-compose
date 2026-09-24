@@ -22,7 +22,7 @@ Features 70+ components built on token-based theming with zero Material dependen
 ```toml
 # gradle/libs.versions.toml
 [versions]
-shadcn-compose = "0.2.8"
+shadcn-compose = "0.2.9"
 
 [libraries]
 shadcn-compose = { module = "io.github.ronjunevaldoz:shadcn-compose", version.ref = "shadcn-compose" }

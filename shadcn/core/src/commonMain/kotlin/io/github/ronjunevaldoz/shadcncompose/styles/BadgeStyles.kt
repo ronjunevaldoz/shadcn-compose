@@ -7,8 +7,10 @@ import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.contentPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors
 
 sealed interface BadgeVariant {
     data object Default : BadgeVariant
@@ -21,6 +23,15 @@ sealed interface BadgeVariant {
 
     data object Ghost : BadgeVariant
 }
+
+fun BadgeVariant.contentColor(colors: ShadcnColors): Color =
+    when (this) {
+        BadgeVariant.Default -> colors.onPrimary
+        BadgeVariant.Secondary -> colors.onSecondary
+        BadgeVariant.Destructive -> colors.onDestructive
+        BadgeVariant.Outline -> colors.onSurface
+        BadgeVariant.Ghost -> colors.onMuted
+    }
 
 @Composable
 fun BadgeVariant.rememberStyle(): Style =

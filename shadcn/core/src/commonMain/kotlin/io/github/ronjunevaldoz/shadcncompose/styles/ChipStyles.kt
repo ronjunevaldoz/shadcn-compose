@@ -9,7 +9,9 @@ import androidx.compose.foundation.style.contentPadding
 import androidx.compose.foundation.style.hovered
 import androidx.compose.foundation.style.pressed
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnColors
 
 // Chip isn't a real shadcn/ui component (shadcn only ships a static Badge), so
 // there's no upstream reference here -- but it follows the same conventions
@@ -24,6 +26,13 @@ sealed interface ChipVariant {
     // Easily inject unique modifiers per-instance if needed down the road
 //    data class CustomTint(val customColor: Color) : ChipVariant
 }
+
+fun ChipVariant.contentColor(colors: ShadcnColors): Color =
+    when (this) {
+        ChipVariant.Default -> colors.onSecondary
+        ChipVariant.Selected -> colors.onPrimary
+        ChipVariant.Outline -> colors.onSurface
+    }
 
 @Composable
 fun ChipVariant.rememberStyle(): Style =

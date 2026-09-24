@@ -10,11 +10,14 @@ import androidx.compose.foundation.style.Style
 import androidx.compose.foundation.style.rememberUpdatedStyleState
 import androidx.compose.foundation.style.styleable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.ronjunevaldoz.shadcncompose.styles.ChipVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.contentColor
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
+import io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme
 
 /**
@@ -81,9 +84,8 @@ fun ShadcnChip(
         if (leadingIcon != null) {
             leadingIcon(Modifier.size(theme.icons.standardSize))
         }
-        // Still missing the explicit `color = variant.contentColor` pass-through
-        // flagged as a pending dark-mode regression in a separate audit -- out of
-        // scope for this pass (dead ShadcnRadius/ShadcnDataSlots cleanup only).
-        ShadcnText(text = label)
+        CompositionLocalProvider(LocalShadcnContentColor provides variant.contentColor(theme.colors)) {
+            ShadcnText(text = label)
+        }
     }
 }

@@ -77,8 +77,9 @@ fun ShadcnText(
     // node, which (being nearer) overrides the ancestor's. The default/uncolored case stays
     // unwrapped so existing ambient-color inheritance (buttons, badges, chips, alerts, ...)
     // is untouched.
+    val ambientColor = io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor.current
     val hasColorOverride = color != Color.Unspecified || muted
-    val textColor = resolveShadcnTextColor(theme, color, muted)
+    val textColor = resolveShadcnTextColor(theme, color, muted, ambientColor)
 
     if (hasColorOverride) {
         val styleState = remember { MutableStyleState(interactionSource = null) }
@@ -123,8 +124,9 @@ fun ShadcnText(
 ) {
     val theme = ShadcnTheme.LocalShadcnTheme.current
     val resolvedStyle = resolveShadcnTypography(theme, style, fontWeight, textAlign)
+    val ambientColor = io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor.current
     val hasColorOverride = color != Color.Unspecified || muted
-    val textColor = resolveShadcnTextColor(theme, color, muted)
+    val textColor = resolveShadcnTextColor(theme, color, muted, ambientColor)
 
     if (hasColorOverride) {
         val styleState = remember { MutableStyleState(interactionSource = null) }
@@ -156,10 +158,12 @@ internal fun resolveShadcnTextColor(
     theme: ShadcnThemeData,
     color: Color,
     muted: Boolean,
+    ambientColor: Color = Color.Unspecified,
 ): Color =
     when {
         color != Color.Unspecified -> color
         muted -> theme.colors.onSurfaceVariant
+        ambientColor != Color.Unspecified -> ambientColor
         else -> theme.colors.onSurface
     }
 

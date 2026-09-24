@@ -10,8 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.runtime.CompositionLocalProvider
 import io.github.ronjunevaldoz.shadcncompose.styles.BadgeVariant
+import io.github.ronjunevaldoz.shadcncompose.styles.contentColor
 import io.github.ronjunevaldoz.shadcncompose.styles.rememberStyle
+import io.github.ronjunevaldoz.shadcncompose.theme.LocalShadcnContentColor
+import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 
 /**
  * Label/tag component.
@@ -38,6 +42,8 @@ fun ShadcnBadge(
         modifier = modifier.styleable(styleState, variant.rememberStyle(), style),
         contentAlignment = Alignment.Center,
     ) {
-        content()
+        CompositionLocalProvider(LocalShadcnContentColor provides variant.contentColor(shadcnTheme.colors)) {
+            content()
+        }
     }
 }
