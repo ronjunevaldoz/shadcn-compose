@@ -5,6 +5,7 @@ package io.github.ronjunevaldoz.shadcncompose.styles
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
+import androidx.compose.foundation.style.contentPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import io.github.ronjunevaldoz.shadcncompose.theme.ShadcnTheme

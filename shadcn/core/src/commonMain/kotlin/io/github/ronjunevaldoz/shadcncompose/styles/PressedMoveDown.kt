@@ -1,5 +1,6 @@
 package io.github.ronjunevaldoz.shadcncompose.styles
 
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.StyleScope
 import androidx.compose.foundation.style.pressed
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.dp
  */
 @OptIn(ExperimentalFoundationStyleApi::class)
 fun StyleScope.pressedMoveDown(pushDown: Dp = 0.6.dp) {
-    animate {
+    animate(toSpec = spring(), fromSpec = spring()) {
         pressed {
             translationY(pushDown.toPx())
         }
