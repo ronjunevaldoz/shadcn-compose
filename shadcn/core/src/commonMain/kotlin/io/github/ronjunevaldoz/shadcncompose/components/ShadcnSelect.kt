@@ -107,7 +107,7 @@ fun <T> ShadcnSelect(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            ShadcnText(value?.let(label) ?: placeholder, style = ShadcnTextStyle.BodySmall, muted = value == null)
+            ShadcnText(value?.let(label) ?: placeholder, muted = value == null)
             icon()
         }
 

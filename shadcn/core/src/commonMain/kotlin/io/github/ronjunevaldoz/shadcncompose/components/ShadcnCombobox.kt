@@ -119,8 +119,6 @@ fun <T> ShadcnCombobox(
         ) {
             ShadcnText(
                 value?.let(label) ?: placeholder,
-                // BodyMedium's line height is taller than the 36dp trigger's content box
-                style = ShadcnTextStyle.BodySmall,
                 muted = value == null,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -200,7 +198,6 @@ fun <T> ShadcnCombobox(
             if (values.isEmpty()) {
                 ShadcnText(
                     placeholder,
-                    style = ShadcnTextStyle.BodySmall,
                     muted = true,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
