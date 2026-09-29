@@ -32,6 +32,7 @@ kotlin {
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
+        binaries.executable() // same as js: UI tests need the webpack bundle
     }
 
     androidLibrary {
