@@ -2,6 +2,9 @@
 
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
@@ -96,4 +99,35 @@ class ComboboxScreenshotTest : ShadcnScreenshotTest() {
     @Test fun grouped_light() = grouped(darkTheme = false)
 
     @Test fun grouped_dark() = grouped(darkTheme = true)
+
+    // descenders (g, y, parentheses) used to be cut off: the label was BodyMedium inside the 36dp trigger;
+    // and fillMaxWidth() used to be ignored (the trigger was a fixed 200dp)
+    private fun labelAndWidth(darkTheme: Boolean) {
+        snapshot("combobox_label_full_width", darkTheme = darkTheme) {
+            androidx.compose.foundation.layout.Column(
+                modifier = androidx.compose.ui.Modifier.width(320.dp),
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+            ) {
+                ShadcnCombobox(
+                    value = "Percentage (%)",
+                    options = listOf("Percentage (%)", "Fixed (₱)"),
+                    onValueChange = {},
+                    modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
+                )
+                ShadcnCombobox(
+                    value = "Typography & spacing, quickly",
+                    options =
+                        listOf(
+                            "Typography & spacing, quickly",
+                        ),
+                    onValueChange = {
+                    },
+                )
+            }
+        }
+    }
+
+    @Test fun label_full_width_light() = labelAndWidth(darkTheme = false)
+
+    @Test fun label_full_width_dark() = labelAndWidth(darkTheme = true)
 }

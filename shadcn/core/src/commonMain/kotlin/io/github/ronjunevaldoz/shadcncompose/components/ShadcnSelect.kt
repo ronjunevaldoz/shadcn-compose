@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
@@ -97,6 +98,9 @@ fun <T> ShadcnSelect(
             modifier =
                 Modifier
                     .widthIn(min = 140.dp)
+                    // shadcn's h-9: the same 36dp as ShadcnButton and ShadcnTextField, so a Select lines up with them
+                    // in a Row (it was 32dp, sitting visibly off next to an input -- issue #4)
+                    .heightIn(min = 36.dp)
                     .styleable(triggerStyleState, variant.rememberStyle(), style)
                     .clickable(interactionSource = triggerInteractionSource, indication = null) { expanded = true }
                     .padding(horizontal = shadcnTheme.spacing.md, vertical = shadcnTheme.spacing.sm),

@@ -32,11 +32,15 @@ kotlin {
 
     js {
         browser()
+        // Compose Multiplatform 1.12's checkComposeUiTestConfigurationForJs: UI tests on js load Skiko through the
+        // webpack bundle, which only exists with an executable binary
+        binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
+        binaries.executable() // same as js: UI tests need the webpack bundle
     }
 
     androidLibrary {

@@ -2,6 +2,10 @@
 
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -102,17 +106,29 @@ fun <T> ShadcnCombobox(
     var expanded by remember { mutableStateOf(false) }
     val groups = remember(options, groupOf) { groupOptions(options, groupOf) }
 
-    Box(modifier = modifier) {
+    // shadcn's default w-[200px], unless the caller's modifier sets a width first (Modifier.fillMaxWidth() etc.:
+    // the first size modifier wins). It used to be fixed inside the trigger, so fillMaxWidth() was ignored.
+    var triggerWidth by remember { mutableStateOf(200.dp) }
+    val density = LocalDensity.current
+    Box(modifier = modifier.width(200.dp).onSizeChanged { triggerWidth = with(density) { it.width.toDp() } }) {
         ComboboxTrigger(
             expanded = expanded,
             onExpand = { expanded = true },
             onClear = onClear?.takeIf { value != null },
             icon = icon,
         ) {
-            ShadcnText(value?.let(label) ?: placeholder, muted = value == null)
+            ShadcnText(
+                value?.let(label) ?: placeholder,
+                // BodyMedium's line height is taller than the 36dp trigger's content box
+                style = ShadcnTextStyle.BodySmall,
+                muted = value == null,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
 
         ComboboxPopup(
+            width = triggerWidth,
             expanded = expanded,
             onDismissRequest = { expanded = false },
             groups = groups,
@@ -170,7 +186,11 @@ fun <T> ShadcnCombobox(
     var expanded by remember { mutableStateOf(false) }
     val groups = remember(options, groupOf) { groupOptions(options, groupOf) }
 
-    Box(modifier = modifier) {
+    // shadcn's default w-[200px], unless the caller's modifier sets a width first (Modifier.fillMaxWidth() etc.:
+    // the first size modifier wins). It used to be fixed inside the trigger, so fillMaxWidth() was ignored.
+    var triggerWidth by remember { mutableStateOf(200.dp) }
+    val density = LocalDensity.current
+    Box(modifier = modifier.width(200.dp).onSizeChanged { triggerWidth = with(density) { it.width.toDp() } }) {
         ComboboxTrigger(
             expanded = expanded,
             onExpand = { expanded = true },
@@ -178,7 +198,13 @@ fun <T> ShadcnCombobox(
             icon = icon,
         ) {
             if (values.isEmpty()) {
-                ShadcnText(placeholder, muted = true)
+                ShadcnText(
+                    placeholder,
+                    style = ShadcnTextStyle.BodySmall,
+                    muted = true,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             } else {
                 // Chips scroll horizontally rather than wrap to a second line -- keeps
                 // the trigger's height fixed like every other control in this library.
@@ -199,6 +225,7 @@ fun <T> ShadcnCombobox(
         }
 
         ComboboxPopup(
+            width = triggerWidth,
             expanded = expanded,
             onDismissRequest = { expanded = false },
             groups = groups,
@@ -243,7 +270,7 @@ private fun ComboboxTrigger(
     Box(
         modifier =
             Modifier
-                .width(200.dp)
+                .fillMaxWidth()
                 .clickable(
                     interactionSource = triggerInteractionSource,
                     indication = null,
@@ -318,6 +345,7 @@ private fun <T> ComboboxPopup(
     emptyText: String,
     isSelected: (T) -> Boolean,
     onSelect: (T) -> Unit,
+    width: Dp = 200.dp,
 ) {
     var query by remember { mutableStateOf("") }
     val filteredGroups =
@@ -334,7 +362,8 @@ private fun <T> ComboboxPopup(
         Column(
             modifier =
                 Modifier
-                    .width(200.dp)
+                    // as wide as the trigger, like shadcn's matching w-[…] on trigger and content
+                    .width(width)
                     .background(shadcnTheme.colors.popover, RoundedCornerShape(shadcnTheme.shapes.md))
                     .border(1.dp, shadcnTheme.colors.border, RoundedCornerShape(shadcnTheme.shapes.md))
                     .padding(shadcnTheme.spacing.sm),
