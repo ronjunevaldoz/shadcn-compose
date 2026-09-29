@@ -16,6 +16,8 @@ jobs:
   publish:
     name: Publish shadcn-compose
     runs-on: macos-latest
+    permissions:
+      contents: write # create the GitHub Release
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +45,18 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_SIGNING_PASSWORD }}
         run: ./gradlew :shadcn:core:publishToMavenCentral --no-configuration-cache
+
+      # a GitHub Release for the tag, with notes from the PRs since the last one (runs only once Maven Central
+      # accepted the publish; skipped when re-run for a tag that already has a Release)
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 && { echo "Release $TAG already exists"; exit 0; }
+          gh release create "$TAG" --verify-tag --title "$TAG" --generate-notes \
+            --notes "Maven Central: \`io.github.ronjunevaldoz:shadcn-compose:${TAG#v}\`"
 
       - name: Upload publish logs
         if: always()
