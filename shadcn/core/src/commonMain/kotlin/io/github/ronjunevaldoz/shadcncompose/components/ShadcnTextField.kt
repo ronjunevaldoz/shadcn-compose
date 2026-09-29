@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.style.ExperimentalFoundationStyleApi
 import androidx.compose.foundation.style.Style
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.VisualTransformation
@@ -110,6 +112,9 @@ fun ShadcnTextField(
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    // shadcn's h-9 (36dp) like ShadcnButton and ShadcnSelect, so they line up in a Row (issue #4);
+                    // a min, so multi-line fields still grow. Ghost is the inline, borderless variant: left as is.
+                    .then(if (variant == TextFieldVariant.Ghost) Modifier else Modifier.heightIn(min = 36.dp))
                     .styleable(styleState, variant.rememberStyle() then errorStyle then insideGroupStyle, style),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,

@@ -28,6 +28,7 @@ enum class ShadcnTextStyle {
     BodyMedium,
     BodySmall,
     LabelLarge,
+    LabelMedium,
     LabelSmall,
 }
 
@@ -193,6 +194,7 @@ internal fun resolveShadcnTypography(
             ShadcnTextStyle.BodyMedium -> theme.typography.bodyMedium
             ShadcnTextStyle.BodySmall -> theme.typography.bodySmall
             ShadcnTextStyle.LabelLarge -> theme.typography.labelLarge
+            ShadcnTextStyle.LabelMedium -> theme.typography.labelMedium
             ShadcnTextStyle.LabelSmall -> theme.typography.labelSmall
         }
     if (fontWeight == null && textAlign == null) return base

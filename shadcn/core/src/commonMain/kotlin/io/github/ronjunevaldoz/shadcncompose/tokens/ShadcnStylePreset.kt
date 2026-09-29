@@ -265,6 +265,7 @@ private fun ShadcnTypography.withFontFamily(family: FontFamily): ShadcnTypograph
         bodySmall = bodySmall.copy(fontFamily = family),
         labelLarge = labelLarge.copy(fontFamily = family),
         labelSmall = labelSmall.copy(fontFamily = family),
+        labelMedium = labelMedium.copy(fontFamily = family),
     )
 
 private fun ShadcnTypography.scaled(factor: Float): ShadcnTypography =
@@ -279,6 +280,7 @@ private fun ShadcnTypography.scaled(factor: Float): ShadcnTypography =
         bodySmall = bodySmall.scaled(factor),
         labelLarge = labelLarge.scaled(factor),
         labelSmall = labelSmall.scaled(factor),
+        labelMedium = labelMedium.scaled(factor),
     )
 
 private fun TextStyle.scaled(factor: Float): TextStyle =

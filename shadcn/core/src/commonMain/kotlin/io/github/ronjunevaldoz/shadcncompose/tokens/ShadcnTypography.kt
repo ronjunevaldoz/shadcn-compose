@@ -21,4 +21,7 @@ data class ShadcnTypography(
         TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium, lineHeight = 20.sp, letterSpacing = 0.1.sp),
     val labelSmall: TextStyle =
         TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Medium, lineHeight = 16.sp, letterSpacing = 0.5.sp),
+    // last, so positional ShadcnTypography(...) calls from before it existed still compile (issue #3)
+    val labelMedium: TextStyle =
+        TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium, lineHeight = 16.sp, letterSpacing = 0.5.sp),
 )
