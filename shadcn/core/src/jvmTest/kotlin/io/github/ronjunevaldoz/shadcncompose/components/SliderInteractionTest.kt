@@ -35,8 +35,11 @@ import kotlin.test.assertTrue
 class SliderInteractionTest {
     @get:Rule val rule = createComposeRule()
 
-    private fun assertNear(expected: Float, actual: Float, tolerance: Float) =
-        assertTrue(abs(expected - actual) <= tolerance, "expected ≈$expected but was $actual")
+    private fun assertNear(
+        expected: Float,
+        actual: Float,
+        tolerance: Float,
+    ) = assertTrue(abs(expected - actual) <= tolerance, "expected ≈$expected but was $actual")
 
     // a form that stores whole percents, like most real callers: the thumb must still follow the finger
     @Test
@@ -70,7 +73,11 @@ class SliderInteractionTest {
         var value by mutableFloatStateOf(0f)
         rule.setContent {
             ShadcnTheme {
-                ShadcnSlider(value = value, onValueChange = { value = it }, modifier = Modifier.width(200.dp).testTag("slider"))
+                ShadcnSlider(
+                    value = value,
+                    onValueChange = { value = it },
+                    modifier = Modifier.width(200.dp).testTag("slider"),
+                )
             }
         }
         rule.onNodeWithTag("slider").performTouchInput {
@@ -117,8 +124,13 @@ class SliderInteractionTest {
         rule.setContent {
             ShadcnTheme {
                 // 0, 25, 50, 75, 100
-                ShadcnSlider(value = value, onValueChange = { value = it }, valueRange = 0f..100f, steps = 3,
-                    modifier = Modifier.width(200.dp).testTag("slider"))
+                ShadcnSlider(
+                    value = value,
+                    onValueChange = { value = it },
+                    valueRange = 0f..100f,
+                    steps = 3,
+                    modifier = Modifier.width(200.dp).testTag("slider"),
+                )
             }
         }
         rule.onNodeWithTag("slider").performTouchInput {
@@ -134,13 +146,20 @@ class SliderInteractionTest {
         var value by mutableFloatStateOf(50f)
         rule.setContent {
             ShadcnTheme {
-                ShadcnSlider(value = value, onValueChange = { value = it }, valueRange = 0f..100f,
-                    modifier = Modifier.width(200.dp).testTag("slider"))
+                ShadcnSlider(
+                    value = value,
+                    onValueChange = { value = it },
+                    valueRange = 0f..100f,
+                    modifier = Modifier.width(200.dp).testTag("slider"),
+                )
             }
         }
         val thumb = rule.onNode(hasRequestFocusAction() and hasAnyAncestor(hasTestTag("slider")))
         thumb.requestFocus()
-        thumb.performKeyInput { pressKey(Key.DirectionRight); pressKey(Key.DirectionRight) }
+        thumb.performKeyInput {
+            pressKey(Key.DirectionRight)
+            pressKey(Key.DirectionRight)
+        }
         rule.waitForIdle()
         assertEquals(52f, value)
         thumb.performKeyInput { pressKey(Key.MoveHome) }

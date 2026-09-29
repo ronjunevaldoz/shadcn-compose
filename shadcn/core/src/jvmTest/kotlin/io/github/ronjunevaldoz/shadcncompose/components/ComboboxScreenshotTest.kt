@@ -108,9 +108,21 @@ class ComboboxScreenshotTest : ShadcnScreenshotTest() {
                 modifier = androidx.compose.ui.Modifier.width(320.dp),
                 verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
             ) {
-                ShadcnCombobox(value = "Percentage (%)", options = listOf("Percentage (%)", "Fixed (₱)"), onValueChange = {},
-                    modifier = androidx.compose.ui.Modifier.fillMaxWidth())
-                ShadcnCombobox(value = "Typography & spacing, quickly", options = listOf("Typography & spacing, quickly"), onValueChange = {})
+                ShadcnCombobox(
+                    value = "Percentage (%)",
+                    options = listOf("Percentage (%)", "Fixed (₱)"),
+                    onValueChange = {},
+                    modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
+                )
+                ShadcnCombobox(
+                    value = "Typography & spacing, quickly",
+                    options =
+                        listOf(
+                            "Typography & spacing, quickly",
+                        ),
+                    onValueChange = {
+                    },
+                )
             }
         }
     }

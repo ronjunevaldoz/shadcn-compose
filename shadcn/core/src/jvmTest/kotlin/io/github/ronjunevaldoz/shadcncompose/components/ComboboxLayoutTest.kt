@@ -24,10 +24,16 @@ class ComboboxLayoutTest {
         rule.setContent {
             ShadcnTheme {
                 Box(Modifier.width(360.dp)) {
-                    ShadcnCombobox(value = "A", options = listOf("A"), onValueChange = {}, modifier = Modifier.fillMaxWidth().testTag("full"))
+                    ShadcnCombobox(value = "A", options = listOf("A"), onValueChange = {
+                    }, modifier = Modifier.fillMaxWidth().testTag("full"))
                 }
                 Box(Modifier.width(360.dp)) {
-                    ShadcnCombobox(value = "A", options = listOf("A"), onValueChange = {}, modifier = Modifier.testTag("default"))
+                    ShadcnCombobox(
+                        value = "A",
+                        options = listOf("A"),
+                        onValueChange = {},
+                        modifier = Modifier.testTag("default"),
+                    )
                 }
             }
         }

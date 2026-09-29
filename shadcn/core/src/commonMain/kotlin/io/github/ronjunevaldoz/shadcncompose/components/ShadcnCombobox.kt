@@ -119,7 +119,8 @@ fun <T> ShadcnCombobox(
         ) {
             ShadcnText(
                 value?.let(label) ?: placeholder,
-                style = ShadcnTextStyle.BodySmall, // BodyMedium's line height is taller than the 36dp trigger's content box
+                // BodyMedium's line height is taller than the 36dp trigger's content box
+                style = ShadcnTextStyle.BodySmall,
                 muted = value == null,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -197,7 +198,13 @@ fun <T> ShadcnCombobox(
             icon = icon,
         ) {
             if (values.isEmpty()) {
-                ShadcnText(placeholder, style = ShadcnTextStyle.BodySmall, muted = true, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                ShadcnText(
+                    placeholder,
+                    style = ShadcnTextStyle.BodySmall,
+                    muted = true,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             } else {
                 // Chips scroll horizontally rather than wrap to a second line -- keeps
                 // the trigger's height fixed like every other control in this library.

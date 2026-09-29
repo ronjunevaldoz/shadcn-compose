@@ -74,12 +74,13 @@ fun ShadcnSlider(
     fun valueAt(fraction: Float): Float {
         val range = currentRange
         val span = range.endInclusive - range.start
-        val snapped = if (currentSteps > 0) {
-            val intervals = currentSteps + 1
-            (fraction.coerceIn(0f, 1f) * intervals).roundToInt().toFloat() / intervals
-        } else {
-            fraction.coerceIn(0f, 1f)
-        }
+        val snapped =
+            if (currentSteps > 0) {
+                val intervals = currentSteps + 1
+                (fraction.coerceIn(0f, 1f) * intervals).roundToInt().toFloat() / intervals
+            } else {
+                fraction.coerceIn(0f, 1f)
+            }
         return (range.start + snapped * span).coerceIn(range.start, range.endInclusive)
     }
 
@@ -114,6 +115,7 @@ fun ShadcnSlider(
                     if (!enabled) return@pointerInput
                     awaitEachGesture {
                         val thumbPx = THUMB_SIZE.toPx()
+
                         fun moveTo(x: Float) {
                             val usable = size.width - thumbPx
                             if (usable <= 0f) return
@@ -166,15 +168,16 @@ fun ShadcnSlider(
                         val range = currentRange
                         val span = range.endInclusive - range.start
                         val step = if (currentSteps > 0) span / (currentSteps + 1) else span / 100f
-                        val target = when (event.key) {
-                            Key.DirectionRight, Key.DirectionUp -> currentValue + step
-                            Key.DirectionLeft, Key.DirectionDown -> currentValue - step
-                            Key.PageUp -> currentValue + step * 10
-                            Key.PageDown -> currentValue - step * 10
-                            Key.MoveHome -> range.start
-                            Key.MoveEnd -> range.endInclusive
-                            else -> return@onPreviewKeyEvent false
-                        }
+                        val target =
+                            when (event.key) {
+                                Key.DirectionRight, Key.DirectionUp -> currentValue + step
+                                Key.DirectionLeft, Key.DirectionDown -> currentValue - step
+                                Key.PageUp -> currentValue + step * 10
+                                Key.PageDown -> currentValue - step * 10
+                                Key.MoveHome -> range.start
+                                Key.MoveEnd -> range.endInclusive
+                                else -> return@onPreviewKeyEvent false
+                            }
                         val newValue = if (span == 0f) range.start else valueAt((target - range.start) / span)
                         if (newValue != currentValue) onChange(newValue)
                         onFinished?.invoke()
