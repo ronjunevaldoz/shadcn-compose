@@ -2,6 +2,9 @@
 
 package io.github.ronjunevaldoz.shadcncompose.components
 
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,12 +20,11 @@ import io.github.ronjunevaldoz.shadcncompose.theme.shadcnTheme
 data class ToggleGroupItem(val value: String, val label: String)
 
 /**
- * A segmented row of [ShadcnToggle]s. Real shadcn/ui gives every item its own border
- * and drops the shared edge via CSS (`:not(:first-child)` etc.); the Style API here
- * has no per-side border control, so the group itself draws a single shared border
- * (Outline variant only) and each item is borderless -- same visual result, simpler
- * implementation. Supports single- or multi-select depending on how [selected] and
- * [onSelectedChange] are wired by the caller. [items] is the ordered list of segments to render.
+ * A row of [ShadcnToggle]s. Like shadcn/ui's ToggleGroup (default `spacing={2}` since 2026-05), items sit apart with
+ * an 8dp gap, each keeping its own toggle shape and border. `spacing = 0.dp` joins them into one segmented control:
+ * only the group's outer ends are rounded, and for the Outline variant the group draws one shared border (the Style
+ * API has no per-side border control) while the items are borderless. Supports single- or multi-select depending on
+ * how [selected] and [onSelectedChange] are wired by the caller. [items] is the ordered list of segments to render.
  *
  * Usage:
  * ```
@@ -33,6 +35,8 @@ data class ToggleGroupItem(val value: String, val label: String)
  *     onSelectedChange = { value -> selected = if (value in selected) selected - value else selected + value },
  * )
  * ```
+ *
+ * @param spacing gap between items; `0.dp` joins them (shadcn's `spacing={0}`).
  */
 @Composable
 fun ShadcnToggleGroup(
@@ -41,7 +45,27 @@ fun ShadcnToggleGroup(
     onSelectedChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     variant: ToggleVariant = ToggleVariant.Default,
+    spacing: Dp = 8.dp,
 ) {
+    if (spacing > 0.dp) {
+        Row(
+            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(spacing),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            items.forEach { item ->
+                ShadcnToggle(
+                    pressed = item.value in selected,
+                    onPressedChange = { onSelectedChange(item.value) },
+                    variant = variant,
+                ) {
+                    ShadcnText(item.label)
+                }
+            }
+        }
+        return
+    }
+
     val groupShape = RoundedCornerShape(shadcnTheme.shapes.lg)
     val outerModifier =
         if (variant == ToggleVariant.Outline) {
