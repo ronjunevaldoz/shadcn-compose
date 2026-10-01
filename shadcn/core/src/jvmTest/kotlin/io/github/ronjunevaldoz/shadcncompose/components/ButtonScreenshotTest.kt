@@ -90,7 +90,11 @@ class ButtonScreenshotTest : ShadcnScreenshotTest() {
                         ShadcnButton(onClick = {}, size = size) { ShadcnText("Save changes, gy") }
                     }
                 }
-                ShadcnButton(onClick = {}, variant = ButtonVariant.Outline, size = ButtonSize.Icon) { ShadcnIcon(Check) }
+                ShadcnButton(
+                    onClick = {},
+                    variant = ButtonVariant.Outline,
+                    size = ButtonSize.Icon,
+                ) { ShadcnIcon(Check) }
             }
         }
     }
