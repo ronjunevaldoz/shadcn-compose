@@ -139,41 +139,46 @@ sealed interface ButtonSize {
     data object Icon : ButtonSize
 }
 
+/**
+ * Fixed heights like shadcn/ui's `h-7`/`h-8`/`h-9`/`h-10`/`size-9`, with the content centred by
+ * [io.github.ronjunevaldoz.shadcncompose.components.ShadcnButton]'s `Box`. No vertical padding: shadcn's
+ * `py-2` only works because CSS lets content overflow, while here padding shrinks the room the label gets.
+ * With Maia's roomier spacing (`sm` = 10dp) a Md label had 16dp for a 20sp line and lost its descenders.
+ */
 @Composable
 fun ButtonSize.rememberStyle(): Style =
     rememberShadcnStyle(this) {
         when (this@rememberStyle) {
             ButtonSize.Xs ->
                 Style {
-                    contentPadding(horizontal = spacing.sm, vertical = spacing.xs)
+                    contentPadding(horizontal = spacing.sm, vertical = 0.dp)
                     fontSize(12.sp)
                     height(28.dp)
                 }
 
             ButtonSize.Sm ->
                 Style {
-                    contentPadding(horizontal = spacing.md, vertical = spacing.xs)
+                    contentPadding(horizontal = spacing.md, vertical = 0.dp)
                     fontSize(14.sp)
                     height(32.dp)
                 }
 
             ButtonSize.Md ->
                 Style {
-                    contentPadding(horizontal = spacing.lg, vertical = spacing.sm)
+                    contentPadding(horizontal = spacing.lg, vertical = 0.dp)
                     fontSize(14.sp)
                     height(36.dp)
                 }
 
             ButtonSize.Lg ->
                 Style {
-                    contentPadding(horizontal = spacing.xxl, vertical = spacing.md)
+                    contentPadding(horizontal = spacing.xxl, vertical = 0.dp)
                     fontSize(16.sp)
                     height(40.dp)
                 }
 
             ButtonSize.Icon ->
                 Style {
-                    contentPadding(spacing.sm)
                     width(36.dp)
                     height(36.dp)
                 }

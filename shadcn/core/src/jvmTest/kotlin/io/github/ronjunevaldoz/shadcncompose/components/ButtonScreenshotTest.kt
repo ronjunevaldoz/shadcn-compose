@@ -3,6 +3,7 @@
 package io.github.ronjunevaldoz.shadcncompose.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -13,7 +14,9 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.dp
 import io.github.ronjunevaldoz.shadcncompose.ShadcnScreenshotTest
 import io.github.ronjunevaldoz.shadcncompose.icons.Check
+import io.github.ronjunevaldoz.shadcncompose.styles.ButtonSize
 import io.github.ronjunevaldoz.shadcncompose.styles.ButtonVariant
+import io.github.ronjunevaldoz.shadcncompose.tokens.ShadcnStylePreset
 import kotlin.test.Test
 
 class ButtonScreenshotTest : ShadcnScreenshotTest() {
@@ -71,6 +74,34 @@ class ButtonScreenshotTest : ShadcnScreenshotTest() {
             }
         }
     }
+
+    /**
+     * Every size with a label that has descenders, in Maia (the roomiest spacing): the fixed height
+     * must leave the whole line, so "p", "g" and "y" are never cut. Icon size keeps its full icon.
+     */
+    private fun sizesMaia(darkTheme: Boolean) {
+        snapshot("button_sizes_maia", darkTheme = darkTheme, stylePreset = ShadcnStylePreset.Maia) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                listOf(ButtonSize.Xs, ButtonSize.Sm, ButtonSize.Md, ButtonSize.Lg).forEach { size ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        ShadcnButton(onClick = {}, variant = ButtonVariant.Outline, size = size) {
+                            ShadcnText("Send password reset email")
+                        }
+                        ShadcnButton(onClick = {}, size = size) { ShadcnText("Save changes, gy") }
+                    }
+                }
+                ShadcnButton(
+                    onClick = {},
+                    variant = ButtonVariant.Outline,
+                    size = ButtonSize.Icon,
+                ) { ShadcnIcon(Check) }
+            }
+        }
+    }
+
+    @Test fun sizes_maia_light() = sizesMaia(darkTheme = false)
+
+    @Test fun sizes_maia_dark() = sizesMaia(darkTheme = true)
 
     @Test fun icon_variants_light() = iconVariants(darkTheme = false)
 
